@@ -1,25 +1,33 @@
 <template>
-  <div>
-    <ToDoList />
+  <div class="list">
+    <ListItem />
+    <ProgressCircle />
   </div>
 </template>
 
 <script>
-import ToDoList from '../components/ToDo/ToDoList'
+import ListItem from './ListItem'
+import ProgressCircle from './ProgressCircle'
 export default {
   components: {
-    ToDoList
+    ListItem,
+    ProgressCircle
   },
   data () {
     return {
+
     }
   },
   computed: {
+
   },
   methods: {
+
   }
 }
 </script>
 
 <style>
+
+
 </style>
