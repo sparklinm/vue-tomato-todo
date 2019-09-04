@@ -1,7 +1,10 @@
 <template>
-  <div class="list">
-    <ListItem />
-    <ProgressCircle />
+  <div class="list test">
+    <ListItem>
+      <template v-slot:progressBar>
+        <ProgressCircle :width="20" />
+      </template>
+    </ListItem>
   </div>
 </template>
 
