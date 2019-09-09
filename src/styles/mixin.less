@@ -1,8 +1,15 @@
 // flex布局
 .flex(@flex-direction: initial; @flex-wrap: initial; @justify-content: initial; @align-items: initial) {
-    display: flex;
-    flex-direction: @flex-direction;
-    flex-wrap: @flex-wrap;
-    justify-content: @justify-content;
-    align-items: @align-items;
+  display: flex;
+  flex-direction: @flex-direction;
+  flex-wrap: @flex-wrap;
+  justify-content: @justify-content;
+  align-items: @align-items;
+}
+
+//绝对定位居中
+.center-position() {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
