@@ -1,17 +1,54 @@
+@import './variable.less';
+
 body {
-  font-family: "Helvetica Neue", "Microsoft YaHei", Helvetica,
-    "Hiragino Sans GB", "黑体", Arial, sans-serif;
+  font-family: 'Helvetica Neue', 'Microsoft YaHei', Helvetica,
+    'Hiragino Sans GB', '黑体', Arial, sans-serif;
   font-size: 16px;
 }
+
 .mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(12, 12, 12);
-    opacity: 0.5;
-    z-index: 100;
-    color: red;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(12, 12, 12);
+  opacity: 0.5;
+  z-index: 100;
+  color: red;
 }
 
+// theme1
+.theme-1 {
+  .title-c {
+    background-color: @theme-base-color-20-1;
+  }
+
+  .input-c {
+    border-bottom: 2px solid @theme-base-color-20-1;
+  }
+
+  .input-box-c {
+    &::-webkit-input-placeholder {
+      color: @theme-base-color-1;
+    }
+
+    &:-moz-placeholder {
+      color: @theme-base-color-1;
+    }
+
+    &::-moz-placeholder {
+      color: @theme-base-color-1;
+    }
+
+    &:-ms-input-placeholder {
+      color: @theme-base-color-1;
+    }
+  }
+
+}
+ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
