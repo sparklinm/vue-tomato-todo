@@ -1,0 +1,148 @@
+<template>
+  <div
+    v-show="show"
+    class="com-popup-box-wrap"
+  >
+    <div class="mask" />
+    <div class="com-popup-box">
+      <div class="title title-c">
+        <div class="text">
+          {{ title }}
+        </div>
+        <div
+          v-if="topOptionBtn"
+          class="btn-option-top"
+        >
+          <span>
+            <i
+              class="fa fa-check"
+              aria-hidden="true"
+              @click="submit"
+            />
+          </span>
+          <span>
+            <i
+              class="fa fa-times"
+              aria-hidden="true"
+              @click="cancel"
+            />
+          </span>
+        </div>
+      </div>
+
+      <div class="content">
+        <slot name="content" />
+      </div>
+      <div
+        v-if="bottomConfirmBtn"
+        class="footer"
+      >
+        <button
+          class="btn-confirm"
+          @click="submit"
+        >
+          确定
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    topOptionBtn: {
+      type: Boolean,
+      default: false
+    },
+    bottomConfirmBtn: {
+      type: Boolean,
+      default: false
+    },
+    show: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data () {
+    return {
+
+    }
+  },
+  mounted: {
+
+
+  },
+  methods: {
+    submit () {
+      this.$emit('update:show', false)
+
+    },
+    cancel () {
+      this.$emit('update:show', false)
+
+    }
+
+  }
+}
+</script>
+
+<style lang='less'>
+.com-popup-box-wrap {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+.com-popup-box {
+  width: 300px;
+  position: fixed;
+  z-index: 150;
+  background-color: white;
+  .center-position();
+
+  .title {
+    color: white;
+    .flex(@align-items: center; @justify-content: space-between);
+
+    padding: 15px 15px;
+
+    .btn-option-top {
+      .flex(@align-items: center);
+
+      span {
+        font-size: 16px;
+        &:first-child {
+          margin-right: 15px;
+        }
+      }
+    }
+  }
+
+  .content {
+    padding: 10px 15px 8px;
+  }
+  .footer {
+    padding: 0 5px;
+    margin: 5px 0 10px;
+
+    .btn-confirm {
+      width: 100%;
+      height: 30px;
+      color: @theme-base-color-10-1;
+      font-size: 14px;
+      letter-spacing: 1px;
+      border: none;
+      background: white;
+      box-shadow: 0 2px 1px 1px rgb(238, 238, 238);
+      cursor: pointer;
+      outline: none;
+    }
+  }
+}
+</style>

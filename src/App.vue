@@ -1,5 +1,8 @@
 <template>
-  <div id="app">
+  <div
+    id="app"
+    class="theme-1"
+  >
     <router-view />
     <BoxAddToDo />
   </div>
