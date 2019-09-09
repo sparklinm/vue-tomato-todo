@@ -18,17 +18,40 @@ body {
   color: red;
 }
 
-// theme1
+// theme-1
 .theme-1 {
-  .title-c {
-    background-color: @theme-base-color-20-1;
+  .font-color-base {
+    color: @theme-base-color-1;
+  }
+  .font-color-base-10 {
+    color: @theme-base-color-1-10;
   }
 
-  .input-c {
-    border-bottom: 2px solid @theme-base-color-20-1;
+  .background-color-base {
+    background-color: @theme-base-color-1;
   }
 
-  .input-box-c {
+  .boreder-bottom-base {
+    border-bottom: 2px solid @theme-base-color-1;
+  }
+
+  .background-color-10 {
+    background-color: @theme-base-color-1-10;
+  }
+
+  .boreder-bottom-10 {
+    border-bottom: 2px solid @theme-base-color-1-10;
+  }
+
+  .background-color-20 {
+    background-color: @theme-base-color-1-20;
+  }
+
+  .boreder-bottom-20 {
+    border-bottom: 2px solid @theme-base-color-1-20;
+  }
+
+  .com-input-box {
     &::-webkit-input-placeholder {
       color: @theme-base-color-1;
     }
@@ -45,9 +68,19 @@ body {
       color: @theme-base-color-1;
     }
   }
+  .box-add-todo {
+
+    .custom-time {
+
+      .title {
+        .background-color-base
+      }
+    }
+  }
 
 }
-ul{
+
+ul {
   list-style: none;
   padding: 0;
   margin: 0;
