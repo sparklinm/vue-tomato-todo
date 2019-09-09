@@ -1,18 +1,33 @@
 <template>
-  <div class="com-input input-c">
+  <div class="com-input boreder-bottom-20">
     <textarea
-      type="text"
-      class="input-box input-box-c"
+      v-if="type==='textarea'"
+      v-model="currentValue"
+      class="input-box com-input-box"
       rows="1"
       :placeholder="placeholder"
+      @blur="blurHandle"
     />
+    <input
+      v-else
+      v-model="currentValue"
+      class="input-box com-input-box"
+      :placeholder="placeholder"
+      :min="min"
+      :max="max"
+      :type="type"
+      @blur="blurHandle"
+    >
+
     <span
       v-if="icon==='question'"
       class="tip"
-    ><i
-      class="fa fa-question-circle"
-      aria-hidden="true"
-    /></span>
+    >
+      <i
+        class="fa fa-question-circle"
+        aria-hidden="true"
+      />
+    </span>
   </div>
 </template>
 
@@ -26,18 +41,41 @@ export default {
     placeholder: {
       type: String,
       default: ''
+    },
+    type: {
+      type: String,
+      default: 'text'
+    },
+    min: {
+      type: Number,
+      default: undefined
+    },
+    max: {
+      type: Number,
+      default: undefined
+    },
+    value: {
+      type: [String, Number],
+      default: ''
     }
   },
   data () {
     return {
-
+      currentValue: this.value
+    }
+  },
+  watch: {
+    value (val) {
+      this.currentValue = val
     }
   },
   mounted: {
 
   },
   methods: {
-
+    blurHandle () {
+      this.$emit('input', this.currentValue)
+    }
   }
 }
 </script>
@@ -48,13 +86,12 @@ export default {
   .input-box {
     width: 100%;
     border: none;
-    resize: none;
     outline: none;
     padding: 5px 0;
     flex: 1;
   }
   .tip {
-    color:rgb(88, 88, 88);
+    color: rgb(88, 88, 88);
   }
 }
 </style>

@@ -6,6 +6,7 @@
     >
       <template v-slot:content>
         <ComInput
+          type="textarea"
           icon="question"
           placeholder="请输入代办名称"
         />
@@ -54,10 +55,16 @@
       class="custom-time"
       bottom-confirm-btn
       :show.sync="showCustomTimeBox"
+      @submit="setCustomTimeDuration"
+      @cancel="resetCustomTimeDuration"
     >
       <template v-slot:content>
         <ComInput
-          placeholder="25分钟"
+          v-model="customTimeDuration.currentValue"
+          :placeholder="customTimeDuration.lastValue+'分钟'"
+          :min="customTimeDuration.min"
+          :max="customTimeDuration.max"
+          type="number"
         />
       </template>
     </ComPopup>
@@ -105,15 +112,18 @@ export default {
       todoTimeDuration: [
         {
           text: '25分钟',
-          checked: true
+          checked: true,
+          value: 25
         },
         {
           text: '35分钟',
-          checked: false
+          checked: false,
+          value: 35
         },
         {
           text: '自定义',
-          checked: false
+          checked: false,
+          value: -1
         }
       ],
       todo: {
@@ -121,17 +131,46 @@ export default {
         timeWay: '',
         timeDuration: 25
       },
+      customTimeDuration: {
+        lastValue: 25,
+        currentValue: 25,
+        min: 0,
+        max: 180
+      },
       showCustomTimeBox: false
     }
   },
   computed: {
+
   },
   methods: {
     checkItem (list, currentItem) {
-      list.forEach((item) => {
+      list.forEach(item => {
         item.checked = false
       })
       currentItem.checked = true
+    },
+    checkTimeDuration () {
+      const { currentValue, max, min } = this.customTimeDuration
+      if (currentValue < min || currentValue > max) {
+        return false
+      }
+      return true
+    },
+    setCustomTimeDuration () {
+      let { currentValue, lastValue } = this.customTimeDuration
+      currentValue = currentValue === '' ? lastValue : currentValue
+      if (this.checkTimeDuration()) {
+        this.customTimeDuration.lastValue = currentValue
+        this.todo.timeDuration = currentValue
+        this.todoTimeDuration[2].text = currentValue + '分钟'
+        this.todoTimeDuration[2].value = currentValue
+      } else {
+        console.log('输入不符')
+      }
+    },
+    resetCustomTimeDuration () {
+      this.customTimeDuration.currentValue = this.customTimeDuration.lastValue
     },
     onTypeClick (index) {
       this.todo.type = this.todoType[index].text
@@ -142,10 +181,12 @@ export default {
       this.checkItem(this.todoTimeWay, this.todoTimeWay[index])
     },
     onTimeDurationClick (index) {
-      if (this.todoTimeDuration[index].text === '自定义') {
+      if (this.todoTimeDuration[index].value === -1) {
         this.showCustomTimeBox = true
+        this.customTimeDuration.currentValue = ''
+      } else {
+        this.todo.timeDuration = this.todoTimeDuration[index].value
       }
-      this.todo.timeDuration = this.todoTimeDuration[index].text
       this.checkItem(this.todoTimeDuration, this.todoTimeDuration[index])
     }
   }
@@ -154,6 +195,7 @@ export default {
 
 <style lang="less">
 .box-add-todo {
+
   .config-todo {
     margin-top: 12px;
     & > div {
@@ -163,6 +205,7 @@ export default {
         font-size: 14px;
       }
     }
+
     ul {
       text-align: center;
 
@@ -181,15 +224,16 @@ export default {
       }
     }
   }
+
   .custom-time {
+
     .title {
       padding: 20px 15px;
-      background-color: @theme-base-color-1;
     }
+
     .content {
       padding: 10px 35px;
     }
-
   }
 }
 </style>

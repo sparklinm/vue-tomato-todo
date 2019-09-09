@@ -3,9 +3,12 @@
     v-show="show"
     class="com-popup-box-wrap"
   >
-    <div class="mask" />
+    <div
+      class="mask"
+      @click.prevent="cancel"
+    />
     <div class="com-popup-box">
-      <div class="title title-c">
+      <div class="title background-color-20">
         <div class="text">
           {{ title }}
         </div>
@@ -38,7 +41,7 @@
         class="footer"
       >
         <button
-          class="btn-confirm"
+          class="btn-confirm font-color-base-10"
           @click="submit"
         >
           确定
@@ -80,13 +83,12 @@ export default {
   methods: {
     submit () {
       this.$emit('update:show', false)
-
+      this.$emit('submit')
     },
     cancel () {
       this.$emit('update:show', false)
-
+      this.$emit('cancel')
     }
-
   }
 }
 </script>
@@ -134,7 +136,6 @@ export default {
     .btn-confirm {
       width: 100%;
       height: 30px;
-      color: @theme-base-color-10-1;
       font-size: 14px;
       letter-spacing: 1px;
       border: none;
