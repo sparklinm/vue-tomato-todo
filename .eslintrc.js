@@ -52,7 +52,7 @@ module.exports = {
     'no-tabs': 'error',
     'no-var': 'error',
     'one-var': ['error', 'never'],
-    // 'prefer-const': 'error',
+    'prefer-const':["error", {"destructuring": "all"}],
     'no-trailing-spaces': 'error',
     'operator-assignment': ['error', 'always'],
     'dot-location': ['error', 'property'],
