@@ -5,6 +5,13 @@
       top-option-btn
     >
       <template v-slot:content>
+        <button @click="$alert('alert测试成功')">
+          alert
+        </button>
+        <button @click="$message('title','message测试成功')">
+          message
+        </button>
+
         <ComInput
           type="textarea"
           icon="question"
