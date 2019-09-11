@@ -26,7 +26,14 @@
                 :class="{'li-clicked':item.checked}"
                 @click="onTypeClick(index)"
               >
-                {{ item.text }}
+                <label>
+                  <input
+                    type="radio"
+                    name="type"
+                    :checked="index===0"
+                  >
+                  <span>{{ item.text }}</span>
+                </label>
               </li>
             </ul>
           </div>
@@ -38,7 +45,14 @@
                 :class="{'li-clicked':item.checked}"
                 @click="onTimeWayClick(index)"
               >
-                {{ item.text }}
+                <label>
+                  <input
+                    type="radio"
+                    name="way"
+                    :checked="index===0"
+                  >
+                  <span>{{ item.text }}</span>
+                </label>
               </li>
             </ul>
           </div>
@@ -50,7 +64,14 @@
                 :class="{'li-clicked':item.checked}"
                 @click="onTimeDurationClick(index)"
               >
-                {{ item.text }}
+                <label>
+                  <input
+                    type="radio"
+                    name="duration"
+                    :checked="index===0"
+                  >
+                  <span>{{ item.text }}</span>
+                </label>
               </li>
             </ul>
           </div>
@@ -151,12 +172,6 @@ export default {
 
   },
   methods: {
-    checkItem (list, currentItem) {
-      list.forEach(item => {
-        item.checked = false
-      })
-      currentItem.checked = true
-    },
     checkTimeDuration () {
       const { currentValue, max, min } = this.customTimeDuration
       if (currentValue < min || currentValue > max) {
@@ -181,11 +196,9 @@ export default {
     },
     onTypeClick (index) {
       this.todo.type = this.todoType[index].text
-      this.checkItem(this.todoType, this.todoType[index])
     },
     onTimeWayClick (index) {
       this.todo.timeWay = this.todoTimeWay[index].text
-      this.checkItem(this.todoTimeWay, this.todoTimeWay[index])
     },
     onTimeDurationClick (index) {
       if (this.todoTimeDuration[index].value === -1) {
@@ -194,7 +207,6 @@ export default {
       } else {
         this.todo.timeDuration = this.todoTimeDuration[index].value
       }
-      this.checkItem(this.todoTimeDuration, this.todoTimeDuration[index])
     }
   }
 }
@@ -202,7 +214,6 @@ export default {
 
 <style lang="less">
 .box-add-todo {
-
   .config-todo {
     margin-top: 12px;
     & > div {
@@ -218,22 +229,32 @@ export default {
 
       li {
         display: inline-block;
-        padding: 8px;
-        border-radius: 5px;
-        background-color: rgb(245, 245, 245);
+
+        span {
+          display: inline-block;
+          padding: 8px;
+          background-color: rgb(245, 245, 245);
+          border-radius: 5px;
+        }
         &:not(:last-child) {
           margin-right: 10px;
         }
+        input[type="radio"] {
+          width: 0;
+          &:checked + span {
+            color: rgb(90, 141, 199);
+            background: rgb(232, 243, 255);
+          }
+        }
       }
       .li-clicked {
-        color: rgb(90, 141, 199);
-        background: rgb(232, 243, 255);
+        // color: rgb(90, 141, 199);
+        // background: rgb(232, 243, 255);
       }
     }
   }
 
   .custom-time {
-
     .title {
       padding: 20px 15px;
     }
