@@ -9,9 +9,9 @@ function creatAlertPlugin (Vue, options) {
   Vue.prototype.$alert = function (message) {
     instance.message = message
     instance.show = true
-    setTimeout(() => {
-      instance.show = false
-    }, 3000)
+    // setTimeout(() => {
+    //   instance.show = false
+    // }, 3000)
   }
 }
 
