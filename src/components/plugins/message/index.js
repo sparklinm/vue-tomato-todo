@@ -8,6 +8,7 @@ function creatMessagePlugin (Vue, options) {
   Vue.prototype.$message = function (title, content) {
     instance.title = title
     instance.content = content
+    instance.show = true
   }
 }
 

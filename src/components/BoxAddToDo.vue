@@ -5,17 +5,17 @@
       top-option-btn
     >
       <template v-slot:content>
-        <button @click="$alert('alert测试成功')">
+        <!-- <button @click="$alert('alert测试成功')">
           alert
-        </button>
-        <button @click="$message('title','message测试成功')">
+        </button> -->
+        <!-- <button @click="$message('title','message测试成功')">
           message
-        </button>
-
+        </button> -->
         <ComInput
           type="textarea"
           icon="question"
           placeholder="请输入代办名称"
+          :tips="tipsToDoName"
         />
         <div class="config-todo">
           <div class="type">
@@ -42,7 +42,6 @@
               <li
                 v-for="(item,index) in todoTimeWay"
                 :key="index"
-                :class="{'li-clicked':item.checked}"
                 @click="onTimeWayClick(index)"
               >
                 <label>
@@ -165,7 +164,11 @@ export default {
         min: 0,
         max: 180
       },
-      showCustomTimeBox: false
+      showCustomTimeBox: false,
+      tipsToDoName: {
+        title: '什么是番茄钟？',
+        content: '番茄钟是全身心工作25分钟，休息5分钟的工作法。输入事项名称，点击'
+      }
     }
   },
   computed: {
@@ -195,6 +198,7 @@ export default {
       this.customTimeDuration.currentValue = this.customTimeDuration.lastValue
     },
     onTypeClick (index) {
+
       this.todo.type = this.todoType[index].text
     },
     onTimeWayClick (index) {
@@ -246,10 +250,6 @@ export default {
             background: rgb(232, 243, 255);
           }
         }
-      }
-      .li-clicked {
-        // color: rgb(90, 141, 199);
-        // background: rgb(232, 243, 255);
       }
     }
   }

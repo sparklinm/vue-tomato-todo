@@ -18,8 +18,13 @@ export default {
     return {
 
     }
+  },
+  mounted () {
+    window.addEventListener('resize', () => {
+      document.documentElement.style.fontSize = document.documentElement.clientWidth / 414 * 50 + 'px'
+    })
+    document.documentElement.style.fontSize = document.documentElement.clientWidth / 414 * 50 + 'px'
   }
-
 }
 </script>
 
