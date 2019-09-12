@@ -22,6 +22,7 @@
     <span
       v-if="icon==='question'"
       class="tip"
+      @click="$message(tips.title,tips.content)"
     >
       <i
         class="fa fa-question-circle"
@@ -57,6 +58,10 @@ export default {
     value: {
       type: [String, Number],
       default: ''
+    },
+    tips: {
+      type: Object,
+      default: null
     }
   },
   data () {
@@ -92,6 +97,9 @@ export default {
   }
   .tip {
     color: rgb(88, 88, 88);
+    i {
+      padding: 5px;
+    }
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div
     v-show="show"
-    class="com-popup-box-wrap"
+    class="box-wrap"
   >
     <div
       class="mask"
@@ -94,15 +94,8 @@ export default {
 </script>
 
 <style lang='less'>
-.com-popup-box-wrap {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-}
 .com-popup-box {
-  width: 300px;
+  width: 6.5rem;
   position: fixed;
   z-index: 150;
   background-color: white;

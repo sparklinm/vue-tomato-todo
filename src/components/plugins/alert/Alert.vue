@@ -1,21 +1,34 @@
 <template>
-  <div
-    v-show="show"
-    class="plu-alert"
-  >
-    <div class="text">
-      番茄todo：{{ message }}
+  <PopUp>
+    <div
+      v-if="show"
+      class="plu-alert-wrap"
+    >
+      <div class="box-background" />
+      <div
+        class="plu-alert"
+      >
+        <div class="text">
+          番茄todo：{{ message }}
+        </div>
+      </div>
     </div>
-  </div>
+  </PopUp>
 </template>
 
 <script>
+import PopUp from '@/components/transition/PopUp'
 export default {
+  components: {
+    PopUp
+  },
   data () {
     return {
       message: '',
       show: false
     }
+  },
+  mounted () {
   },
   methods: {
 
@@ -24,18 +37,30 @@ export default {
 </script>
 
 <style lang='less'>
-.plu-alert {
+.plu-alert-wrap {
   display: inline-block;
   position: fixed;
   left: 50%;
   bottom: 50px;
-  transform: translateX(-50%);
-  width: 300px;
-  box-sizing: border-box;
-  padding: 12px;
-  border-radius: 5px;
-  background-color: @background-alert;
-  font-size: 12px;
-  color: white;
+  transform: translate(-50%, 0);
+  width: 6rem;
+
+  .box-background {
+    background-color: rgb(37, 37, 37);
+    opacity: 0.7;
+    border-radius: 5px;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+  }
+
+  .plu-alert {
+    box-sizing: border-box;
+    padding: 15px;
+    letter-spacing: 1px;
+    font-size: 12px;
+    color: rgb(230, 230, 230);
+  }
 }
 </style>
