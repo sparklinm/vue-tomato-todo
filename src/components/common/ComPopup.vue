@@ -76,13 +76,12 @@ export default {
 
     }
   },
-  mounted: {
+  mounted () {
 
 
   },
   methods: {
     submit () {
-      this.$emit('update:show', false)
       this.$emit('submit')
     },
     cancel () {
@@ -104,14 +103,13 @@ export default {
   .title {
     color: white;
     .flex(@align-items: center; @justify-content: space-between);
-
+    font-size: 16px;
     padding: 15px 15px;
 
     .btn-option-top {
       .flex(@align-items: center);
 
       span {
-        font-size: 16px;
         &:first-child {
           margin-right: 15px;
         }

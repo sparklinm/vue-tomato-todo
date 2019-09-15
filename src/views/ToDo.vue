@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ToDoList from '../components/toDo/ToDoList'
+import ToDoList from '../components/todo/ToDoList'
 export default {
   components: {
     ToDoList
