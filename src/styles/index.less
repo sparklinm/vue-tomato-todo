@@ -11,6 +11,7 @@ body {
   .font-color-base {
     color: @theme-base-color-1;
   }
+
   .font-color-base-10 {
     color: @theme-base-color-1-10;
   }
@@ -39,23 +40,30 @@ body {
     border-bottom: 2px solid @theme-base-color-1-20;
   }
 
-  .com-input-box {
-    &::-webkit-input-placeholder {
+  .com-input {
+    .placeholder {
       color: @theme-base-color-1;
     }
 
-    &:-moz-placeholder {
-      color: @theme-base-color-1;
-    }
+    .com-input-box {
+      &::-webkit-input-placeholder {
+        color: @theme-base-color-1;
+      }
 
-    &::-moz-placeholder {
-      color: @theme-base-color-1;
-    }
+      &:-moz-placeholder {
+        color: @theme-base-color-1;
+      }
 
-    &:-ms-input-placeholder {
-      color: @theme-base-color-1;
+      &::-moz-placeholder {
+        color: @theme-base-color-1;
+      }
+
+      &:-ms-input-placeholder {
+        color: @theme-base-color-1;
+      }
     }
   }
+
   .box-add-todo {
 
     .custom-time {
@@ -63,6 +71,12 @@ body {
       .title {
         .background-color-base
       }
+    }
+
+    .box-advanced-setting {
+      .title {
+        .background-color-base
+      } 
     }
   }
 

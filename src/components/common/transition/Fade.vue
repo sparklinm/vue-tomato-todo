@@ -14,6 +14,8 @@ export default {
     }
   },
   mounted () {
+    console.log('sss')
+
   },
   methods: {
   }

@@ -17,11 +17,7 @@
 </template>
 
 <script>
-import PopUp from '@/components/transition/PopUp'
 export default {
-  components: {
-    PopUp
-  },
   data () {
     return {
       message: '',
@@ -43,7 +39,7 @@ export default {
   left: 50%;
   bottom: 50px;
   transform: translate(-50%, 0);
-  width: 6rem;
+  // width: 6rem;
 
   .box-background {
     background-color: rgb(37, 37, 37);
@@ -61,6 +57,7 @@ export default {
     letter-spacing: 1px;
     font-size: 12px;
     color: rgb(230, 230, 230);
+    white-space: nowrap;
   }
 }
 </style>
