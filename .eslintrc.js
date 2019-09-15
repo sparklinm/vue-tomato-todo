@@ -180,6 +180,7 @@ module.exports = {
     'Chart': true,
     'accounting': true,
     'LIOUtil': true,
-    'module': true
+    'module': true,
+    'Velocity':true
   }
 }

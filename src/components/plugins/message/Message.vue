@@ -25,11 +25,7 @@
 </template>
 
 <script>
-import Fade from '@/components/transition/Fade'
 export default {
-  components: {
-    Fade
-  },
   data () {
     return {
       title: '',
@@ -49,7 +45,7 @@ export default {
 .plu-message {
   width: 7.3rem;
   box-sizing: border-box;
-  padding: 20px;
+  padding: 20px 25px;
   background: white;
   border-radius: 3px;
   position: fixed;
@@ -63,12 +59,18 @@ export default {
   }
 
   .title {
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
   }
 
   .content {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.4;
+    text-align: justify;
+    letter-spacing: 1px;
+    p {
+      margin:0;
+    }
   }
 
   .footer {
@@ -76,7 +78,7 @@ export default {
     text-align: right;
     color: @theme-base-color-1-20;
     span {
-      padding: 10px;
+      padding: 10px 0;
     }
   }
 }

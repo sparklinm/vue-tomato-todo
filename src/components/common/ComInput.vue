@@ -1,27 +1,32 @@
 <template>
   <div class="com-input boreder-bottom-20">
-    <textarea
-      v-if="type==='textarea'"
-      v-model="currentValue"
-      class="input-box com-input-box"
-      rows="1"
-      :placeholder="placeholder"
-      @blur="blurHandle"
-    />
-    <input
-      v-else
-      v-model="currentValue"
-      class="input-box com-input-box"
-      :placeholder="placeholder"
-      :min="min"
-      :max="max"
-      :type="type"
-      @blur="blurHandle"
-    >
-
+    <label>
+      <span
+        ref="placeholder"
+        class="placeholder"
+      >{{ placeholder }}</span>
+      <textarea
+        v-if="type==='textarea'"
+        v-model="currentValue"
+        class="input-box com-input-box"
+        rows="1"
+        :autofocus="autofocus"
+        @blur="blurHandle"
+      />
+      <input
+        v-else
+        v-model="currentValue"
+        class="input-box com-input-box"
+        :min="min"
+        :max="max"
+        :type="type"
+        :autofocus="autofocus"
+        @blur="blurHandle"
+      >
+    </label>
     <span
       v-if="icon==='question'"
-      class="tip"
+      class="tips"
       @click="$message(tips.title,tips.content)"
     >
       <i
@@ -33,6 +38,7 @@
 </template>
 
 <script>
+
 export default {
   props: {
     icon: {
@@ -62,6 +68,10 @@ export default {
     tips: {
       type: Object,
       default: null
+    },
+    autofocus: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -72,10 +82,22 @@ export default {
   watch: {
     value (val) {
       this.currentValue = val
+    },
+    currentValue (newVal, oldVal ) {
+      if (oldVal === '') {
+        Velocity(this.$refs.placeholder, {
+          scale: '0.5',
+          top: '0px',
+          translateY: '-100%'
+        }, {
+          duration: 200
+        })
+      } else if (newVal === '') {
+        Velocity(this.$refs.placeholder, 'reverse')
+      }
     }
   },
-  mounted: {
-
+  mounted () {
   },
   methods: {
     blurHandle () {
@@ -88,14 +110,28 @@ export default {
 <style lang='less'>
 .com-input {
   .flex(@justify-content: space-between; @align-items: center);
+  position: relative;
+
+  label {
+    flex: 1;
+    .flex(@align-items: center);
+  }
+
+  .placeholder{
+    position: absolute;
+    transform-origin: left top;
+    letter-spacing: 1px;
+  }
+
   .input-box {
     width: 100%;
     border: none;
     outline: none;
     padding: 5px 0;
-    flex: 1;
+    resize: none;
   }
-  .tip {
+
+  .tips {
     color: rgb(88, 88, 88);
     i {
       padding: 5px;
