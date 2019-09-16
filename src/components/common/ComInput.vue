@@ -7,6 +7,7 @@
       >{{ placeholder }}</span>
       <textarea
         v-if="type==='textarea'"
+        ref="input"
         v-model="currentValue"
         class="input-box com-input-box"
         rows="1"
@@ -15,6 +16,7 @@
       />
       <input
         v-else
+        ref="input"
         v-model="currentValue"
         class="input-box com-input-box"
         :min="min"
@@ -102,6 +104,11 @@ export default {
   methods: {
     blurHandle () {
       this.$emit('input', this.currentValue)
+    },
+    focus () {
+      console.log('123')
+
+      this.$refs.input.focus()
     }
   }
 }

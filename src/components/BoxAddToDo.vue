@@ -6,6 +6,7 @@
     >
       <template v-slot:content>
         <ComInput
+          ref="input-name"
           type="textarea"
           icon="question"
           placeholder="请输入代办名称"
@@ -54,7 +55,6 @@
               <li
                 v-for="(item,index) in todoTimeDuration"
                 :key="index"
-                :class="{'li-clicked':item.checked}"
                 @click="onTimeDurationClick(index)"
               >
                 <label>
@@ -72,7 +72,7 @@
             *倒计时25分钟即标准番茄钟时间
           </div>
           <div class="advanced-setting">
-            <span @click="showAdvancedSettingsBox=true">展开更多高级设置</span>
+            <span @click="onAdvancedSettingsClick">展开更多高级设置</span>
           </div>
         </div>
       </template>
@@ -82,11 +82,12 @@
       class="custom-time"
       bottom-confirm-btn
       :show.sync="showCustomTimeBox"
-      @submit="setCustomTimeDuration"
-      @cancel="resetCustomTimeDuration"
+      @submit="submitCustomTimeDuration"
+      @cancel="cancelCustomTimeDuration"
     >
       <template v-slot:content>
         <ComInput
+          ref="input-time-duration"
           v-model="customTimeDuration.currentValue"
           :placeholder="customTimeDuration.lastValue+'分钟'"
           :min="customTimeDuration.min"
@@ -118,6 +119,7 @@
           </label>
           <div class="setting-list">
             <ComInput
+              ref="input-task-notes"
               v-model="advancedSettings.taskNotes.currentValue"
               type="textarea"
               placeholder="任务备注"
@@ -243,7 +245,7 @@ export default {
 
   },
   methods: {
-    setCustomTimeDuration () {
+    submitCustomTimeDuration () {
       let { currentValue, lastValue, max, min } = this.customTimeDuration
       currentValue = currentValue === '' ? lastValue : currentValue
       if (currentValue < min) {
@@ -259,10 +261,12 @@ export default {
         this.todoTimeDuration[2].text = currentValue + '分钟'
         this.todoTimeDuration[2].value = currentValue
         this.showCustomTimeBox = false
+        this.$refs['input-name'].focus()
       }
     },
-    resetCustomTimeDuration () {
+    cancelCustomTimeDuration () {
       this.customTimeDuration.currentValue = this.customTimeDuration.lastValue
+      this.$refs['input-name'].focus()
     },
     onTypeClick (index) {
       this.todo.type = this.todoType[index].text
@@ -274,14 +278,20 @@ export default {
       if (this.todoTimeDuration[index].value === -1) {
         this.showCustomTimeBox = true
         this.customTimeDuration.currentValue = ''
+        this.$refs['input-time-duration'].focus()
       } else {
         this.todo.timeDuration = this.todoTimeDuration[index].value
       }
+    },
+    onAdvancedSettingsClick () {
+      this.showAdvancedSettingsBox = true
+      this.$refs['input-task-notes'].focus()
     },
     cancelAdvancedSettings () {
       for (const key of Object.keys(this.advancedSettings)) {
         this.advancedSettings[key].currentValue = ''
       }
+      this.$refs['input-name'].focus()
     },
     submitAdvancedSettings () {
       for (const key of Object.keys(this.advancedSettings)) {
