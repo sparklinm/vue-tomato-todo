@@ -12,7 +12,7 @@
         class="input-box com-input-box"
         rows="1"
         :autofocus="autofocus"
-        @blur="blurHandle"
+        @input="inputHandle"
       />
       <input
         v-else
@@ -23,7 +23,7 @@
         :max="max"
         :type="type"
         :autofocus="autofocus"
-        @blur="blurHandle"
+        @input="inputHandle"
       >
     </label>
     <span
@@ -81,6 +81,20 @@ export default {
       currentValue: this.value
     }
   },
+  computed: {
+    // inputListeners () {
+    //   const vm = this
+    //   return Object.assign({
+    //   },
+    //   this.$listeners,
+    //   {
+    //     // 这里确保组件配合 `v-model` 的工作
+    //     input: function (event) {
+    //       vm.$emit('input', event.target.value)
+    //     }
+    //   })
+    // }
+  },
   watch: {
     value (val) {
       this.currentValue = val
@@ -100,14 +114,13 @@ export default {
     }
   },
   mounted () {
+    console.log(this.$listeners)
   },
   methods: {
-    blurHandle () {
+    inputHandle () {
       this.$emit('input', this.currentValue)
     },
     focus () {
-      console.log('123')
-
       this.$refs.input.focus()
     }
   }
