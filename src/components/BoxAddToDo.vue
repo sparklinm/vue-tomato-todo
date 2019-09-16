@@ -19,7 +19,6 @@
               <li
                 v-for="(item,index) in todoType"
                 :key="index"
-                @click="onTypeClick(index)"
               >
                 <label>
                   <input
@@ -27,7 +26,7 @@
                     name="type"
                     :checked="index===0"
                   >
-                  <span>{{ item.text }}</span>
+                  <span @click="onTypeClick(index)">{{ item.text }}</span>
                 </label>
               </li>
             </ul>
@@ -37,7 +36,6 @@
               <li
                 v-for="(item,index) in todoTimeWay"
                 :key="index"
-                @click="onTimeWayClick(index)"
               >
                 <label>
                   <input
@@ -45,7 +43,7 @@
                     name="way"
                     :checked="index===0"
                   >
-                  <span>{{ item.text }}</span>
+                  <span @click="onTimeWayClick(index)">{{ item.text }}</span>
                 </label>
               </li>
             </ul>
@@ -55,13 +53,13 @@
               <li
                 v-for="(item,index) in todoTimeDuration"
                 :key="index"
-                @click="onTimeDurationClick(index)"
               >
                 <label>
                   <input
                     type="radio"
                     name="duration"
                     :checked="index===0"
+                    @click="onTimeDurationClick(index)"
                   >
                   <span>{{ item.text }}</span>
                 </label>
@@ -93,7 +91,6 @@
           :min="customTimeDuration.min"
           :max="customTimeDuration.max"
           type="number"
-          autofocus
         />
       </template>
     </ComPopup>
@@ -123,7 +120,6 @@
               v-model="advancedSettings.taskNotes.currentValue"
               type="textarea"
               placeholder="任务备注"
-              autofocus
             />
             <ComInput
               v-model="advancedSettings.loopTimes.currentValue"
@@ -206,7 +202,7 @@ export default {
       },
       customTimeDuration: {
         lastValue: 25,
-        currentValue: 25,
+        currentValue: '',
         min: 0,
         max: 180
       },
@@ -250,11 +246,8 @@ export default {
       currentValue = currentValue === '' ? lastValue : currentValue
       if (currentValue < min) {
         this.$tips('单个番茄时间不能低于0分钟')
-        this.showCustomTimeBox = true
-
       } else if (currentValue > max) {
         this.$tips('单个番茄时间不能超过180分钟')
-        this.showCustomTimeBox = true
       } else {
         this.customTimeDuration.lastValue = currentValue
         this.todo.timeDuration = currentValue
@@ -265,7 +258,7 @@ export default {
       }
     },
     cancelCustomTimeDuration () {
-      this.customTimeDuration.currentValue = this.customTimeDuration.lastValue
+      this.customTimeDuration.currentValue = ''
       this.$refs['input-name'].focus()
     },
     onTypeClick (index) {
@@ -277,15 +270,18 @@ export default {
     onTimeDurationClick (index) {
       if (this.todoTimeDuration[index].value === -1) {
         this.showCustomTimeBox = true
-        this.customTimeDuration.currentValue = ''
-        this.$refs['input-time-duration'].focus()
+        this.$nextTick(() => {
+          this.$refs['input-time-duration'].focus()
+        })
       } else {
         this.todo.timeDuration = this.todoTimeDuration[index].value
       }
     },
     onAdvancedSettingsClick () {
       this.showAdvancedSettingsBox = true
-      this.$refs['input-task-notes'].focus()
+      this.$nextTick(() => {
+        this.$refs['input-task-notes'].focus()
+      })
     },
     cancelAdvancedSettings () {
       for (const key of Object.keys(this.advancedSettings)) {
@@ -303,6 +299,8 @@ export default {
             this.$tips('单个番茄时间不能超过50分钟')
           } else {
             this.todo.advancedSettings[key] = currentValue
+            this.showAdvancedSettingsBox = false
+            this.$refs['input-name'].focus()
           }
         }
       }
