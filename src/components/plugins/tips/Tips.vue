@@ -39,7 +39,7 @@ export default {
   left: 50%;
   bottom: 50px;
   transform: translate(-50%, 0);
-  // width: 6rem;
+  z-index: 2005;
 
   .box-background {
     background-color: rgb(37, 37, 37);

@@ -3,11 +3,8 @@
     <div
       v-show="show"
       class="box-wrap"
+      @click.self="hide"
     >
-      <div
-        class="mask"
-        @click.prevent="hide"
-      />
       <div class="plu-message">
         <div class="title">
           {{ title }}

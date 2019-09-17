@@ -9,6 +9,7 @@ function creatMessagePlugin (Vue, options) {
     instance.title = title
     instance.content = content
     instance.show = true
+    Vue.prototype.$mask()
   }
 }
 
