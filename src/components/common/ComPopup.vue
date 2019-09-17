@@ -1,54 +1,57 @@
 <template>
-  <div
-    v-show="show"
-    class="box-wrap"
-  >
+  <PopUp>
     <div
-      class="mask"
-      @click.prevent="cancel"
-    />
-    <div class="com-popup-box">
-      <div class="title background-color-20">
-        <div class="text">
-          {{ title }}
+      v-show="show"
+      ref="box"
+      class="box-wrap"
+    >
+      <div
+        class="mask"
+        @click.prevent="cancel"
+      />
+      <div class="com-popup-box">
+        <div class="title background-color-20">
+          <div class="text">
+            {{ title }}
+          </div>
+          <div
+            v-if="topOptionBtn"
+            class="btn-option-top"
+          >
+            <span>
+              <i
+                class="fa fa-check"
+                aria-hidden="true"
+                @click="submit"
+              />
+            </span>
+            <span>
+              <i
+                class="fa fa-times"
+                aria-hidden="true"
+                @click="cancel"
+              />
+            </span>
+          </div>
+        </div>
+
+        <div class="content">
+          <slot name="content" />
         </div>
         <div
-          v-if="topOptionBtn"
-          class="btn-option-top"
+          v-if="bottomConfirmBtn"
+          class="footer"
         >
-          <span>
-            <i
-              class="fa fa-check"
-              aria-hidden="true"
-              @click="submit"
-            />
-          </span>
-          <span>
-            <i
-              class="fa fa-times"
-              aria-hidden="true"
-              @click="cancel"
-            />
-          </span>
+          <button
+            class="btn-confirm font-color-base-10"
+            @click="submit"
+          >
+            确定
+          </button>
         </div>
       </div>
-
-      <div class="content">
-        <slot name="content" />
-      </div>
-      <div
-        v-if="bottomConfirmBtn"
-        class="footer"
-      >
-        <button
-          class="btn-confirm font-color-base-10"
-          @click="submit"
-        >
-          确定
-        </button>
-      </div>
     </div>
-  </div>
+  </PopUp>
 </template>
 
 <script>
@@ -77,6 +80,29 @@ export default {
     }
   },
   mounted () {
+    console.log(this.$refs.box)
+
+    this.$refs.box.addEventListener('animationstart', () => {
+      console.log('add绑定的动画')
+
+    })
+    this.$refs.box.addEventListener('transitionstart', () => {
+      console.log('add绑定的过渡')
+
+    })
+
+    const SUPPORT_TRANSITIONSTART_EVENT =
+    'TransitionEvent' in window &&
+  ('ontransitionstart' in window ||
+    'ontransitionstart' in document ||
+    'onwebkittransitionstart' in window ||
+    'onwebkittransitionstart' in document ||
+    'onmoztransitionstart' in window ||
+    'onmoztransitionstart' in document ||
+    'onmstransitionstart' in window ||
+    'onmstransitionstart' in document)
+
+    console.log(SUPPORT_TRANSITIONSTART_EVENT)
 
 
   },
