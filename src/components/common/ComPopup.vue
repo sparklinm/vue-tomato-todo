@@ -1,15 +1,15 @@
 <template>
-  <PopUp>
-    <div
-      v-show="show"
-      ref="box"
-      class="box-wrap"
-    >
+  <div
+    v-show="show"
+    ref="box"
+    class="box-wrap"
+    @click.self="cancel"
+  >
+    <PopUp>
       <div
-        class="mask"
-        @click.prevent="cancel"
-      />
-      <div class="com-popup-box">
+        v-show="show"
+        class="com-popup-box"
+      >
         <div class="title background-color-20">
           <div class="text">
             {{ title }}
@@ -50,8 +50,8 @@
           </button>
         </div>
       </div>
-    </div>
-  </PopUp>
+    </PopUp>
+  </div>
 </template>
 
 <script>
@@ -72,6 +72,10 @@ export default {
     show: {
       type: Boolean,
       default: true
+    },
+    animationed: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -79,32 +83,15 @@ export default {
 
     }
   },
+  watch: {
+    show (val) {
+      this.$mask(val)
+    }
+  },
   mounted () {
-    console.log(this.$refs.box)
+    console.log(this.show)
 
-    this.$refs.box.addEventListener('animationstart', () => {
-      console.log('add绑定的动画')
-
-    })
-    this.$refs.box.addEventListener('transitionstart', () => {
-      console.log('add绑定的过渡')
-
-    })
-
-    const SUPPORT_TRANSITIONSTART_EVENT =
-    'TransitionEvent' in window &&
-  ('ontransitionstart' in window ||
-    'ontransitionstart' in document ||
-    'onwebkittransitionstart' in window ||
-    'onwebkittransitionstart' in document ||
-    'onmoztransitionstart' in window ||
-    'onmoztransitionstart' in document ||
-    'onmstransitionstart' in window ||
-    'onmstransitionstart' in document)
-
-    console.log(SUPPORT_TRANSITIONSTART_EVENT)
-
-
+    this.$mask(this.show)
   },
   methods: {
     submit () {
