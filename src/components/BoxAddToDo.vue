@@ -95,48 +95,53 @@
       </template>
     </ComPopup>
     <Fade>
-      <ComPopup
-        title="高级设置"
-        top-option-btn
-        class="box-advanced-setting"
-        :show.sync="showAdvancedSettingsBox"
-        @cancel="cancelAdvancedSettings"
-        @submit="submitAdvancedSettings"
+      <div
+        v-show="showAdvancedSettingsBox"
+        class="456"
       >
-        <template v-slot:content>
-          <label class="label-checkbox">
-            <input type="checkbox">
-            <span class="icon-checked">
-              <i
-                aria-hidden="true"
-                class="fa fa-check"
+        <ComPopup
+          title="高级设置"
+          top-option-btn
+          class="box-advanced-setting"
+          :show.sync="showAdvancedSettingsBox"
+          @cancel="cancelAdvancedSettings"
+          @submit="submitAdvancedSettings"
+        >
+          <template v-slot:content>
+            <label class="label-checkbox">
+              <input type="checkbox">
+              <span class="icon-checked">
+                <i
+                  aria-hidden="true"
+                  class="fa fa-check"
+                />
+              </span>
+              <span>完成后第二天不再显示</span>
+            </label>
+            <div class="setting-list">
+              <ComInput
+                ref="input-task-notes"
+                v-model="advancedSettings.taskNotes.currentValue"
+                type="textarea"
+                placeholder="任务备注"
               />
-            </span>
-            <span>完成后第二天不再显示</span>
-          </label>
-          <div class="setting-list">
-            <ComInput
-              ref="input-task-notes"
-              v-model="advancedSettings.taskNotes.currentValue"
-              type="textarea"
-              placeholder="任务备注"
-            />
-            <ComInput
-              v-model="advancedSettings.loopTimes.currentValue"
-              type="Number"
-              placeholder="单次预期循环次数"
-              :tips="tips.todo.loopTimes"
-              icon="question"
-              class="item-1"
-            />
-            <ComInput
-              v-model="advancedSettings.restTime.currentValue"
-              type="Number"
-              placeholder="自定义休息时间"
-            />
-          </div>
-        </template>
-      </ComPopup>
+              <ComInput
+                v-model="advancedSettings.loopTimes.currentValue"
+                type="Number"
+                placeholder="单次预期循环次数"
+                :tips="tips.todo.loopTimes"
+                icon="question"
+                class="item-1"
+              />
+              <ComInput
+                v-model="advancedSettings.restTime.currentValue"
+                type="Number"
+                placeholder="自定义休息时间"
+              />
+            </div>
+          </template>
+        </ComPopup>
+      </div>
     </Fade>
   </div>
 </template>
