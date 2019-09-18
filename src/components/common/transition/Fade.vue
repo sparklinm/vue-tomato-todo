@@ -23,7 +23,7 @@ export default {
 <style lang='less'>
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.2s ease;
+  transition: all 0.1s ease-out;
 }
 
 .fade-enter,

@@ -3,16 +3,16 @@
     id="app"
     class="theme-1"
   >
+    <Nav />
     <router-view />
-    <BoxAddToDo />
   </div>
 </template>
 
 <script>
-import BoxAddToDo from './components/BoxAddToDo'
+import Nav from './components/header/Nav.vue'
 export default {
   components: {
-    BoxAddToDo
+    Nav
   },
   data () {
     return {

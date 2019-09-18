@@ -1,6 +1,6 @@
 <template>
   <transition
-    name="slide"
+    :name="animationed?'slide':'noAnimation'"
   >
     <slot />
   </transition>
@@ -8,6 +8,12 @@
 
 <script>
 export default {
+  props: {
+    animationed: {
+      type: Boolean,
+      default: true
+    }
+  },
   data () {
     return {
 
@@ -25,10 +31,8 @@ export default {
 .slide-leave-active {
   transition: all 0.4s ease;
 }
-
 .slide-enter,
 .slide-leave-to {
-  bottom: 0 !important;
-  transform: translate(-50%, 200%) !important;
+  transform: translateY(100%) !important;
 }
 </style>

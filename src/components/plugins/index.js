@@ -9,57 +9,58 @@ const MyPlugins = {
 
 
 
-    Vue.directive('focus', {
-      update (el) {
-        console.log('up')
 
-        function doFocus (el) {
-          if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            console.log(el.tagName)
-            el.focus()
-          } else {
-            for (let i = 0; i < el.children.length; i++) {
-              doFocus(el.children[i])
-            }
-          }
-        }
-        doFocus(el)
-      },
-      componentUpdated (el, binding, vnode, oldVnode) {
-        console.log('upd')
-        console.log(binding)
-        console.log(vnode)
-        console.log(oldVnode)
+    // Vue.directive('focus', {
+    //   update (el) {
+    //     console.log('up')
 
-        function doFocus (el) {
-          if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            console.log(el.tagName)
-            el.focus()
-          } else {
-            for (let i = 0; i < el.children.length; i++) {
-              doFocus(el.children[i])
-            }
-          }
-        }
-        doFocus(el)
-      },
-      inserted (el) {
-        console.log('inserted')
+    //     function doFocus (el) {
+    //       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+    //         console.log(el.tagName)
+    //         el.focus()
+    //       } else {
+    //         for (let i = 0; i < el.children.length; i++) {
+    //           doFocus(el.children[i])
+    //         }
+    //       }
+    //     }
+    //     doFocus(el)
+    //   },
+    //   componentUpdated (el, binding, vnode, oldVnode) {
+    //     console.log('upd')
+    //     console.log(binding)
+    //     console.log(vnode)
+    //     console.log(oldVnode)
 
-        function doFocus (el) {
-          if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            console.log(el.tagName)
+    //     function doFocus (el) {
+    //       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+    //         console.log(el.tagName)
+    //         el.focus()
+    //       } else {
+    //         for (let i = 0; i < el.children.length; i++) {
+    //           doFocus(el.children[i])
+    //         }
+    //       }
+    //     }
+    //     doFocus(el)
+    //   },
+    //   inserted (el) {
+    //     console.log('inserted')
 
-            el.focus()
-          } else {
-            for (let i = 0; i < el.children.length; i++) {
-              doFocus(el.children[i])
-            }
-          }
-        }
-        doFocus(el)
-      }
-    })
+    //     function doFocus (el) {
+    //       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+    //         console.log(el.tagName)
+
+    //         el.focus()
+    //       } else {
+    //         for (let i = 0; i < el.children.length; i++) {
+    //           doFocus(el.children[i])
+    //         }
+    //       }
+    //     }
+    //     doFocus(el)
+    //   }
+    // })
   }
 }
 export default MyPlugins
