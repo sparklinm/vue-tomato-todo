@@ -156,7 +156,8 @@ module.exports = {
           'minProperties': 3
         }
       }
-    ]
+    ],
+    'space-in-parens': ["error", "never"]
   },
   'plugins': ['html'],
   'settings': {

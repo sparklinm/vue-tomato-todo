@@ -1,14 +1,18 @@
 <template>
   <div>
-    <ToDoList />
+    <ListToDo />
+    <BoxAddToDo />
   </div>
 </template>
 
 <script>
-import ToDoList from '../components/todo/ToDoList'
+import ListToDo from '../components/todo/ListToDo'
+import BoxAddToDo from '../components/todo/add/BoxAddToDo'
+
 export default {
   components: {
-    ToDoList
+    ListToDo,
+    BoxAddToDo
   },
   data () {
     return {

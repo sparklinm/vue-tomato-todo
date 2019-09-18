@@ -3,6 +3,7 @@
     <div
       v-show="show"
       class="box-wrap"
+      style="z-index:2700"
       @click.self="hide"
     >
       <div class="plu-message">
@@ -28,6 +29,15 @@ export default {
       title: '',
       content: '',
       show: false
+    }
+  },
+  watch: {
+    show (val) {
+      if (val) {
+        this.$modals.add(this.$el)
+      } else {
+        this.$modals.delete()
+      }
     }
   },
   methods: {

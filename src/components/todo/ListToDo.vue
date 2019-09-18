@@ -1,6 +1,6 @@
 <template>
-  <div class="list test">
-    <ListItem>
+  <div class="list">
+    <ListItem class="item">
       <template v-slot:progressBar>
         <ProgressCircle :width="20" />
       </template>
@@ -30,7 +30,13 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
+.list{
+  padding: 0 15px;
 
+  .item{
+    margin-top: 5px;
+  }
+}
 
 </style>

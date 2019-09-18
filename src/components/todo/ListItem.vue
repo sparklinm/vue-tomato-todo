@@ -64,11 +64,12 @@ export default {
 <style lang="less">
 
 .list-item {
-  display: flex;
-  .flex(@justify-content: space-between);
   padding: 15px 15px 5px;
   background-color: rgb(49, 159, 202);
   color: white;
+  border-radius: 3px;
+  .flex(@justify-content: space-between);
+
   .left {
     .flex(@flex-direction: column);
 

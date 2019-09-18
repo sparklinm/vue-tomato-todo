@@ -3,14 +3,18 @@
     <ComPopup
       title="添加待办"
       top-option-btn
+      :show.sync="showAddToDoBox"
+      @cancel="cancelAddToDo"
+      @submit="submitAddToDo"
     >
       <template v-slot:content>
         <ComInput
           ref="input-name"
+          v-model="todo.name"
           type="textarea"
           icon="question"
           placeholder="请输入代办名称"
-          :tips="tips.todo.name"
+          :tips="description.todo.name"
           autofocus
         />
         <div class="config-todo">
@@ -67,82 +71,104 @@
             </ul>
           </div>
           <div class="tips-time-duration">
-            *倒计时25分钟即标准番茄钟时间
+            {{ tipTimeDuration }}
           </div>
           <div class="advanced-setting">
-            <span @click="onAdvancedSettingsClick">展开更多高级设置</span>
+            <span @click="onAdvancedSettingsClick">{{ btnAdvancedSettings }}</span>
           </div>
         </div>
       </template>
     </ComPopup>
-    <ComPopup
-      title="自定义Todo时间"
-      class="custom-time"
-      bottom-confirm-btn
-      :show.sync="showCustomTimeBox"
-      @submit="submitCustomTimeDuration"
-      @cancel="cancelCustomTimeDuration"
-    >
-      <template v-slot:content>
-        <ComInput
-          ref="input-time-duration"
-          v-model="customTimeDuration.currentValue"
-          :placeholder="customTimeDuration.lastValue+'分钟'"
-          :min="customTimeDuration.min"
-          :max="customTimeDuration.max"
-          type="number"
-        />
-      </template>
-    </ComPopup>
     <Fade>
-      <ComPopup
-        title="高级设置"
-        top-option-btn
-        class="box-advanced-setting"
-        :show.sync="showAdvancedSettingsBox"
-        @cancel="cancelAdvancedSettings"
-        @submit="submitAdvancedSettings"
-      >
-        <template v-slot:content>
-          <label class="label-checkbox">
-            <input type="checkbox">
-            <span class="icon-checked">
-              <i
-                aria-hidden="true"
-                class="fa fa-check"
+      <div v-show="showCustomTimeBox">
+        <ComPopup
+          title="自定义Todo时间"
+          class="custom-time"
+          bottom-confirm-btn
+          :show.sync="showCustomTimeBox"
+          :z-index="2050"
+          :animationed="false"
+          @submit="submitCustomTimeDuration"
+          @cancel="cancelCustomTimeDuration"
+        >
+          <template v-slot:content>
+            <ComInput
+              ref="input-time-duration"
+              v-model="customTimeDuration.value"
+              :placeholder="todo.timeDuration+'分钟'"
+              :min="customTimeDuration.min"
+              :max="customTimeDuration.max"
+              type="positiveInteger"
+            />
+          </template>
+        </ComPopup>
+      </div>
+    </Fade>
+    <Fade>
+      <div v-show="showAdvancedSettingsBox">
+        <ComPopup
+          title="高级设置"
+          top-option-btn
+          class="box-advanced-setting"
+          :show.sync="showAdvancedSettingsBox"
+          :z-index="2050"
+          :animationed="false"
+          @cancel="cancelAdvancedSettings"
+          @submit="submitAdvancedSettings"
+        >
+          <template v-slot:content>
+            <label class="label-checkbox">
+              <input
+                v-model="advancedSettings.hideAfterComplete"
+                type="checkbox"
+              >
+              <span class="icon-checked">
+                <i
+                  aria-hidden="true"
+                  class="fa fa-check"
+                />
+              </span>
+              <span>完成后第二天不再显示</span>
+            </label>
+            <div class="setting-list">
+              <ComInput
+                ref="input-task-notes"
+                v-model="advancedSettings.taskNotes.value"
+                type="textarea"
+                placeholder="任务备注"
               />
-            </span>
-            <span>完成后第二天不再显示</span>
-          </label>
-          <div class="setting-list">
-            <ComInput
-              ref="input-task-notes"
-              v-model="advancedSettings.taskNotes.currentValue"
-              type="textarea"
-              placeholder="任务备注"
-            />
-            <ComInput
-              v-model="advancedSettings.loopTimes.currentValue"
-              type="Number"
-              placeholder="单次预期循环次数"
-              :tips="tips.todo.loopTimes"
-              icon="question"
-              class="item-1"
-            />
-            <ComInput
-              v-model="advancedSettings.restTime.currentValue"
-              type="Number"
-              placeholder="自定义休息时间"
-            />
-          </div>
-        </template>
-      </ComPopup>
+              <ComInput
+                v-show="showInputLoopTimes"
+                v-model="advancedSettings.loopTimes.value"
+                type="positiveInteger"
+                placeholder="单次预期循环次数"
+                :tips="description.todo.loopTimes"
+                icon="question"
+                class="item-1"
+              />
+              <ComInput
+                v-show="showInputRestTime"
+                v-model="advancedSettings.restTime.value"
+                type="positiveInteger"
+                placeholder="自定义休息时间"
+              />
+            </div>
+          </template>
+        </ComPopup>
+      </div>
     </Fade>
   </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
+  props: {
+    data: {
+      type: Object,
+      default: null
+    }
+  },
   data () {
     return {
       todoType: [
@@ -162,68 +188,81 @@ export default {
       todoTimeWay: [
         {
           text: '倒计时',
-          checked: true
+          description: '*倒计时25分钟即标准番茄钟时间'
         },
         {
           text: '正向计时',
-          checked: false
+          description: '*适合碎片时间记录，随用随计'
         },
         {
           text: '不计时',
-          checked: false
+          description: '*适合不需要计时的待办，比如：取快递，喝水 等'
         }
       ],
       todoTimeDuration: [
         {
           text: '25分钟',
-          checked: true,
           value: 25
         },
         {
           text: '35分钟',
-          checked: false,
           value: 35
         },
         {
           text: '自定义',
-          checked: false,
           value: -1
         }
       ],
-      todo: {
-        type: '',
-        timeWay: '',
+      todo: this.data || {
+        name: '',
+        type: '普通番茄时钟',
+        timeWay: '倒计时',
         timeDuration: 25,
-        advancedSettings: {
-          taskNotes: '',
-          loopTimes: 1,
-          restTime: 5
-        }
+        goal: {
+          deadline: '',
+          total: ''
+        },
+        habit: {
+          frequency: '',
+          piece: ''
+        },
+        taskNotes: '',
+        loopTimes: 1,
+        restTime: 5,
+        hideAfterComplete: false
       },
       customTimeDuration: {
-        lastValue: 25,
-        currentValue: '',
+        value: '',
         min: 0,
         max: 180
       },
       advancedSettings: {
+        hideAfterComplete: {
+          value: false,
+          default: false
+        },
         taskNotes: {
-          currentValue: ''
+          value: '',
+          default: ''
         },
         loopTimes: {
-          currentValue: '',
+          value: '',
+          default: '',
           min: 1,
           max: 50
         },
         restTime: {
-          currentValue: '',
+          value: '',
+          default: '',
           min: 0,
           max: 50
         }
       },
+      showAddToDoBox: true,
       showCustomTimeBox: false,
       showAdvancedSettingsBox: false,
-      tips: {
+      btnAdvancedSettings: '展开更多高级设置',
+      description: {
         todo: {
           name: {
             title: '什么是番茄钟？',
@@ -234,31 +273,65 @@ export default {
             content: '<p>番茄钟是全身心工作25分钟，休息5分钟的工作法。</p><p>输入事项名称，点击<i aria-hidden="true" class="fa fa-check"></i>按钮即可以添加一个标准的番茄钟待办。</p>点击待办卡片上的开始按钮就可以开始一个番茄钟啦。</p>'
           }
         }
+      },
+      error: {
+        todo: {
+          name: '待办名称不能为空',
+          timeDuration: '单个番茄时间不能超过180分钟',
+          loopTimes: '预期次数不能超过50次',
+          restTime: '休息时间不能超过50分钟'
+        }
       }
     }
   },
   computed: {
-
+    showInputLoopTimes () {
+      return this.todo.timeWay === '倒计时'
+    },
+    showInputRestTime () {
+      return this.todo.timeWay !== '不计时'
+    },
+    tipTimeDuration () {
+      return this.todoTimeWay.find((item) => {
+        return item.text === this.todo.timeWay
+      }).description
+    }
+  },
+  watch: {
+    showAdvancedSettingsBox (val) {
+      if (!val) {
+        for (const setting of Object.values(this.advancedSettings)) {
+          if (setting.value !== setting.default) {
+            this.btnAdvancedSettings = '已添加高级设置'
+            return
+          }
+        }
+        this.btnAdvancedSettings = '展开更多高级设置'
+      }
+    }
   },
   methods: {
+    ...mapMutations(['addToDo']),
+    checkNumber ({ value, max }) {
+      return value - max <= 0
+    },
     submitCustomTimeDuration () {
-      let { currentValue, lastValue, max, min } = this.customTimeDuration
-      currentValue = currentValue === '' ? lastValue : currentValue
-      if (currentValue < min) {
-        this.$tips('单个番茄时间不能低于0分钟')
-      } else if (currentValue > max) {
-        this.$tips('单个番茄时间不能超过180分钟')
-      } else {
-        this.customTimeDuration.lastValue = currentValue
-        this.todo.timeDuration = currentValue
-        this.todoTimeDuration[2].text = currentValue + '分钟'
-        this.todoTimeDuration[2].value = currentValue
+      const { value } = this.customTimeDuration
+      if (this.value === '') {
+        return
+      }
+      if (this.checkNumber(this.customTimeDuration)) {
+        this.todo.timeDuration = value
+        this.todoTimeDuration[2].text = value + '分钟'
+        this.todoTimeDuration[2].value = value
         this.showCustomTimeBox = false
         this.$refs['input-name'].focus()
+      } else {
+        this.$tips(this.error.todo.timeDuration)
       }
     },
     cancelCustomTimeDuration () {
-      this.customTimeDuration.currentValue = ''
+      this.customTimeDuration.value = ''
       this.$refs['input-name'].focus()
     },
     onTypeClick (index) {
@@ -285,25 +358,65 @@ export default {
     },
     cancelAdvancedSettings () {
       for (const key of Object.keys(this.advancedSettings)) {
-        this.advancedSettings[key].currentValue = ''
+        this.advancedSettings[key].value = this.advancedSettings[key].default
       }
       this.$refs['input-name'].focus()
     },
     submitAdvancedSettings () {
+      let showAdvancedSettingsBox = false
       for (const key of Object.keys(this.advancedSettings)) {
-        const { currentValue, max, min } = this.advancedSettings[key]
-        if (currentValue !== '') {
-          if (currentValue < min) {
-            this.$tips('单个番茄时间不能低于0分钟')
-          } else if (currentValue > max) {
-            this.$tips('单个番茄时间不能超过50分钟')
-          } else {
-            this.todo.advancedSettings[key] = currentValue
-            this.showAdvancedSettingsBox = false
+        const { value, max = 'NO_VALUE' } = this.advancedSettings[key]
+        if (max === 'NO_VALUE') {
+          this.todo[key] = value
+        } else {
+          if (this.checkNumber(this.advancedSettings[key])) {
+            this.todo[key] = value
             this.$refs['input-name'].focus()
+          } else {
+            this.$tips(this.error.todo[key])
+            showAdvancedSettingsBox = true
           }
         }
       }
+      this.showAdvancedSettingsBox = showAdvancedSettingsBox
+    },
+    resetToDo () {
+      this.todo = this.data || {
+        name: '',
+        type: '普通番茄时钟',
+        timeWay: '倒计时',
+        timeDuration: 25,
+        goal: {
+          deadline: '',
+          total: ''
+        },
+        habit: {
+          frequency: '',
+          piece: ''
+        },
+        taskNotes: '',
+        loopTimes: 1,
+        restTime: 5,
+        hideAfterComplete: false
+      }
+    },
+    cancelAddToDo () {
+    },
+    submitAddToDo () {
+      const { name, loopTimes, restTime } = this.todo
+      if (name === '') {
+        this.$message({
+          title: '提示',
+          content: this.error.todo.name
+        })
+        return
+      }
+      this.todo.loopTimes = loopTimes || 1
+      this.todo.restTime = restTime || 5
+
+      console.log(this.todo)
+
+      this.addToDo(this.todo)
     }
   }
 }
@@ -321,8 +434,13 @@ export default {
       text-align: center;
 
       &:not(:first-child) {
+        margin-top: 5px;
+      };
+
+      &:nth-child(2){
         margin-top: 10px;
       }
+
     }
     .config-item {
       display: inline-block;
@@ -394,9 +512,9 @@ export default {
 
     .label-checkbox {
       position: relative;
-
       @checkbox-w: 20px;
       @checkbox-h: 20px;
+
       .checkbox-wh {
         width: @checkbox-w;
         height: @checkbox-h;
