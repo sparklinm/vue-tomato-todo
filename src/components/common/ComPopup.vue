@@ -1,13 +1,13 @@
 <template>
-  <div
-    v-show="show"
-    ref="box"
-    class="box-wrap"
-    @click.self="cancel"
-  >
-    <PopUp>
+  <PopUp :animationed="animationed">
+    <div
+      v-show="show"
+      ref="box"
+      class="box-wrap"
+      :style="{zIndex:zIndex}"
+      @click.self="cancel"
+    >
       <div
-        v-show="show"
         class="com-popup-box"
       >
         <div class="title background-color-20">
@@ -50,8 +50,8 @@
           </button>
         </div>
       </div>
-    </PopUp>
-  </div>
+    </div>
+  </PopUp>
 </template>
 
 <script>
@@ -76,6 +76,10 @@ export default {
     animationed: {
       type: Boolean,
       default: true
+    },
+    zIndex: {
+      type: Number,
+      default: 2001
     }
   },
   data () {
@@ -85,13 +89,17 @@ export default {
   },
   watch: {
     show (val) {
-      this.$mask(val)
+      if (val) {
+        this.$modals.add(this.$el)
+      } else {
+        this.$modals.delete(this.$el)
+      }
     }
   },
   mounted () {
-    console.log(this.show)
-
-    this.$mask(this.show)
+    if (this.show) {
+      this.$modals.add(this.$el)
+    }
   },
   methods: {
     submit () {

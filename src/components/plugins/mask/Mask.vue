@@ -2,6 +2,7 @@
   <div
     v-show="show"
     class="mask"
+    :style="{zIndex:zIndex}"
     @click.prevent="cancel"
   />
 </template>
@@ -10,7 +11,8 @@
 export default {
   data () {
     return {
-      show: false
+      show: false,
+      zIndex: 2000
 
     }
   },

@@ -21,7 +21,7 @@
         class="input-box com-input-box"
         :min="min"
         :max="max"
-        :type="type"
+        :type="type==='number'?type:'text'"
         :autofocus="autofocus"
         @input="inputHandle"
       >
@@ -29,7 +29,7 @@
     <span
       v-if="icon==='question'"
       class="tips"
-      @click="$message(tips.title,tips.content)"
+      @click="$message(tips)"
     >
       <i
         class="fa fa-question-circle"
@@ -78,7 +78,8 @@ export default {
   },
   data () {
     return {
-      currentValue: this.value
+      currentValue: this.value,
+      checkedValue: ''
     }
   },
   computed: {
@@ -94,12 +95,20 @@ export default {
     //     }
     //   })
     // }
+
   },
   watch: {
     value (val) {
       this.currentValue = val
     },
-    currentValue (newVal, oldVal ) {
+    currentValue (value) {
+      if (this.type === 'positiveInteger') {
+        this.checkedValue = this.currentValue = this.toPositiveInteger(value)
+      } else {
+        this.checkedValue = value
+      }
+    },
+    checkedValue (newVal, oldVal) {
       if (oldVal === '') {
         Velocity(this.$refs.placeholder, {
           scale: '0.5',
@@ -122,6 +131,9 @@ export default {
     },
     focus () {
       this.$refs.input.focus()
+    },
+    toPositiveInteger (val) {
+      return val.match(/^[0-9]*/)[0]
     }
   }
 }

@@ -5,11 +5,10 @@ function creatMessagePlugin (Vue, options) {
   const instance = new MessageComponent()
   instance.$mount(document.createElement('div'))
   document.body.appendChild(instance.$el)
-  Vue.prototype.$message = function (title, content) {
-    instance.title = title
-    instance.content = content
+  Vue.prototype.$message = function (message) {
+    instance.title = message.title
+    instance.content = message.content
     instance.show = true
-    Vue.prototype.$mask()
   }
 }
 
