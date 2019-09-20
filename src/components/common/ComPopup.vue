@@ -1,7 +1,7 @@
 <template>
   <PopUp :animationed="animationed">
     <div
-      v-show="show"
+      v-show="showBox"
       ref="box"
       class="box-wrap"
       :style="{zIndex:zIndex}"
@@ -84,16 +84,19 @@ export default {
   },
   data () {
     return {
-
+      showBox: this.show
     }
   },
   watch: {
-    show (val) {
+    showBox (val) {
       if (val) {
         this.$modals.add(this.$el)
       } else {
         this.$modals.delete(this.$el)
       }
+    },
+    show (val) {
+      this.showBox = val
     }
   },
   mounted () {
@@ -106,6 +109,7 @@ export default {
       this.$emit('submit')
     },
     cancel () {
+      this.showBox = false
       this.$emit('update:show', false)
       this.$emit('cancel')
     }
