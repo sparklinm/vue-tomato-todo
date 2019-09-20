@@ -6,12 +6,16 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     todos: [],
-    todoSet: []
+    todoSet: [],
+    showBoxAddToDo: true
 
   },
   mutations: {
     addToDo (state, todo) {
       state.todos.push(todo)
+    },
+    toggleBoxAddToDo (state, show) {
+      state.showBoxAddToDo = show
     }
   },
   actions: {
