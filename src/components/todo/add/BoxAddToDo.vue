@@ -3,7 +3,7 @@
     <ComPopup
       title="添加待办"
       top-option-btn
-      :show.sync="showAddToDoBox"
+      :show="showBoxAddToDo"
       @cancel="cancelAddToDo"
       @submit="submitAddToDo"
     >
@@ -43,11 +43,11 @@
               >
                 <label>
                   <input
+                    :checked="item.checked"
                     type="radio"
                     name="way"
-                    :checked="index===0"
                   >
-                  <span @click="onTimeWayClick(index)">{{ item.text }}</span>
+                  <span @click="onTimeWayClick(item)">{{ item.text }}</span>
                 </label>
               </li>
             </ul>
@@ -62,8 +62,8 @@
                   <input
                     type="radio"
                     name="duration"
-                    :checked="index===0"
-                    @click="onTimeDurationClick(index)"
+                    :checked="item.checked"
+                    @click="onTimeDurationClick(item)"
                   >
                   <span>{{ item.text }}</span>
                 </label>
@@ -80,12 +80,12 @@
       </template>
     </ComPopup>
     <Fade>
-      <div v-show="showCustomTimeBox">
+      <div v-show="showBoxCustomTime">
         <ComPopup
           title="自定义Todo时间"
           class="custom-time"
           bottom-confirm-btn
-          :show.sync="showCustomTimeBox"
+          :show.sync="showBoxCustomTime"
           :z-index="2050"
           :animationed="false"
           @submit="submitCustomTimeDuration"
@@ -105,12 +105,12 @@
       </div>
     </Fade>
     <Fade>
-      <div v-show="showAdvancedSettingsBox">
+      <div v-show="showBoxAdvancedSettings">
         <ComPopup
           title="高级设置"
           top-option-btn
           class="box-advanced-setting"
-          :show.sync="showAdvancedSettingsBox"
+          :show.sync="showBoxAdvancedSettings"
           :z-index="2050"
           :animationed="false"
           @cancel="cancelAdvancedSettings"
@@ -119,7 +119,7 @@
           <template v-slot:content>
             <label class="label-checkbox">
               <input
-                v-model="advancedSettings.hideAfterComplete"
+                v-model="advancedSettings.hideAfterComplete.value"
                 type="checkbox"
               >
               <span class="icon-checked">
@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 export default {
   props: {
     data: {
@@ -173,14 +173,17 @@ export default {
     return {
       todoType: [
         {
+          name: 'common',
           text: '普通番茄钟',
           checked: true
         },
         {
+          name: 'goal',
           text: '定目标',
           checked: false
         },
         {
+          name: 'habit',
           text: '养习惯',
           checked: false
         }
@@ -188,47 +191,79 @@ export default {
       todoTimeWay: [
         {
           text: '倒计时',
-          description: '*倒计时25分钟即标准番茄钟时间'
+          description: '*倒计时25分钟即标准番茄钟时间',
+          checked: true
         },
         {
           text: '正向计时',
-          description: '*适合碎片时间记录，随用随计'
+          description: '*适合碎片时间记录，随用随计',
+          checked: false
         },
         {
           text: '不计时',
-          description: '*适合不需要计时的待办，比如：取快递，喝水 等'
+          description: '*适合不需要计时的待办，比如：取快递，喝水 等',
+          checked: false
         }
       ],
       todoTimeDuration: [
         {
           text: '25分钟',
-          value: 25
+          value: 25,
+          checked: true
         },
         {
           text: '35分钟',
-          value: 35
+          value: 35,
+          checked: false
         },
         {
           text: '自定义',
-          value: -1
+          value: -1,
+          checked: false
         }
       ],
       todo: this.data || {
         name: '',
         type: '普通番茄时钟',
         timeWay: '倒计时',
+        timeDuration: 25
+      },
+      todoCommon: {
+        name: '',
+        type: '普通番茄时钟',
+        timeWay: '倒计时',
+        timeDuration: 25,
+        taskNotes: '',
+        loopTimes: '',
+        restTime: '',
+        hideAfterComplete: false
+      },
+      todoGoal: {
+        name: '',
+        type: '定目标',
+        timeWay: '倒计时',
         timeDuration: 25,
         goal: {
           deadline: '',
           total: ''
         },
+        taskNotes: '',
+        loopTimes: '',
+        restTime: '',
+        hideAfterComplete: false
+      },
+      todoHabit: {
+        name: '',
+        type: '养习惯',
+        timeWay: '倒计时',
+        timeDuration: 25,
         habit: {
           frequency: '',
           piece: ''
         },
         taskNotes: '',
-        loopTimes: 1,
-        restTime: 5,
+        loopTimes: '',
+        restTime: '',
         hideAfterComplete: false
       },
       customTimeDuration: {
@@ -239,28 +274,31 @@ export default {
       advancedSettings: {
         hideAfterComplete: {
           value: false,
-          default: false
+          default: false,
+          origin: false
         },
         taskNotes: {
           value: '',
-          default: ''
+          default: '',
+          origin: ''
         },
         loopTimes: {
           value: '',
           default: '',
+          origin: '',
           min: 1,
           max: 50
         },
         restTime: {
           value: '',
           default: '',
+          origin: '',
           min: 0,
           max: 50
         }
       },
-      showAddToDoBox: true,
-      showCustomTimeBox: false,
-      showAdvancedSettingsBox: false,
+      showBoxCustomTime: false,
+      showBoxAdvancedSettings: false,
       btnAdvancedSettings: '展开更多高级设置',
       description: {
         todo: {
@@ -295,25 +333,37 @@ export default {
       return this.todoTimeWay.find((item) => {
         return item.text === this.todo.timeWay
       }).description
-    }
+    },
+    ...mapState({
+      showBoxAddToDo: state => state.showBoxAddToDo
+    })
   },
   watch: {
-    showAdvancedSettingsBox (val) {
+    showBoxAdvancedSettings (val) {
       if (!val) {
-        for (const setting of Object.values(this.advancedSettings)) {
-          if (setting.value !== setting.default) {
-            this.btnAdvancedSettings = '已添加高级设置'
-            return
-          }
-        }
-        this.btnAdvancedSettings = '展开更多高级设置'
+        this.setBtnAdvancedSettings()
       }
+    },
+    'todo.name' (val) {
+      this.todoCommon.name = this.todoGoal.name = this.todoHabit.name = val
     }
   },
+  mounted () {
+    this.todo = this.todoCommon
+  },
   methods: {
-    ...mapMutations(['addToDo']),
+    ...mapMutations(['addToDo', 'toggleBoxAddToDo']),
     checkNumber ({ value, max }) {
       return value - max <= 0
+    },
+    setBtnAdvancedSettings () {
+      for (const setting of Object.values(this.advancedSettings)) {
+        if (setting.value !== setting.origin) {
+          this.btnAdvancedSettings = '已添加高级设置'
+          return
+        }
+      }
+      this.btnAdvancedSettings = '展开更多高级设置'
     },
     submitCustomTimeDuration () {
       const { value } = this.customTimeDuration
@@ -324,7 +374,7 @@ export default {
         this.todo.timeDuration = value
         this.todoTimeDuration[2].text = value + '分钟'
         this.todoTimeDuration[2].value = value
-        this.showCustomTimeBox = false
+        this.showBoxCustomTime = false
         this.$refs['input-name'].focus()
       } else {
         this.$tips(this.error.todo.timeDuration)
@@ -335,23 +385,44 @@ export default {
       this.$refs['input-name'].focus()
     },
     onTypeClick (index) {
-      this.todo.type = this.todoType[index].text
+      const type = this.todoType[index].name.slice(0, 1).toUpperCase() + this.todoType[index].name.slice(1)
+      this.todo = this['todo' + type]
+
+      this.todoTimeWay.forEach((item) => {
+        item.checked = item.text === this.todo.timeWay
+      })
+
+      this.todoTimeDuration.forEach((item) => {
+        item.checked = item.value === this.todo.timeDuration
+      })
+
+      for (const [key, setting] of Object.entries(this.advancedSettings)) {
+        setting.value = this.todo[key]
+      }
+
+      this.setBtnAdvancedSettings()
     },
-    onTimeWayClick (index) {
-      this.todo.timeWay = this.todoTimeWay[index].text
+    onTimeWayClick (obj) {
+      this.todoTimeWay.forEach((item) => {
+        item.checked = item.text === obj.text
+      })
+      this.todo.timeWay = obj.text
     },
-    onTimeDurationClick (index) {
-      if (this.todoTimeDuration[index].value === -1) {
-        this.showCustomTimeBox = true
+    onTimeDurationClick (obj) {
+      if (obj.value === -1) {
+        this.showBoxCustomTime = true
         this.$nextTick(() => {
           this.$refs['input-time-duration'].focus()
         })
       } else {
-        this.todo.timeDuration = this.todoTimeDuration[index].value
+        this.todoTimeDuration.forEach((item) => {
+          item.checked = item.value === obj.value
+        })
+        this.todo.timeDuration = obj.value
       }
     },
     onAdvancedSettingsClick () {
-      this.showAdvancedSettingsBox = true
+      this.showBoxAdvancedSettings = true
       this.$nextTick(() => {
         this.$refs['input-task-notes'].focus()
       })
@@ -363,44 +434,30 @@ export default {
       this.$refs['input-name'].focus()
     },
     submitAdvancedSettings () {
-      let showAdvancedSettingsBox = false
+      let showBoxAdvancedSettings = false
+      let isChecked = true
+
       for (const key of Object.keys(this.advancedSettings)) {
-        const { value, max = 'NO_VALUE' } = this.advancedSettings[key]
-        if (max === 'NO_VALUE') {
-          this.todo[key] = value
-        } else {
-          if (this.checkNumber(this.advancedSettings[key])) {
-            this.todo[key] = value
-            this.$refs['input-name'].focus()
-          } else {
-            this.$tips(this.error.todo[key])
-            showAdvancedSettingsBox = true
-          }
+        const { max = 'NO_VALUE' } = this.advancedSettings[key]
+        if (!max === 'NO_VALUE' && !this.checkNumber(this.advancedSettings[key])) {
+          this.$tips(this.error.todo[key])
+          showBoxAdvancedSettings = true
+          isChecked = false
         }
       }
-      this.showAdvancedSettingsBox = showAdvancedSettingsBox
-    },
-    resetToDo () {
-      this.todo = this.data || {
-        name: '',
-        type: '普通番茄时钟',
-        timeWay: '倒计时',
-        timeDuration: 25,
-        goal: {
-          deadline: '',
-          total: ''
-        },
-        habit: {
-          frequency: '',
-          piece: ''
-        },
-        taskNotes: '',
-        loopTimes: 1,
-        restTime: 5,
-        hideAfterComplete: false
+
+      if (isChecked) {
+        for (const [key, setting] of Object.entries(this.advancedSettings)) {
+          const { value } = setting
+          this.todo[key] = setting.default = value
+        }
+        this.$refs['input-name'].focus()
       }
+
+      this.showBoxAdvancedSettings = showBoxAdvancedSettings
     },
     cancelAddToDo () {
+      this.toggleBoxAddToDo(false)
     },
     submitAddToDo () {
       const { name, loopTimes, restTime } = this.todo

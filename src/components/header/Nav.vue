@@ -10,7 +10,7 @@
           aria-hidden="true"
         />
       </span>
-      <span>添加</span>
+      <span @click="addToDo">添加</span>
       <span>更多</span>
     </div>
   </div>
@@ -24,6 +24,9 @@ export default {
     }
   },
   methods: {
+    addToDo () {
+      this.$store.commit('toggleBoxAddToDo', true)
+    }
 
   }
 }
