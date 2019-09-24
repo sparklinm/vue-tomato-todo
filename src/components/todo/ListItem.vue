@@ -2,20 +2,22 @@
   <div class="list-item">
     <div class="left">
       <div class="name">
-        习惯
+        {{ name }}
       </div>
       <div class="card">
-        <span class="description">描述</span>
+        <span class="description">{{ description }}</span>
         <ul class="progress">
           <li>
             <slot name="progressBar" />
           </li>
-          <li>进度1</li>
+          <li class="progress-text">
+            {{ progress }}
+          </li>
         </ul>
       </div>
     </div>
     <div class="right">
-      <span class="deadline">距计划结束:3天</span>
+      <span class="deadline">{{ deadline }}</span>
       <span class="btn-start">开始</span>
     </div>
   </div>
@@ -30,15 +32,15 @@ export default {
     },
     description: {
       type: String,
-      default: '普通番茄时钟'
+      default: '25分钟'
     },
     progress: {
-      type: Number,
-      default: 0
+      type: String,
+      default: '0/60 分钟'
     },
     deadline: {
       type: String,
-      default: '距离结束:365天'
+      default: '离计划结束:365天'
     }
   },
   data () {
@@ -64,10 +66,11 @@ export default {
 <style lang="less">
 
 .list-item {
-  padding: 15px 15px 5px;
+  padding: 15px 0px 5px 15px;
   background-color: rgb(49, 159, 202);
   color: white;
-  border-radius: 3px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px 0px @gray;
   .flex(@justify-content: space-between);
 
   .left {
@@ -78,18 +81,24 @@ export default {
     }
 
     .card {
-      margin-top: 15px;
-      font-size: 12px;
+      margin-top: 12px;
+      font-size: 10px;
       .flex(@align-items: center);
 
       .progress {
         list-style: none;
         margin: 0;
-        padding-left: 25px;
+        padding-left: 20px;
         .flex(@align-items: center);
 
         li {
-          margin-right: 10px;
+          margin-right: 4px;
+        }
+
+        .progress-text{
+          font-size: 10px;
+          transform: scale(0.7);
+          transform-origin: left center;
         }
       }
     }
@@ -97,18 +106,25 @@ export default {
 
   .right {
     position: relative;
-    .flex(@align-items: center; @flex-direction: column;);
+    width: 90px;
+    // .flex(@align-items: center; @flex-direction: column;);
 
     .deadline {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%,-50%) scale(0.7);
       font-size: 10px;
-      margin-top: -5px;
+      letter-spacing: 1px;
+      white-space: nowrap;
     }
 
     .btn-start {
       font-size: 16px;
       position: absolute;
       top: 50%;
-      transform: translateY(-50%);
+      left: 50%;
+      transform: translate(-50%,-50%);
     }
   }
 }
