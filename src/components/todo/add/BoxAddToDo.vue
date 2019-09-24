@@ -35,6 +35,49 @@
               </li>
             </ul>
           </div>
+          <div class="config-extra">
+            <div
+              v-show="showConfigGoal"
+              class="config-goal"
+            >
+              我想在
+              <input type="text">
+              之前一共完成
+              <input type="text">
+              <select
+                id
+                name
+              >
+                <option value="小时">
+                  小时
+                </option>
+              </select>
+            </div>
+            <div
+              v-show="showConfigHabit"
+              class="config-habit"
+            >
+              我想
+              <select
+                id
+                name
+              >
+                <option value="每天">
+                  每天
+                </option>
+              </select>
+              完成
+              <input type="text">
+              <select
+                id
+                name
+              >
+                <option value="小时">
+                  小时
+                </option>
+              </select>
+            </div>
+          </div>
           <div class="time-way">
             <ul>
               <li
@@ -47,7 +90,7 @@
                     type="radio"
                     name="way"
                   >
-                  <span @click="onTimeWayClick(item)">{{ item.text }}</span>
+                  <span @click="onTimeWayClick(item)">{{ item.value }}</span>
                 </label>
               </li>
             </ul>
@@ -171,57 +214,6 @@ export default {
   },
   data () {
     return {
-      todoType: [
-        {
-          name: 'common',
-          text: '普通番茄钟',
-          checked: true
-        },
-        {
-          name: 'goal',
-          text: '定目标',
-          checked: false
-        },
-        {
-          name: 'habit',
-          text: '养习惯',
-          checked: false
-        }
-      ],
-      todoTimeWay: [
-        {
-          text: '倒计时',
-          description: '*倒计时25分钟即标准番茄钟时间',
-          checked: true
-        },
-        {
-          text: '正向计时',
-          description: '*适合碎片时间记录，随用随计',
-          checked: false
-        },
-        {
-          text: '不计时',
-          description: '*适合不需要计时的待办，比如：取快递，喝水 等',
-          checked: false
-        }
-      ],
-      todoTimeDuration: [
-        {
-          text: '25分钟',
-          value: 25,
-          checked: true
-        },
-        {
-          text: '35分钟',
-          value: 35,
-          checked: false
-        },
-        {
-          text: '自定义',
-          value: -1,
-          checked: false
-        }
-      ],
       todo: this.data || {
         name: '',
         type: '普通番茄时钟',
@@ -244,8 +236,9 @@ export default {
         timeWay: '倒计时',
         timeDuration: 25,
         goal: {
-          deadline: '',
-          total: ''
+          deadline: new Date() + 100000000000,
+          total: 10,
+          complete: 0
         },
         taskNotes: '',
         loopTimes: '',
@@ -258,14 +251,66 @@ export default {
         timeWay: '倒计时',
         timeDuration: 25,
         habit: {
-          frequency: '',
-          piece: ''
+          frequency: 1,
+          piece: 10,
+          complete: 0
         },
         taskNotes: '',
         loopTimes: '',
         restTime: '',
         hideAfterComplete: false
       },
+      todoType: [
+        {
+          name: 'common',
+          text: '普通番茄钟',
+          checked: true
+        },
+        {
+          name: 'goal',
+          text: '定目标',
+          checked: false
+        },
+        {
+          name: 'habit',
+          text: '养习惯',
+          checked: false
+        }
+      ],
+      todoTimeWay: [
+        {
+          value: '倒计时',
+          description: '*倒计时25分钟即标准番茄钟时间',
+          checked: true
+        },
+        {
+          value: '正向计时',
+          description: '*适合碎片时间记录，随用随计',
+          checked: false
+        },
+        {
+          value: '不计时',
+          description: '*适合不需要计时的待办，比如：取快递，喝水 等',
+          checked: false
+        }
+      ],
+      todoTimeDuration: [
+        {
+          text: '25分钟',
+          value: 25,
+          checked: true
+        },
+        {
+          text: '35分钟',
+          value: 35,
+          checked: false
+        },
+        {
+          text: '自定义',
+          value: -1,
+          checked: false
+        }
+      ],
       customTimeDuration: {
         value: '',
         min: 0,
@@ -323,6 +368,12 @@ export default {
     }
   },
   computed: {
+    showConfigGoal () {
+      return this.todo.type === this.todoGoal.type
+    },
+    showConfigHabit () {
+      return this.todo.type === this.todoHabit.type
+    },
     showInputLoopTimes () {
       return this.todo.timeWay === '倒计时'
     },
@@ -331,7 +382,7 @@ export default {
     },
     tipTimeDuration () {
       return this.todoTimeWay.find((item) => {
-        return item.text === this.todo.timeWay
+        return item.value === this.todo.timeWay
       }).description
     },
     ...mapState({
@@ -365,6 +416,11 @@ export default {
       }
       this.btnAdvancedSettings = '展开更多高级设置'
     },
+    setChecked (configs, value) {
+      configs.forEach((item) => {
+        item.checked = item.value === value
+      })
+    },
     submitCustomTimeDuration () {
       const { value } = this.customTimeDuration
       if (this.value === '') {
@@ -382,19 +438,16 @@ export default {
     },
     cancelCustomTimeDuration () {
       this.customTimeDuration.value = ''
+      this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
       this.$refs['input-name'].focus()
     },
     onTypeClick (index) {
       const type = this.todoType[index].name.slice(0, 1).toUpperCase() + this.todoType[index].name.slice(1)
       this.todo = this['todo' + type]
 
-      this.todoTimeWay.forEach((item) => {
-        item.checked = item.text === this.todo.timeWay
-      })
+      this.setChecked(this.todoTimeWay, this.todo.timeWay)
 
-      this.todoTimeDuration.forEach((item) => {
-        item.checked = item.value === this.todo.timeDuration
-      })
+      this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
 
       for (const [key, setting] of Object.entries(this.advancedSettings)) {
         setting.value = this.todo[key]
@@ -403,10 +456,8 @@ export default {
       this.setBtnAdvancedSettings()
     },
     onTimeWayClick (obj) {
-      this.todoTimeWay.forEach((item) => {
-        item.checked = item.text === obj.text
-      })
-      this.todo.timeWay = obj.text
+      this.setChecked(this.todoTimeWay, obj.value)
+      this.todo.timeWay = obj.value
     },
     onTimeDurationClick (obj) {
       if (obj.value === -1) {
@@ -415,11 +466,9 @@ export default {
           this.$refs['input-time-duration'].focus()
         })
       } else {
-        this.todoTimeDuration.forEach((item) => {
-          item.checked = item.value === obj.value
-        })
         this.todo.timeDuration = obj.value
       }
+      this.setChecked(this.todoTimeDuration, obj.value)
     },
     onAdvancedSettingsClick () {
       this.showBoxAdvancedSettings = true
@@ -471,9 +520,17 @@ export default {
       this.todo.loopTimes = loopTimes || 1
       this.todo.restTime = restTime || 5
 
+      if (this.todo.timeWay === '正向计时') {
+        delete this.todo.loopTimes
+        delete this.todo.timeDuration
+      } else if (this.todo.timeWay === '不计时') {
+        delete this.todo.loopTimes
+        delete this.todo.restTime
+        delete this.todo.timeDuration
+      }
       console.log(this.todo)
-
       this.addToDo(this.todo)
+      this.toggleBoxAddToDo(false)
     }
   }
 }
@@ -492,12 +549,11 @@ export default {
 
       &:not(:first-child) {
         margin-top: 5px;
-      };
-
-      &:nth-child(2){
-        margin-top: 10px;
       }
 
+      &:nth-child(2) {
+        margin-top: 10px;
+      }
     }
     .config-item {
       display: inline-block;

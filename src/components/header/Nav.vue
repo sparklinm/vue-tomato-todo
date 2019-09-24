@@ -34,7 +34,7 @@ export default {
 
 <style lang='less'>
 .nav {
-  padding: 15px 15px;
+  padding: 18px 15px;
   font-size: 14px;
   color: white;
   .flex(@align-items: center;@justify-content: space-between;);
