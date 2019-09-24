@@ -80,6 +80,10 @@ export default {
     zIndex: {
       type: Number,
       default: 2001
+    },
+    destoryOnClose: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -110,8 +114,11 @@ export default {
     },
     cancel () {
       this.showBox = false
-      this.$emit('update:show', false)
-      this.$emit('cancel')
+      this.$nextTick(() => {
+        this.$emit('update:show', false)
+        this.$emit('cancel')
+      })
+
     }
   }
 }
