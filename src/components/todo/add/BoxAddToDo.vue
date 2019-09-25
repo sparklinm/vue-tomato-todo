@@ -1,11 +1,14 @@
 <template>
-  <div class="box-add-todo">
+  <div
+    class="box-add-todo"
+  >
     <ComPopup
       title="添加待办"
       top-option-btn
       :show="showBoxAddToDo"
-      @cancel="cancelAddToDo"
-      @submit="submitAddToDo"
+      :submit="submitAddToDo"
+      :before-open="beforeBoxAddToDoOpen"
+      @closed="toggleBoxAddToDo(false);insertBox = false"
     >
       <template v-slot:content>
         <ComInput
@@ -131,8 +134,8 @@
           :show.sync="showBoxCustomTime"
           :z-index="2050"
           :animationed="false"
-          @submit="submitCustomTimeDuration"
-          @cancel="cancelCustomTimeDuration"
+          :submit="submitCustomTimeDuration"
+          :cancel="cancelCustomTimeDuration"
         >
           <template v-slot:content>
             <ComInput
@@ -156,8 +159,8 @@
           :show.sync="showBoxAdvancedSettings"
           :z-index="2050"
           :animationed="false"
-          @cancel="cancelAdvancedSettings"
-          @submit="submitAdvancedSettings"
+          :cancel="cancelAdvancedSettings"
+          :submit="submitAdvancedSettings"
         >
           <template v-slot:content>
             <label class="label-checkbox">
@@ -421,7 +424,7 @@ export default {
         item.checked = item.value === value
       })
     },
-    submitCustomTimeDuration () {
+    submitCustomTimeDuration (done) {
       const { value } = this.customTimeDuration
       if (this.value === '') {
         return
@@ -430,15 +433,16 @@ export default {
         this.todo.timeDuration = value
         this.todoTimeDuration[2].text = value + '分钟'
         this.todoTimeDuration[2].value = value
-        this.showBoxCustomTime = false
+        done()
         this.$refs['input-name'].focus()
       } else {
         this.$tips(this.error.todo.timeDuration)
       }
     },
-    cancelCustomTimeDuration () {
+    cancelCustomTimeDuration (done) {
       this.customTimeDuration.value = ''
       this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
+      done()
       this.$refs['input-name'].focus()
     },
     onTypeClick (index) {
@@ -476,13 +480,14 @@ export default {
         this.$refs['input-task-notes'].focus()
       })
     },
-    cancelAdvancedSettings () {
+    cancelAdvancedSettings (done) {
       for (const key of Object.keys(this.advancedSettings)) {
         this.advancedSettings[key].value = this.advancedSettings[key].default
       }
+      done()
       this.$refs['input-name'].focus()
     },
-    submitAdvancedSettings () {
+    submitAdvancedSettings (done) {
       let showBoxAdvancedSettings = false
       let isChecked = true
 
@@ -503,12 +508,17 @@ export default {
         this.$refs['input-name'].focus()
       }
 
-      this.showBoxAdvancedSettings = showBoxAdvancedSettings
+      if (!showBoxAdvancedSettings) {
+        done()
+      }
     },
-    cancelAddToDo () {
-      this.toggleBoxAddToDo(false)
+    beforeBoxAddToDoOpen (done) {
+      this.$nextTick(() => {
+        done()
+      })
+
     },
-    submitAddToDo () {
+    submitAddToDo (done) {
       const { name, loopTimes, restTime } = this.todo
       if (name === '') {
         this.$message({
@@ -528,9 +538,8 @@ export default {
         delete this.todo.restTime
         delete this.todo.timeDuration
       }
-      console.log(this.todo)
       this.addToDo(this.todo)
-      this.toggleBoxAddToDo(false)
+      done()
     }
   }
 }

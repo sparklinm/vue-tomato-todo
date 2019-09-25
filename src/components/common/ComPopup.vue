@@ -5,7 +5,7 @@
       ref="box"
       class="box-wrap"
       :style="{zIndex:zIndex}"
-      @click.self="cancel"
+      @click.self="handleCancel"
     >
       <div
         class="com-popup-box"
@@ -22,14 +22,14 @@
               <i
                 class="fa fa-check"
                 aria-hidden="true"
-                @click="submit"
+                @click="handleSubmit"
               />
             </span>
             <span>
               <i
                 class="fa fa-times"
                 aria-hidden="true"
-                @click="cancel"
+                @click="handleCancel"
               />
             </span>
           </div>
@@ -44,7 +44,7 @@
         >
           <button
             class="btn-confirm font-color-base-10"
-            @click="submit"
+            @click="handleSubmit"
           >
             确定
           </button>
@@ -84,11 +84,27 @@ export default {
     destoryOnClose: {
       type: Boolean,
       default: false
+    },
+    beforeOpen: {
+      type: Function,
+      default: null
+    },
+    beforeClose: {
+      type: Function,
+      default: null
+    },
+    submit: {
+      type: Function,
+      default: null
+    },
+    cancel: {
+      type: Function,
+      default: null
     }
   },
   data () {
     return {
-      showBox: this.show
+      showBox: false
     }
   },
   watch: {
@@ -100,25 +116,64 @@ export default {
       }
     },
     show (val) {
-      this.showBox = val
+      if (val) {
+        if (this.beforeOpen) {
+          this.beforeOpen(() => {
+            this.showBox = true
+          })
+        } else {
+          this.showBox = true
+        }
+      } else {
+        this.showBox = false
+      }
     }
   },
   mounted () {
     if (this.show) {
-      this.$modals.add(this.$el)
+      if (this.beforeOpen) {
+        this.beforeOpen(() => {
+          this.showBox = true
+        })
+      } else {
+        this.showBox = true
+      }
     }
   },
   methods: {
-    submit () {
-      this.$emit('submit')
-    },
-    cancel () {
+    close () {
       this.showBox = false
-      this.$nextTick(() => {
-        this.$emit('update:show', false)
-        this.$emit('cancel')
-      })
+      console.log(this.$refs.box)
 
+      this.$refs.box.addEventListener('transitionend', () => {
+        console.log('Sss')
+
+      })
+      setTimeout(() => {
+        this.$nextTick(() => {
+          this.$emit('update:show', false)
+          this.$emit('closed')
+        })
+      }, 500)
+
+    },
+    handleSubmit () {
+      if (this.submit) {
+        this.submit(() => {
+          this.close()
+        })
+      } else {
+        this.close()
+      }
+    },
+    handleCancel () {
+      if (this.cancel) {
+        this.cancel(() => {
+          this.close()
+        })
+      } else {
+        this.close()
+      }
     }
   }
 }
