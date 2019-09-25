@@ -42,7 +42,8 @@ export default {
   .right {
 
     span {
-      margin-left: 10px;
+      // margin-left: 5px;
+      padding: 5px;
     }
   }
 }

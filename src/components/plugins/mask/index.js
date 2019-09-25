@@ -27,6 +27,7 @@ function creatMaskPlugin (Vue, options) {
     },
     closeMask () {
       if (!this.data.length) {
+
         instance.show = false
       }
     }
