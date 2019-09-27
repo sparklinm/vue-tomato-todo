@@ -1,7 +1,6 @@
 <template>
   <div
     id="app"
-    class="theme-1"
   >
     <Nav />
     <router-view />
@@ -24,6 +23,7 @@ export default {
       document.documentElement.style.fontSize = document.documentElement.clientWidth / 414 * 50 + 'px'
     })
     document.documentElement.style.fontSize = document.documentElement.clientWidth / 414 * 50 + 'px'
+    document.body.className = 'theme-1'
   }
 }
 </script>

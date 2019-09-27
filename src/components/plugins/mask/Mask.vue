@@ -15,7 +15,6 @@ export default {
     return {
       show: false,
       zIndex: 2000
-
     }
   },
   methods: {
