@@ -85,6 +85,14 @@ export default {
       type: Boolean,
       default: false
     },
+    appendToBody: {
+      type: Boolean,
+      default: false
+    },
+    removeOnClose: {
+      type: Boolean,
+      default: false
+    },
     beforeOpen: {
       type: Function,
       default: null
@@ -139,23 +147,21 @@ export default {
         this.showBox = true
       }
     }
+    if (this.appendToBody) {
+      document.body.appendChild(this.$el)
+    }
   },
   methods: {
     close () {
       this.showBox = false
-      console.log(this.$refs.box)
-
-      this.$refs.box.addEventListener('transitionend', () => {
-        console.log('Sss')
-
+      this.$nextTick(() => {
+        this.$emit('update:show', false)
+        this.$emit('close')
       })
-      setTimeout(() => {
-        this.$nextTick(() => {
-          this.$emit('update:show', false)
-          this.$emit('closed')
-        })
-      }, 500)
-
+      this.$refs.box.addEventListener('transitionend', () => {
+        this.$emit('update:show', false)
+        this.$emit('closed')
+      })
     },
     handleSubmit () {
       if (this.submit) {

@@ -1,14 +1,12 @@
 <template>
-  <div
-    class="box-add-todo"
-  >
+  <div class="box-add-todo">
     <ComPopup
       title="添加待办"
       top-option-btn
       :show="showBoxAddToDo"
       :submit="submitAddToDo"
       :before-open="beforeBoxAddToDoOpen"
-      @closed="toggleBoxAddToDo(false);insertBox = false"
+      @closed="toggleBoxAddToDo(false)"
     >
       <template v-slot:content>
         <ComInput
@@ -239,7 +237,7 @@ export default {
         timeWay: '倒计时',
         timeDuration: 25,
         goal: {
-          deadline: new Date() + 100000000000,
+          deadline: new Date(2019, 9, 2),
           total: 10,
           complete: 0
         },
@@ -352,11 +350,13 @@ export default {
         todo: {
           name: {
             title: '什么是番茄钟？',
-            content: '<p>番茄钟是全身心工作25分钟，休息5分钟的工作法。</p><p>输入事项名称，点击<i aria-hidden="true" class="fa fa-check"></i>按钮即可以添加一个标准的番茄钟待办。</p>点击待办卡片上的开始按钮就可以开始一个番茄钟啦。</p>'
+            content:
+              '<p>番茄钟是全身心工作25分钟，休息5分钟的工作法。</p><p>输入事项名称，点击<i aria-hidden="true" class="fa fa-check"></i>按钮即可以添加一个标准的番茄钟待办。</p>点击待办卡片上的开始按钮就可以开始一个番茄钟啦。</p>'
           },
           loopTimes: {
             title: '什么是单次预期循环次数？',
-            content: '<p>番茄钟是全身心工作25分钟，休息5分钟的工作法。</p><p>输入事项名称，点击<i aria-hidden="true" class="fa fa-check"></i>按钮即可以添加一个标准的番茄钟待办。</p>点击待办卡片上的开始按钮就可以开始一个番茄钟啦。</p>'
+            content:
+              '<p>番茄钟是全身心工作25分钟，休息5分钟的工作法。</p><p>输入事项名称，点击<i aria-hidden="true" class="fa fa-check"></i>按钮即可以添加一个标准的番茄钟待办。</p>点击待办卡片上的开始按钮就可以开始一个番茄钟啦。</p>'
           }
         }
       },
@@ -384,7 +384,7 @@ export default {
       return this.todo.timeWay !== '不计时'
     },
     tipTimeDuration () {
-      return this.todoTimeWay.find((item) => {
+      return this.todoTimeWay.find(item => {
         return item.value === this.todo.timeWay
       }).description
     },
@@ -420,7 +420,7 @@ export default {
       this.btnAdvancedSettings = '展开更多高级设置'
     },
     setChecked (configs, value) {
-      configs.forEach((item) => {
+      configs.forEach(item => {
         item.checked = item.value === value
       })
     },
@@ -446,7 +446,9 @@ export default {
       this.$refs['input-name'].focus()
     },
     onTypeClick (index) {
-      const type = this.todoType[index].name.slice(0, 1).toUpperCase() + this.todoType[index].name.slice(1)
+      const type =
+        this.todoType[index].name.slice(0, 1).toUpperCase() +
+        this.todoType[index].name.slice(1)
       this.todo = this['todo' + type]
 
       this.setChecked(this.todoTimeWay, this.todo.timeWay)
@@ -493,7 +495,10 @@ export default {
 
       for (const key of Object.keys(this.advancedSettings)) {
         const { max = 'NO_VALUE' } = this.advancedSettings[key]
-        if (!max === 'NO_VALUE' && !this.checkNumber(this.advancedSettings[key])) {
+        if (
+          !max === 'NO_VALUE' &&
+          !this.checkNumber(this.advancedSettings[key])
+        ) {
           this.$tips(this.error.todo[key])
           showBoxAdvancedSettings = true
           isChecked = false
@@ -516,7 +521,6 @@ export default {
       this.$nextTick(() => {
         done()
       })
-
     },
     submitAddToDo (done) {
       const { name, loopTimes, restTime } = this.todo
@@ -538,6 +542,13 @@ export default {
         delete this.todo.restTime
         delete this.todo.timeDuration
       }
+
+      if (this.todo.type === '定目标') {
+        this.todo.type = '目标'
+      } else if (this.todo.type === '养习惯') {
+        this.todo.type = '习惯'
+      }
+
       this.addToDo(this.todo)
       done()
     }
@@ -628,6 +639,7 @@ export default {
       padding: 10px 35px;
     }
   }
+
   .box-advanced-setting {
     letter-spacing: 1px;
     font-size: 14px;
