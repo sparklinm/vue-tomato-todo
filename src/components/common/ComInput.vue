@@ -1,15 +1,15 @@
 <template>
   <div class="com-input boreder-bottom-20">
-    <label>
+    <label class="com-input__area">
       <span
         ref="placeholder"
-        class="placeholder"
+        class="com-input__placeholder"
       >{{ placeholder }}</span>
       <textarea
         v-if="type==='textarea'"
         ref="input"
         v-model="currentValue"
-        class="input-box com-input-box"
+        class="com-input__box com-input-box"
         rows="1"
         :autofocus="autofocus"
         @input="inputHandle"
@@ -18,7 +18,7 @@
         v-else
         ref="input"
         v-model="currentValue"
-        class="input-box com-input-box"
+        class="com-input__box com-input-box"
         :min="min"
         :max="max"
         :type="type==='number'?type:'text'"
@@ -28,7 +28,7 @@
     </label>
     <span
       v-if="icon==='question'"
-      class="tips"
+      class="com-input__icon"
       @click="$message(tips)"
     >
       <i
@@ -40,7 +40,6 @@
 </template>
 
 <script>
-
 export default {
   props: {
     icon: {
@@ -95,7 +94,6 @@ export default {
     //     }
     //   })
     // }
-
   },
   watch: {
     value (val) {
@@ -110,13 +108,17 @@ export default {
     },
     checkedValue (newVal, oldVal) {
       if (oldVal === '') {
-        Velocity(this.$refs.placeholder, {
-          scale: '0.5',
-          top: '0px',
-          translateY: '-100%'
-        }, {
-          duration: 200
-        })
+        Velocity(
+          this.$refs.placeholder,
+          {
+            scale: '0.5',
+            top: '0px',
+            translateY: '-100%'
+          },
+          {
+            duration: 200
+          }
+        )
       } else if (newVal === '') {
         Velocity(this.$refs.placeholder, 'reverse')
       }
@@ -143,31 +145,29 @@ export default {
 .com-input {
   .flex(@justify-content: space-between; @align-items: center);
   position: relative;
+}
 
-  label {
-    flex: 1;
-    .flex(@align-items: center);
-  }
+.com-input__area {
+  flex: 1;
+  .flex(@align-items: center);
+}
 
-  .placeholder{
-    position: absolute;
-    transform-origin: left top;
-    letter-spacing: 1px;
-  }
+.com-input__placeholder {
+  position: absolute;
+  transform-origin: left top;
+  letter-spacing: 1px;
+}
 
-  .input-box {
-    width: 100%;
-    border: none;
-    outline: none;
-    padding: 5px 0;
-    resize: none;
-  }
+.com-input__box {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 5px 0;
+  resize: none;
+}
 
-  .tips {
-    color: rgb(88, 88, 88);
-    i {
-      padding: 5px;
-    }
-  }
+.com-input__icon {
+  color: rgb(88, 88, 88);
+  padding: 5px;
 }
 </style>

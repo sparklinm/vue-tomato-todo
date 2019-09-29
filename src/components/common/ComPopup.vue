@@ -7,26 +7,30 @@
       :style="{zIndex:zIndex}"
       @click.self="handleCancel"
     >
-      <div
-        class="com-popup-box"
-      >
-        <div class="title background-color-20">
+      <div class="com-popup">
+        <div class="com-popup__header background-color-20">
           <div class="text">
             {{ title }}
           </div>
-          <slot name="headerIcon" />
           <div
-            v-if="topOptionBtn"
-            class="btn-option-top"
+            class="com-popup__header-btn-area"
           >
-            <span>
+            <slot name="headerIcon" />
+
+            <span
+              v-if="topOptionBtn"
+              class="com-popup__header-btn"
+            >
               <i
                 class="fa fa-check"
                 aria-hidden="true"
                 @click="handleSubmit"
               />
             </span>
-            <span>
+            <span
+              v-if="topOptionBtn"
+              class="com-popup__header-btn"
+            >
               <i
                 class="fa fa-times"
                 aria-hidden="true"
@@ -36,15 +40,15 @@
           </div>
         </div>
 
-        <div class="content">
+        <div class="com-popup__content">
           <slot name="content" />
         </div>
         <div
           v-if="bottomConfirmBtn"
-          class="footer"
+          class="com-popup__footer"
         >
           <button
-            class="btn-confirm font-color-base-10"
+            class="com-popup__footer-btn font-color-base-10"
             @click="handleSubmit"
           >
             确定
@@ -190,46 +194,47 @@ export default {
 </script>
 
 <style lang='less'>
-.com-popup-box {
+.com-popup {
   width: 6.5rem;
   position: fixed;
   z-index: 150;
   background-color: white;
   .center-position();
+}
 
-  .title {
-    color: white;
-    .flex(@align-items: center; @justify-content: space-between);
-    font-size: 16px;
-    padding: 15px 15px;
+.com-popup__header {
+  color: white;
+  font-size: 16px;
+  padding: 15px 15px;
+  .flex(@align-items: center; @justify-content: space-between);
+}
 
-    .btn-option-top {
-      .flex(@align-items: center);
+.com-popup__header-btn-area {
+  .flex(@align-items: center);
+}
 
-      span {
-       margin-left: 15px;
-      }
-    }
-  }
+.com-popup__header-btn {
+  margin-left: 15px;
+}
 
-  .content {
-    padding: 10px 15px 8px;
-  }
-  .footer {
-    padding: 0 5px;
-    margin: 5px 0 10px;
+.com-popup__content {
+  padding: 10px 15px 8px;
+}
 
-    .btn-confirm {
-      width: 100%;
-      height: 30px;
-      font-size: 14px;
-      letter-spacing: 1px;
-      border: none;
-      background: white;
-      box-shadow: 0 2px 1px 1px rgb(238, 238, 238);
-      cursor: pointer;
-      outline: none;
-    }
-  }
+.com-popup__footer {
+  padding: 0 5px;
+  margin: 5px 0 10px;
+}
+
+.com-popup__footer-btn {
+  width: 100%;
+  height: 30px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  border: none;
+  background: white;
+  box-shadow: 0 2px 1px 1px rgb(238, 238, 238);
+  cursor: pointer;
+  outline: none;
 }
 </style>

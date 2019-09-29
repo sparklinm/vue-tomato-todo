@@ -631,11 +631,11 @@ export default {
   }
 
   .custom-time {
-    .title {
+    .com-popup__header {
       padding: 20px 15px;
     }
 
-    .content {
+    .com-popup__content {
       padding: 10px 35px;
     }
   }
@@ -696,11 +696,12 @@ export default {
       padding-right: 20px;
     }
 
-    .title {
+
+    .com-popup__header  {
       font-size: 14px;
     }
 
-    .content {
+    .com-popup__content {
       padding: 10px 70px 20px;
     }
 
@@ -710,7 +711,7 @@ export default {
     }
 
     .item-1 {
-      .tips {
+      .com-input__icon {
         position: absolute;
         right: 0;
         font-size: 22px;
