@@ -13,3 +13,9 @@
   top: 50%;
   transform: translate(-50%, -50%);
 }
+
+//缩小
+.scale(@n;@x:left;@y:center) {
+  transform: scale(@n);
+  transform-origin: @x @y;
+}
