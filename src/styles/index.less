@@ -4,6 +4,7 @@ body {
   font-family: 'Helvetica Neue', 'Microsoft YaHei', Helvetica,
     'Hiragino Sans GB', '黑体', Arial, sans-serif;
   font-size: 16px;
+  letter-spacing: 0.5px;
 }
 
 // theme-1
@@ -41,11 +42,11 @@ body {
   }
 
   .com-input {
-    .placeholder {
+    .com-input__placeholder {
       color: @theme-base-color-1;
     }
 
-    .com-input-box {
+    .com-input__box {
       &::-webkit-input-placeholder {
         color: @theme-base-color-1;
       }
@@ -82,6 +83,10 @@ body {
 
   .nav {
     .background-color-base;
+  }
+
+  .box-edit__cell-btn {
+    .background-color-base
   }
 
 }
