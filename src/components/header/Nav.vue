@@ -10,8 +10,12 @@
           aria-hidden="true"
         />
       </span>
-      <span @click="addToDo">添加</span>
-      <span>更多</span>
+      <span @click="addToDo">
+        <i class="fa fa-plus" />
+      </span>
+      <span>
+        <i class="fa fa-ellipsis-v" />
+      </span>
     </div>
   </div>
 </template>
@@ -35,14 +39,14 @@ export default {
 <style lang='less'>
 .nav {
   padding: 18px 15px;
-  font-size: 14px;
+  font-size: 16px;
   color: white;
-  .flex(@align-items: center;@justify-content: space-between;);
+  .flex(@align-items: center; @justify-content: space-between;);
 
   .right {
-
+    font-size:18px;
     span {
-      // margin-left: 5px;
+      margin-left: 20px;
       padding: 5px;
     }
   }

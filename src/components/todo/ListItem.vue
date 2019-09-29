@@ -1,5 +1,8 @@
 <template>
-  <div class="list-item">
+  <div
+    class="list-item"
+    @click="edit"
+  >
     <div class="left">
       <div class="name">
         {{ name }}
@@ -18,7 +21,11 @@
     </div>
     <div class="right">
       <span class="deadline">{{ deadline }}</span>
-      <span class="btn-start">开始</span>
+      <span
+        id="btn-start"
+        class="btn-start"
+        @click="$emit('start')"
+      >开始</span>
     </div>
   </div>
 </template>
@@ -58,7 +65,11 @@ export default {
 
   },
   methods: {
-
+    edit () {
+      if (event.target.id !== 'btn-start') {
+        this.$emit('edit')
+      }
+    }
   }
 }
 </script>
@@ -85,10 +96,15 @@ export default {
       font-size: 10px;
       .flex(@align-items: center);
 
+      .description {
+        transform-origin: left center;
+        transform: scale(0.8)
+      }
+
       .progress {
         list-style: none;
         margin: 0;
-        padding-left: 20px;
+        padding-left: 15px;
         .flex(@align-items: center);
 
         li {
@@ -124,6 +140,7 @@ export default {
       position: absolute;
       top: 50%;
       left: 50%;
+      padding: 5px;
       transform: translate(-50%,-50%);
     }
   }
