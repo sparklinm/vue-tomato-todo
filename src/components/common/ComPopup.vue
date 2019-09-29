@@ -14,6 +14,7 @@
           <div class="text">
             {{ title }}
           </div>
+          <slot name="headerIcon" />
           <div
             v-if="topOptionBtn"
             class="btn-option-top"
@@ -71,7 +72,7 @@ export default {
     },
     show: {
       type: Boolean,
-      default: true
+      default: false
     },
     animationed: {
       type: Boolean,
@@ -158,10 +159,13 @@ export default {
         this.$emit('update:show', false)
         this.$emit('close')
       })
-      this.$refs.box.addEventListener('transitionend', () => {
-        this.$emit('update:show', false)
-        this.$emit('closed')
-      })
+      const that = this
+      function emitClosed () {
+        that.$emit('update:show', false)
+        that.$emit('closed')
+        that.$refs.box.removeEventListener('transitionend', emitClosed)
+      }
+      this.$refs.box.addEventListener('transitionend', emitClosed)
     },
     handleSubmit () {
       if (this.submit) {
@@ -203,9 +207,7 @@ export default {
       .flex(@align-items: center);
 
       span {
-        &:first-child {
-          margin-right: 15px;
-        }
+       margin-left: 15px;
       }
     }
   }

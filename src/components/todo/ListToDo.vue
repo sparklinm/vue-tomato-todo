@@ -1,10 +1,12 @@
 <template>
-  <div class="list">
+  <div class="list-todo">
     <ListItem
       v-for="(data,index) in datas"
       :key="index"
       v-bind="{...data}"
       class="item"
+      @start="start(index)"
+      @edit="edit(index)"
     >
       <template
         v-slot:progressBar
@@ -16,6 +18,37 @@
         />
       </template>
     </ListItem>
+    <ComPopup
+      :show.sync="showBoxInfo"
+      :title="todo.name"
+      class="box-edit-todo"
+    >
+      <template v-slot:headerIcon>
+        <div class="btn-container">
+          <span>
+            <i class="fa fa-clock-o" />
+            <span>定时提醒/学霸</span>
+          </span>
+          <span>
+            <i
+              class="fa fa-picture-o"
+              aria-hidden="true"
+            />
+            <span>更换背景</span>
+          </span>
+          <span>
+            <i
+              class="fa fa-mobile"
+              aria-hidden="true"
+            />
+            <span>独立白名单</span>
+          </span>
+        </div>
+      </template>
+      <template v-slot:content>
+        <div />
+      </template>
+    </ComPopup>
   </div>
 </template>
 
@@ -35,7 +68,10 @@ export default {
   },
   data () {
     return {
+      showBoxInfo: false,
+      todo: {
 
+      }
     }
   },
   computed: {
@@ -76,23 +112,57 @@ export default {
       })
     }
   },
+  watch: {
+  },
   mounted () {
     console.log(this.datas)
 
 
   },
   methods: {
+    start () {
+      console.log('start')
+
+    },
+    edit (index) {
+      this.todo = this.todos[index]
+      console.log(this.todo)
+
+      console.log('info')
+      this.showBoxInfo = true
+
+    }
 
   }
 }
 </script>
 
 <style lang="less">
-.list{
+.list-todo{
   padding: 0 12px;
 
   .item{
     margin-top: 8px;
+  }
+
+  .btn-container {
+    .flex();
+
+    &>span {
+
+      .flex(@flex-direction: column;@align-items: center;);
+
+      .fa {
+        font-size:20px;
+      }
+
+      span {
+        margin-top: 6px;
+        font-size: 10px;
+        .scale(0.7;center;center);
+        letter-spacing: 0.5px;
+      }
+    }
   }
 }
 
