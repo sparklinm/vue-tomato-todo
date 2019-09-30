@@ -13,7 +13,18 @@ export default new Vuex.Store({
         taskNotes: '普通普通普通',
         loopTimes: 1,
         restTime: 5,
-        hideAfterComplete: false
+        hideAfterComplete: false,
+        create: new Date(2019, 8, 24),
+        focus: {
+          number: 0,
+          duration: 0
+        },
+        reminders: [
+          {
+            time: '17:33',
+            day: '每天'
+          }
+        ]
       },
       {
         name: '目标',
@@ -29,7 +40,22 @@ export default new Vuex.Store({
         taskNotes: '目标目标目标',
         loopTimes: 1,
         restTime: 10,
-        hideAfterComplete: false
+        hideAfterComplete: false,
+        create: new Date(2019, 8, 24),
+        focus: {
+          number: 100,
+          duration: 1000
+        },
+        reminders: [
+          {
+            time: '17:33',
+            day: '每天'
+          }
+        ],
+        stickDays: {
+          total: 2,
+          continuation: 2
+        }
       },
       {
         name: '习惯',
@@ -44,7 +70,22 @@ export default new Vuex.Store({
         taskNotes: '习惯习惯习惯',
         loopTimes: 5,
         restTime: 20,
-        hideAfterComplete: false
+        hideAfterComplete: false,
+        create: new Date(2019, 8, 24),
+        focus: {
+          number: 5,
+          duration: 100
+        },
+        reminders: [
+          {
+            time: '17:33',
+            day: '每天'
+          }
+        ],
+        stickDays: {
+          total: 5,
+          continuation: 3
+        }
       }
     ],
     todoSet: [],
