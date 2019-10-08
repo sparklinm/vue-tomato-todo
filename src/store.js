@@ -88,16 +88,12 @@ export default new Vuex.Store({
         }
       }
     ],
-    todoSet: [],
-    showBoxAddToDo: false
+    todoSet: []
 
   },
   mutations: {
     addToDo (state, todo) {
       state.todos.push(todo)
-    },
-    toggleBoxAddToDo (state, show) {
-      state.showBoxAddToDo = show
     }
   },
   actions: {
