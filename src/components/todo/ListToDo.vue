@@ -16,6 +16,7 @@
         />
       </template>
     </ListItem>
+
     <ComPopup
       :show.sync="showBoxInfo"
       :title="todo.name"
@@ -45,7 +46,10 @@
         <div class="cells">
           <div class="cell">
             <div class="cell-bd">
-              <span class="btn btn-small">编辑</span>
+              <span
+                class="btn btn-small"
+                @click="editToDo"
+              >编辑</span>
               <span class="btn btn-small">排序|移动</span>
               <span class="btn btn-small">删除</span>
             </div>
@@ -147,41 +151,23 @@
       </template>
     </ComPopup>
 
-    <!-- <div class="serve-error">
-      <svg
-        class="icon icon-serve"
-        style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
-        viewBox="0 0 1024 1024"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        p-id="9872"
-      ><path
-        d="M734.608696 624.788406c-26.713043 0-46.005797-17.808696-46.005797-46.005797s17.808696-46.005797 46.005797-46.005797c26.713043 0 46.005797 17.808696 46.005797 46.005797s-19.292754 46.005797-46.005797 46.005797zM838.492754 0h-652.985508c-25.228986 0-44.521739 19.292754-44.521739 44.521739v934.956522c0 25.228986 19.292754 44.521739 44.521739 44.521739h652.985508c25.228986 0 44.521739-19.292754 44.521739-44.521739v-934.956522c0-25.228986-19.292754-44.521739-44.521739-44.521739z m-289.391305 608.463768c-20.776812 0-37.101449-16.324638-37.101449-37.101449s16.324638-37.101449 37.101449-37.101449 37.101449 16.324638 37.10145 37.101449-16.324638 37.101449-37.10145 37.101449z m185.507247 44.521739c-40.069565 0-74.202899-32.649275-74.202899-74.202898s32.649275-74.202899 74.202899-74.202899c40.069565 0 74.202899 32.649275 74.202898 74.202899s-34.133333 74.202899-74.202898 74.202898z m74.202898-207.768116h-593.623188v-148.405797h593.623188v148.405797z m0-222.608695h-593.623188v-148.405797h593.623188v148.405797z"
-        p-id="9873"
-      /></svg>
-
-      <svg
-        class="icon icon-error"
-        style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
-        viewBox="0 0 1024 1024"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        p-id="10177"
-      ><path
-        d="M525.659648 48.634675c-246.56169 0-446.670438 199.901798-446.670438 446.651699s200.108749 446.651699 446.670438 446.651699 446.670438-199.901798 446.670438-446.651699S772.221338 48.634675 525.659648 48.634675zM596.332134 765.460685 459.35278 765.460685l0-109.974717 136.979377 0L596.332157 765.460666zM596.332134 435.334963c0 11.116134-1.191219 25.409741-3.373978 43.275571-2.183782 11.116134-16.676454 140.148941-16.676454 140.148941l-100.252399 0c0 0-22.234317-170.123674-20.050432-183.424614L455.978871 215.185944l140.354383 0L596.333254 435.334923z"
-        p-id="10178"
-      /></svg>
-    </div>-->
+    <BoxAddToDo
+      v-if="showBoxAddToDo"
+      :show.sync="showBoxAddToDo"
+      :data="todo"
+    />
   </div>
 </template>
 
 <script>
 import ListItem from './ListItem'
 import ProgressCircle from './ProgressCircle'
+import BoxAddToDo from '@/components/todo/add/BoxAddToDo'
 export default {
   components: {
     ListItem,
-    ProgressCircle
+    ProgressCircle,
+    BoxAddToDo
   },
   props: {
     todos: {
@@ -192,7 +178,8 @@ export default {
   data () {
     return {
       showBoxInfo: false,
-      todo: this.todos[0]
+      todo: this.todos[0],
+      showBoxAddToDo: false
     }
   },
   computed: {
@@ -257,6 +244,10 @@ export default {
       this.todo = this.todos[index]
       console.log(this.todo)
       this.showBoxInfo = true
+    },
+    editToDo () {
+      this.showBoxAddToDo = true
+      this.showBoxInfo = false
     }
   }
 }
@@ -397,29 +388,6 @@ export default {
         }
       }
     }
-  }
-}
-
-.serve-error {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-
-  .icon-serve,
-  .icon-error {
-    position: absolute;
-  }
-
-  .icon-serve {
-    font-size: 200px;
-    color: #3c8dbc;
-  }
-
-  .icon-error {
-    font-size: 100px;
-    color: rgb(148, 49, 49);
-    bottom: -10px;
-    right: 0;
   }
 }
 </style>

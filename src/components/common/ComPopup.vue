@@ -1,5 +1,8 @@
 <template>
-  <PopUp :animationed="animationed">
+  <transition
+    name="popup"
+    @after-leave="afterLeave"
+  >
     <div
       v-show="showBox"
       ref="box"
@@ -56,9 +59,8 @@
         </div>
       </div>
     </div>
-  </PopUp>
+  </transition>
 </template>
-
 <script>
 export default {
   props: {
@@ -157,19 +159,15 @@ export default {
     }
   },
   methods: {
+    afterLeave () {
+      this.$emit('closed')
+    },
     close () {
       this.showBox = false
       this.$nextTick(() => {
         this.$emit('update:show', false)
         this.$emit('close')
       })
-      const that = this
-      function emitClosed () {
-        that.$emit('update:show', false)
-        that.$emit('closed')
-        that.$refs.box.removeEventListener('transitionend', emitClosed)
-      }
-      this.$refs.box.addEventListener('transitionend', emitClosed)
     },
     handleSubmit () {
       if (this.submit) {
@@ -195,11 +193,10 @@ export default {
 
 <style lang='less'>
 .com-popup {
+  display: inline-block;
   width: 6.5rem;
-  position: fixed;
-  z-index: 150;
+  vertical-align: middle;
   background-color: white;
-  .center-position();
 }
 
 .com-popup__header {
