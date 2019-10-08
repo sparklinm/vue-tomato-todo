@@ -3,10 +3,12 @@
     <ComPopup
       title="添加待办"
       top-option-btn
-      :show="showBoxAddToDo"
+      :show="show"
       :submit="submitAddToDo"
       :before-open="beforeBoxAddToDoOpen"
-      @closed="toggleBoxAddToDo(false)"
+      :z-index="2010"
+      :class="customClass"
+      @closed="$emit('update:show',false)"
     >
       <template v-slot:content>
         <ComInput
@@ -123,84 +125,76 @@
         </div>
       </template>
     </ComPopup>
-    <Fade>
-      <div v-show="showBoxCustomTime">
-        <ComPopup
-          title="自定义Todo时间"
-          class="custom-time"
-          bottom-confirm-btn
-          :show.sync="showBoxCustomTime"
-          :z-index="2050"
-          :animationed="false"
-          :submit="submitCustomTimeDuration"
-          :cancel="cancelCustomTimeDuration"
-        >
-          <template v-slot:content>
-            <ComInput
-              ref="input-time-duration"
-              v-model="customTimeDuration.value"
-              :placeholder="todo.timeDuration+'分钟'"
-              :min="customTimeDuration.min"
-              :max="customTimeDuration.max"
-              type="positiveInteger"
+    <ComPopup
+      title="自定义Todo时间"
+      class="custom-time fade"
+      bottom-confirm-btn
+      :show.sync="showBoxCustomTime"
+      :z-index="2050"
+      :animationed="false"
+      :submit="submitCustomTimeDuration"
+      :cancel="cancelCustomTimeDuration"
+    >
+      <template v-slot:content>
+        <ComInput
+          ref="input-time-duration"
+          v-model="customTimeDuration.value"
+          :placeholder="todo.timeDuration+'分钟'"
+          :min="customTimeDuration.min"
+          :max="customTimeDuration.max"
+          type="positiveInteger"
+        />
+      </template>
+    </ComPopup>
+    <ComPopup
+      title="高级设置"
+      top-option-btn
+      class="box-advanced-setting fade"
+      :show.sync="showBoxAdvancedSettings"
+      :z-index="2050"
+      :animationed="false"
+      :cancel="cancelAdvancedSettings"
+      :submit="submitAdvancedSettings"
+    >
+      <template v-slot:content>
+        <label class="label-checkbox">
+          <input
+            v-model="advancedSettings.hideAfterComplete.value"
+            type="checkbox"
+          >
+          <span class="icon-checked">
+            <i
+              aria-hidden="true"
+              class="fa fa-check"
             />
-          </template>
-        </ComPopup>
-      </div>
-    </Fade>
-    <Fade>
-      <div v-show="showBoxAdvancedSettings">
-        <ComPopup
-          title="高级设置"
-          top-option-btn
-          class="box-advanced-setting"
-          :show.sync="showBoxAdvancedSettings"
-          :z-index="2050"
-          :animationed="false"
-          :cancel="cancelAdvancedSettings"
-          :submit="submitAdvancedSettings"
-        >
-          <template v-slot:content>
-            <label class="label-checkbox">
-              <input
-                v-model="advancedSettings.hideAfterComplete.value"
-                type="checkbox"
-              >
-              <span class="icon-checked">
-                <i
-                  aria-hidden="true"
-                  class="fa fa-check"
-                />
-              </span>
-              <span>完成后第二天不再显示</span>
-            </label>
-            <div class="setting-list">
-              <ComInput
-                ref="input-task-notes"
-                v-model="advancedSettings.taskNotes.value"
-                type="textarea"
-                placeholder="任务备注"
-              />
-              <ComInput
-                v-show="showInputLoopTimes"
-                v-model="advancedSettings.loopTimes.value"
-                type="positiveInteger"
-                placeholder="单次预期循环次数"
-                :tips="description.todo.loopTimes"
-                icon="question"
-                class="item-1"
-              />
-              <ComInput
-                v-show="showInputRestTime"
-                v-model="advancedSettings.restTime.value"
-                type="positiveInteger"
-                placeholder="自定义休息时间"
-              />
-            </div>
-          </template>
-        </ComPopup>
-      </div>
-    </Fade>
+          </span>
+          <span>完成后第二天不再显示</span>
+        </label>
+        <div class="setting-list">
+          <ComInput
+            ref="input-task-notes"
+            v-model="advancedSettings.taskNotes.value"
+            type="textarea"
+            placeholder="任务备注"
+          />
+          <ComInput
+            v-show="showInputLoopTimes"
+            v-model="advancedSettings.loopTimes.value"
+            type="positiveInteger"
+            placeholder="单次预期循环次数"
+            :tips="description.todo.loopTimes"
+            icon="question"
+            class="item-1"
+          />
+          <ComInput
+            v-show="showInputRestTime"
+            v-model="advancedSettings.restTime.value"
+            type="positiveInteger"
+            placeholder="自定义休息时间"
+          />
+        </div>
+      </template>
+    </ComPopup>
   </div>
 </template>
 
@@ -211,6 +205,14 @@ export default {
     data: {
       type: Object,
       default: null
+    },
+    show: {
+      type: Boolean,
+      default: false
+    },
+    customClass: {
+      type: String,
+      default: ''
     }
   },
   data () {
