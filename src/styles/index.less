@@ -87,6 +87,27 @@ body {
     .background-color-base
   }
 
+  .progress-bar-circle {
+    .circle-sector {
+      fill:gray;
+    }
+
+    .sector {
+      fill: @theme-base-color-1;
+    }
+
+    .circle-arc {
+      fill: @theme-base-color-1;
+      stroke: rgb(88, 88, 88);
+      stroke-opacity: 0.35;
+    }
+
+    .arc {
+      fill: none;
+      stroke: @theme-base-color-1-l10;
+    }
+  }
+
 }
 
 ul {
@@ -107,12 +128,7 @@ ul {
 }
 
 .box-wrap {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  text-align: center;
+  .fixed-full-screen();
 }
 
 .box-wrap::after {
@@ -136,6 +152,14 @@ ul {
 }
 
 .fade.popup-leave-active {
+  animation: fade 0.15s ease-out reverse;
+}
+
+.fade-enter-active {
+  animation: fade 0.15s ease-out;
+}
+
+.fade-leave-active {
   animation: fade 0.15s ease-out reverse;
 }
 

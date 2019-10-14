@@ -44,7 +44,7 @@
         </div>
 
         <div class="com-popup__content">
-          <slot name="content" />
+          <slot />
         </div>
         <div
           v-if="bottomConfirmBtn"
@@ -118,9 +118,7 @@ export default {
     }
   },
   data () {
-    return {
-      showBox: false
-    }
+    return { showBox: false }
   },
   watch: {
     showBox (val) {

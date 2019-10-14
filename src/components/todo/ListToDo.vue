@@ -42,113 +42,152 @@
           <span class="text">独立白名单</span>
         </span>
       </template>
-      <template v-slot:content>
-        <div class="cells">
-          <div class="cell">
-            <div class="cell-bd">
-              <span
-                class="btn btn-small"
-                @click="editToDo"
-              >编辑</span>
-              <span class="btn btn-small">排序|移动</span>
-              <span class="btn btn-small">删除</span>
-            </div>
-          </div>
-          <div class="cell">
-            <div class="cell-bd">
-              <span class="btn btn-middle">历史记录时间轴</span>
-              <span class="btn btn-middle">数据分析</span>
-            </div>
-          </div>
-          <div class="cell btn-big btn data">
-            <div class="cell-hd">
-              累计数据
-            </div>
-            <div class="cell-bd">
-              <div class="column">
-                <span class="text">专注次数</span>
-                <span class="number">{{ todo.focus.number }}</span>
-              </div>
-              <div class="column">
-                <span class="text">专注时长</span>
-                <span class="number">{{ todo.focus.duration }}</span>
-                <span class="unit">分钟</span>
-              </div>
-            </div>
-          </div>
-          <div class="cell btn-big btn time-reminder">
-            <div class="cell-hd">
-              定时提醒
-            </div>
-            <div class="cell-bd">
+      <div class="cells">
+        <div class="cell">
+          <div class="cell-bd">
+            <span
+              class="btn btn-small"
+              @click="editToDo"
+            >编辑</span>
+            <span
+              ref="btnMove"
+              class="btn btn-small"
+              @click="move"
+            >排序|移动
+            </span>
+            <transition name="fade">
               <div
-                v-if="showReminders"
-                class="list"
+                v-show="showBtnMoveDrop"
+                class="drop"
+                @click.self="showBtnMoveDrop=false"
               >
-                <li
-                  v-for="(reminder,index) in todo.reminders"
-                  :key="index"
+                <div
+                  ref="moveDrop"
+                  class="drop-inline"
                 >
-                  {{ reminder.time }} {{ reminder.day }}
-                </li>
+                  <ul>
+                    <li @click="showBoxSort=true">
+                      上下位置排序
+                    </li>
+                    <li @click="showMoveBox=true">
+                      移动到待办集
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <div
-                v-else
-                class="default"
-              >
-                没有设置定时提醒
-              </div>
-            </div>
+            </transition>
+
+            <span class="btn btn-small">删除</span>
           </div>
-          <div
-            v-if="showProgress"
-            class="cell btn-big btn data progress"
-          >
-            <div class="cell-hd">
-              目标截止日期：2020-10-23 剩余:382天
+        </div>
+        <div class="cell">
+          <div class="cell-bd">
+            <span class="btn btn-middle">历史记录时间轴</span>
+            <span class="btn btn-middle">数据分析</span>
+          </div>
+        </div>
+        <div class="cell btn-big btn data">
+          <div class="cell-hd">
+            累计数据
+          </div>
+          <div class="cell-bd">
+            <div class="column">
+              <span class="text">专注次数</span>
+              <span class="number">{{ todo.focus.number }}</span>
             </div>
-            <div class="cell-bd">
-              <div class="column">
-                <span class="text">计划已完成</span>
-                <span class="number">1</span>
-                <span class="unit">小时</span>
-              </div>
-              <div class="column">
-                <span class="text">长期计划完成度</span>
-                <span class="number">10</span>
-              </div>
-              <div class="column">
-                <span class="text">计划总数</span>
-                <span class="number">100</span>
-                <span class="unit">小时</span>
-              </div>
-            </div>
-            <div class="cell-footer">
-              <div class="row">
-                <div class="title">
-                  <span>1</span>
-                  <span>总共坚持天数</span>
-                </div>
-                <span>{{ todo.stickDays.total }} 天</span>
-              </div>
-              <div class="row">
-                <div class="title">
-                  <span>2</span>
-                  <span>连续坚持天数</span>
-                </div>
-                <span>{{ todo.stickDays.continuation }} 天</span>
-              </div>
-              <div class="row">
-                <div class="title">
-                  <span>3</span>
-                  <span>创建日期</span>
-                </div>
-                <span>2019年09月22日</span>
-              </div>
+            <div class="column">
+              <span class="text">专注时长</span>
+              <span class="number">{{ todo.focus.duration }}</span>
+              <span class="unit">分钟</span>
             </div>
           </div>
         </div>
-      </template>
+        <div class="cell btn-big btn time-reminder">
+          <div class="cell-hd">
+            定时提醒
+          </div>
+          <div class="cell-bd">
+            <div
+              v-if="showReminders"
+              class="list"
+            >
+              <li
+                v-for="(reminder,index) in todo.reminders"
+                :key="index"
+              >
+                {{ reminder.time }} {{ reminder.day }}
+              </li>
+            </div>
+            <div
+              v-else
+              class="default"
+            >
+              没有设置定时提醒
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="showProgress"
+          class="cell btn-big btn data progress"
+        >
+          <div
+            class="cell-hd"
+          >
+            {{ progress.hd }}
+          </div>
+          <div class="cell-bd">
+            <div class="column">
+              <span class="text">{{ progress.bd.completed }}</span>
+              <span class="number">{{ progress.data.complete }}</span>
+              <span class="unit">{{ progress.data.customUnit||'分钟' }}</span>
+            </div>
+            <div class="column">
+              <span class="text">{{ progress.bd.progress }}</span>
+              <ProgressCircle
+                :width="40"
+                :progress="progress.data.number"
+                type="arc"
+              />
+            </div>
+            <div class="column">
+              <span class="text">{{ progress.bd.total }}</span>
+              <span class="number">{{ progress.data.total||progress.data.piece }}</span>
+              <span class="unit">{{ progress.data.customUnit||'分钟' }}</span>
+            </div>
+          </div>
+          <div class="cell-footer">
+            <div class="row">
+              <div class="title">
+                <span>1</span>
+                <span>总共坚持天数</span>
+              </div>
+              <span>{{ todo.stickDays.total }} 天</span>
+            </div>
+            <div class="row">
+              <div class="title">
+                <span>2</span>
+                <span>连续坚持天数</span>
+              </div>
+              <span>{{ todo.stickDays.continuation }} 天</span>
+            </div>
+            <div class="row">
+              <div class="title">
+                <span>3</span>
+                <span>创建日期</span>
+              </div>
+              <span>{{ creatTime }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ComPopup>
+
+    <ComPopup
+      title="长按拖动排序"
+      class="box-sort"
+      :show.sync="showBoxSort"
+    >
+      <ComList :data="listSort" />
     </ComPopup>
 
     <BoxAddToDo
@@ -163,6 +202,7 @@
 import ListItem from './ListItem'
 import ProgressCircle from './ProgressCircle'
 import BoxAddToDo from '@/components/todo/add/BoxAddToDo'
+import util from '@/util.js'
 export default {
   components: {
     ListItem,
@@ -179,7 +219,9 @@ export default {
     return {
       showBoxInfo: false,
       todo: this.todos[0],
-      showBoxAddToDo: false
+      showBoxAddToDo: false,
+      showBtnMoveDrop: false,
+      showBoxSort: false
     }
   },
   computed: {
@@ -189,29 +231,32 @@ export default {
         let progress = ''
         let deadline = ''
         let progressBar = ''
+        const type2tex = {
+          common: '普通番茄时钟',
+          goal: '目标',
+          habit: '习惯'
+        }
 
         if (todo.timeDuration) {
           description += `${todo.timeDuration} 分钟`
         } else {
           description += todo.timeWay
         }
-        if (todo.type !== '普通番茄时钟') {
-          description += `-${todo.type}`
+        if (todo.type !== 'common') {
+          description += `-${type2tex[todo.type]}`
         }
 
         if (todo.goal) {
           progress += `${todo.goal.complete}/${todo.goal.total} ${todo.goal
             .customUnit || '分钟'}`
-          progressBar = Math.ceil((todo.goal.complete / todo.goal.total) * 100)
+          progressBar = this.getProgress(todo.goal.complete, todo.goal.total)
           deadline = `离计划结束:${Math.ceil(
             (todo.goal.deadline - new Date()) / (1000 * 60 * 60 * 24)
           )}天`
         } else if (todo.habit) {
           progress += `今日:${todo.habit.complete}/${todo.habit.piece} ${todo
             .habit.customUnit || '分钟'}`
-          progressBar = Math.ceil(
-            (todo.habit.complete / todo.habit.piece) * 100
-          )
+          progressBar = this.getProgress(todo.habit.complete, todo.habit.piece)
         }
 
         return {
@@ -223,16 +268,46 @@ export default {
         }
       })
     },
+    creatTime () {
+      return util.timeFormat(this.todo.create, { unit: true })
+    },
     showReminders () {
       return this.todo.reminders.length
     },
     showProgress () {
       return this.todo.goal || this.todo.habit
+    },
+    progress () {
+      let hd = ''
+      const bd = {}
+      let data = {}
+      const { goal, habit } = this.todo
+      bd.completed = '计划内已完成'
+      bd.total = '计划总数'
+
+      if (goal) {
+        hd = `目标截止日期：${util.timeFormat(goal.deadline, { cut: '-' })} 剩余:382天`
+        bd.progress = '长期计划完成度'
+        data = goal
+        data.number = this.getProgress(goal.complete, goal.total)
+      } else if (habit) {
+        hd = '习惯周期:今天'
+        bd.progress = '习惯完成度'
+        data = habit
+        data.number = this.getProgress(habit.complete, habit.piece)
+      }
+
+      return {
+        hd,
+        bd,
+        data
+      }
+    },
+    listSort () {
+      return this.todos.map((todo) => ({ name: todo.name }))
     }
   },
-  watch: {
-
-  },
+  watch: {},
   mounted () {
     console.log(this.datas)
     console.log(this.todos)
@@ -240,6 +315,16 @@ export default {
   },
   methods: {
     start () { },
+    getProgress (complete, total) {
+      return Math.ceil(complete / total * 100)
+    },
+    setPosition (element, target) {
+      this.$nextTick(() => {
+        const targetRect = target.getBoundingClientRect()
+        element.style.left = targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
+        element.style.top = targetRect.bottom + 'px'
+      })
+    },
     edit (index) {
       this.todo = this.todos[index]
       console.log(this.todo)
@@ -248,6 +333,16 @@ export default {
     editToDo () {
       this.showBoxAddToDo = true
       this.showBoxInfo = false
+    },
+    move () {
+      this.showBtnMoveDrop = true
+      this.setPosition(this.$refs.moveDrop, this.$refs.btnMove)
+    },
+    moveUpDown () {
+
+    },
+    moveToSet () {
+
     }
   }
 }
@@ -386,6 +481,27 @@ export default {
         span:first-child {
           margin-right: 10px;
         }
+      }
+    }
+  }
+
+  .drop {
+    .fixed-full-screen();
+    background-color: transparent;
+    font-size: 10px;
+    color: white;
+
+    .drop-inline {
+      position: absolute;
+
+    }
+
+    li {
+      line-height: normal;
+      padding: 10px 20px;
+      background-color: rgb(43, 43, 43);
+      &:not(:first-child){
+        margin-top: 1px;
       }
     }
   }
