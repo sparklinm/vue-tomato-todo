@@ -1,9 +1,9 @@
 <template>
   <PopUp>
     <div
-v-if="show"
-         class="plu-tips-wrap"
->
+      v-if="show"
+      class="plu-tips-wrap"
+    >
       <div class="plu-tips">
         <div class="box-background" />
         <div class="text">
@@ -23,9 +23,7 @@ export default {
     }
   },
   mounted () {},
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 

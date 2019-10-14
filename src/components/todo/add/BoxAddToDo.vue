@@ -10,120 +10,121 @@
       :class="customClass"
       @closed="$emit('update:show',false)"
     >
-      <template v-slot:content>
-        <ComInput
-          ref="input-name"
-          v-model="todo.name"
-          type="textarea"
-          icon="question"
-          placeholder="请输入代办名称"
-          :tips="description.todo.name"
-          autofocus
-        />
-        <div class="config-todo">
-          <div class="type">
-            <ul>
-              <li
-                v-for="(item,index) in todoType"
-                :key="index"
-              >
-                <label>
-                  <input
-                    type="radio"
-                    name="type"
-                    :checked="index===0"
-                  >
-                  <span @click="onTypeClick(index)">{{ item.text }}</span>
-                </label>
-              </li>
-            </ul>
-          </div>
-          <div class="config-extra">
-            <div
-              v-show="showConfigGoal"
-              class="config-goal"
+      <ComInput
+        ref="input-name"
+        v-model="todo.name"
+        type="textarea"
+        icon="question"
+        placeholder="请输入代办名称"
+        :tips="description.todo.name"
+        autofocus
+      />
+      <div class="config-todo">
+        <div class="type">
+          <ul>
+            <li
+              v-for="(item,index) in todoType"
+              :key="index"
             >
-              我想在
-              <input type="text">
-              之前一共完成
-              <input type="text">
-              <select
-                id
-                name
-              >
-                <option value="小时">
-                  小时
-                </option>
-              </select>
-            </div>
-            <div
-              v-show="showConfigHabit"
-              class="config-habit"
+              <label>
+                <input
+                  type="radio"
+                  name="type"
+                  :checked="item.checked"
+                >
+                <span @click="onTypeClick(index)">{{ item.text }}</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+        <div class="config-extra">
+          <div
+            v-show="showConfigGoal"
+            class="config-goal"
+          >
+            我想在
+            <input type="text">
+            之前一共完成
+            <input type="text">
+            <select
+              id
+              name
             >
-              我想
-              <select
-                id
-                name
-              >
-                <option value="每天">
-                  每天
-                </option>
-              </select>
-              完成
-              <input type="text">
-              <select
-                id
-                name
-              >
-                <option value="小时">
-                  小时
-                </option>
-              </select>
-            </div>
+              <option value="小时">
+                小时
+              </option>
+            </select>
           </div>
-          <div class="time-way">
-            <ul>
-              <li
-                v-for="(item,index) in todoTimeWay"
-                :key="index"
-              >
-                <label>
-                  <input
-                    :checked="item.checked"
-                    type="radio"
-                    name="way"
-                  >
-                  <span @click="onTimeWayClick(item)">{{ item.value }}</span>
-                </label>
-              </li>
-            </ul>
-          </div>
-          <div class="time-duration">
-            <ul>
-              <li
-                v-for="(item,index) in todoTimeDuration"
-                :key="index"
-              >
-                <label>
-                  <input
-                    type="radio"
-                    name="duration"
-                    :checked="item.checked"
-                    @click="onTimeDurationClick(item)"
-                  >
-                  <span>{{ item.text }}</span>
-                </label>
-              </li>
-            </ul>
-          </div>
-          <div class="tips-time-duration">
-            {{ tipTimeDuration }}
-          </div>
-          <div class="advanced-setting">
-            <span @click="onAdvancedSettingsClick">{{ btnAdvancedSettings }}</span>
+          <div
+            v-show="showConfigHabit"
+            class="config-habit"
+          >
+            我想
+            <select
+              id
+              name
+            >
+              <option value="每天">
+                每天
+              </option>
+            </select>
+            完成
+            <input type="text">
+            <select
+              id
+              name
+            >
+              <option value="小时">
+                小时
+              </option>
+            </select>
           </div>
         </div>
-      </template>
+        <div class="time-way">
+          <ul>
+            <li
+              v-for="(item,index) in todoTimeWay"
+              :key="index"
+            >
+              <label>
+                <input
+                  :checked="item.checked"
+                  type="radio"
+                  name="way"
+                >
+                <span @click="onTimeWayClick(item)">{{ item.value }}</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+        <div
+          v-show="showTimeDuration"
+          class="time-duration"
+        >
+          <ul>
+            <li
+              v-for="(item,index) in todoTimeDuration"
+              :key="index"
+            >
+              <label>
+                <input
+                  type="radio"
+                  name="duration"
+                  :checked="item.checked"
+                  @click="onTimeDurationClick(item)"
+                >
+                <span>{{ item.text }}</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+        <div class="tips-time-duration">
+          {{ tipTimeDuration }}
+        </div>
+        <div class="advanced-setting">
+          <span @click="onAdvancedSettingsClick">{{ btnAdvancedSettings }}</span>
+        </div>
+      </div>
     </ComPopup>
     <ComPopup
       title="自定义Todo时间"
@@ -135,16 +136,14 @@
       :submit="submitCustomTimeDuration"
       :cancel="cancelCustomTimeDuration"
     >
-      <template v-slot:content>
-        <ComInput
-          ref="input-time-duration"
-          v-model="customTimeDuration.value"
-          :placeholder="todo.timeDuration+'分钟'"
-          :min="customTimeDuration.min"
-          :max="customTimeDuration.max"
-          type="positiveInteger"
-        />
-      </template>
+      <ComInput
+        ref="input-time-duration"
+        v-model="customTimeDuration.value"
+        :placeholder="todo.timeDuration+'分钟'"
+        :min="customTimeDuration.min"
+        :max="customTimeDuration.max"
+        type="positiveInteger"
+      />
     </ComPopup>
     <ComPopup
       title="高级设置"
@@ -156,44 +155,42 @@
       :cancel="cancelAdvancedSettings"
       :submit="submitAdvancedSettings"
     >
-      <template v-slot:content>
-        <label class="label-checkbox">
-          <input
-            v-model="advancedSettings.hideAfterComplete.value"
-            type="checkbox"
-          >
-          <span class="icon-checked">
-            <i
-              aria-hidden="true"
-              class="fa fa-check"
-            />
-          </span>
-          <span>完成后第二天不再显示</span>
-        </label>
-        <div class="setting-list">
-          <ComInput
-            ref="input-task-notes"
-            v-model="advancedSettings.taskNotes.value"
-            type="textarea"
-            placeholder="任务备注"
+      <label class="label-checkbox">
+        <input
+          v-model="advancedSettings.hideAfterComplete.value"
+          type="checkbox"
+        >
+        <span class="icon-checked">
+          <i
+            aria-hidden="true"
+            class="fa fa-check"
           />
-          <ComInput
-            v-show="showInputLoopTimes"
-            v-model="advancedSettings.loopTimes.value"
-            type="positiveInteger"
-            placeholder="单次预期循环次数"
-            :tips="description.todo.loopTimes"
-            icon="question"
-            class="item-1"
-          />
-          <ComInput
-            v-show="showInputRestTime"
-            v-model="advancedSettings.restTime.value"
-            type="positiveInteger"
-            placeholder="自定义休息时间"
-          />
-        </div>
-      </template>
+        </span>
+        <span>完成后第二天不再显示</span>
+      </label>
+      <div class="setting-list">
+        <ComInput
+          ref="input-task-notes"
+          v-model="advancedSettings.taskNotes.value"
+          type="textarea"
+          placeholder="任务备注"
+        />
+        <ComInput
+          v-show="showInputLoopTimes"
+          v-model="advancedSettings.loopTimes.value"
+          type="positiveInteger"
+          placeholder="单次预期循环次数"
+          :tips="description.todo.loopTimes"
+          icon="question"
+          class="item-1"
+        />
+        <ComInput
+          v-show="showInputRestTime"
+          v-model="advancedSettings.restTime.value"
+          type="positiveInteger"
+          placeholder="自定义休息时间"
+        />
+      </div>
     </ComPopup>
   </div>
 </template>
@@ -217,65 +214,28 @@ export default {
   },
   data () {
     return {
-      todo: this.data || {
+      todo: {
         name: '',
-        type: '普通番茄时钟',
+        type: 'common',
         timeWay: '倒计时',
         timeDuration: 25
       },
-      todoCommon: {
-        name: '',
-        type: '普通番茄时钟',
-        timeWay: '倒计时',
-        timeDuration: 25,
-        taskNotes: '',
-        loopTimes: '',
-        restTime: '',
-        hideAfterComplete: false
-      },
-      todoGoal: {
-        name: '',
-        type: '定目标',
-        timeWay: '倒计时',
-        timeDuration: 25,
-        goal: {
-          deadline: new Date(2019, 9, 2),
-          total: 10,
-          complete: 0
-        },
-        taskNotes: '',
-        loopTimes: '',
-        restTime: '',
-        hideAfterComplete: false
-      },
-      todoHabit: {
-        name: '',
-        type: '养习惯',
-        timeWay: '倒计时',
-        timeDuration: 25,
-        habit: {
-          frequency: 1,
-          piece: 10,
-          complete: 0
-        },
-        taskNotes: '',
-        loopTimes: '',
-        restTime: '',
-        hideAfterComplete: false
-      },
+      todoCommon: {},
+      todoGoal: {},
+      todoHabit: {},
       todoType: [
         {
-          name: 'common',
+          value: 'common',
           text: '普通番茄钟',
           checked: true
         },
         {
-          name: 'goal',
+          value: 'goal',
           text: '定目标',
           checked: false
         },
         {
-          name: 'habit',
+          value: 'habit',
           text: '养习惯',
           checked: false
         }
@@ -373,6 +333,9 @@ export default {
     }
   },
   computed: {
+    showTimeDuration () {
+      return this.todo.timeWay === '倒计时'
+    },
     showConfigGoal () {
       return this.todo.type === this.todoGoal.type
     },
@@ -391,7 +354,8 @@ export default {
       }).description
     },
     ...mapState({
-      showBoxAddToDo: state => state.showBoxAddToDo
+      showBoxAddToDo: state => state.showBoxAddToDo,
+      template: state => state.template
     })
   },
   watch: {
@@ -405,7 +369,15 @@ export default {
     }
   },
   mounted () {
-    this.todo = this.todoCommon
+    this.todoCommon = this.template.todoCommon
+    this.todoGoal = this.template.todoGoal
+    this.todoHabit = this.template.todoHabit
+    this.todo = this.data || this.todoCommon
+    this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
+    this.setChecked(this.todoTimeWay, this.todo.timeWay)
+    this.setChecked(this.todoType, this.todo.type)
+    this.setAdvancedSettings()
+    this.setBtnAdvancedSettings()
   },
   methods: {
     ...mapMutations(['addToDo', 'toggleBoxAddToDo']),
@@ -422,9 +394,27 @@ export default {
       this.btnAdvancedSettings = '展开更多高级设置'
     },
     setChecked (configs, value) {
+      let checked = false
       configs.forEach(item => {
         item.checked = item.value === value
+        if (item.checked) {
+          checked = true
+        }
       })
+      if (!checked) {
+        configs[0].checked = true
+      }
+    },
+    setAdvancedSettings () {
+      for (const [key, setting] of Object.entries(this.advancedSettings)) {
+        if (this.todo[key]) {
+          if (key === 'loopTimes' || key === 'restTime') {
+            setting.value = setting.default = this.todo[key].custom
+          } else {
+            setting.value = setting.default = this.todo[key]
+          }
+        }
+      }
     },
     submitCustomTimeDuration (done) {
       const { value } = this.customTimeDuration
@@ -449,18 +439,13 @@ export default {
     },
     onTypeClick (index) {
       const type =
-        this.todoType[index].name.slice(0, 1).toUpperCase() +
-        this.todoType[index].name.slice(1)
+        this.todoType[index].value.slice(0, 1).toUpperCase() +
+        this.todoType[index].value.slice(1)
       this.todo = this['todo' + type]
 
       this.setChecked(this.todoTimeWay, this.todo.timeWay)
-
       this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
-
-      for (const [key, setting] of Object.entries(this.advancedSettings)) {
-        setting.value = this.todo[key]
-      }
-
+      this.setAdvancedSettings()
       this.setBtnAdvancedSettings()
     },
     onTimeWayClick (obj) {
@@ -510,7 +495,12 @@ export default {
       if (isChecked) {
         for (const [key, setting] of Object.entries(this.advancedSettings)) {
           const { value } = setting
-          this.todo[key] = setting.default = value
+          setting.default = value
+          if (key === 'loopTimes' || key === 'restTime') {
+            this.todo[key].custom = value
+          } else {
+            this.todo[key] = value
+          }
         }
         this.$refs['input-name'].focus()
       }
@@ -525,7 +515,7 @@ export default {
       })
     },
     submitAddToDo (done) {
-      const { name, loopTimes, restTime } = this.todo
+      const { name } = this.todo
       if (name === '') {
         this.$message({
           title: '提示',
@@ -533,8 +523,6 @@ export default {
         })
         return
       }
-      this.todo.loopTimes = loopTimes || 1
-      this.todo.restTime = restTime || 5
 
       if (this.todo.timeWay === '正向计时') {
         delete this.todo.loopTimes
@@ -550,6 +538,17 @@ export default {
       } else if (this.todo.type === '养习惯') {
         this.todo.type = '习惯'
       }
+
+      this.todo.focus = {
+        number: 0,
+        duration: 0
+      }
+      this.todo.reminders = []
+      this.todo.stickDays = {
+        total: 0,
+        continuation: 0
+      }
+      this.todo.creat = new Date()
 
       this.addToDo(this.todo)
       done()
