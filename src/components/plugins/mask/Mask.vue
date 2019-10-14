@@ -17,9 +17,7 @@ export default {
       zIndex: 2000
     }
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 

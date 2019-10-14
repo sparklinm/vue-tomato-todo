@@ -8,7 +8,7 @@ export default new Vuex.Store({
     todos: [
       {
         name: '普通',
-        type: '普通番茄时钟',
+        type: 'common',
         timeWay: '正向计时',
         taskNotes: '普通普通普通',
         loopTimes: 1,
@@ -28,7 +28,7 @@ export default new Vuex.Store({
       },
       {
         name: '目标',
-        type: '目标',
+        type: 'goal',
         timeWay: '倒计时',
         timeDuration: 25,
         goal: {
@@ -59,7 +59,7 @@ export default new Vuex.Store({
       },
       {
         name: '习惯',
-        type: '习惯',
+        type: 'habit',
         timeWay: '倒计时',
         timeDuration: 25,
         habit: {
@@ -88,6 +88,67 @@ export default new Vuex.Store({
         }
       }
     ],
+    template: {
+      todoCommon: {
+        name: '',
+        type: 'common',
+        timeWay: '倒计时',
+        timeDuration: 25,
+        taskNotes: '',
+        loopTimes: {
+          value: 1,
+          custom: ''
+        },
+        restTime: {
+          value: 5,
+          custom: ''
+        },
+        hideAfterComplete: false
+      },
+      todoGoal: {
+        name: '',
+        type: 'goal',
+        timeWay: '倒计时',
+        timeDuration: 25,
+        goal: {
+          deadline: new Date(2019, 9, 2),
+          total: 10,
+          complete: 0
+        },
+        taskNotes: '',
+        loopTimes: {
+          value: 1,
+          custom: ''
+        },
+        restTime: {
+          value: 5,
+          custom: ''
+        },
+        hideAfterComplete: false
+      },
+      todoHabit: {
+        name: '',
+        type: 'habit',
+        timeWay: '倒计时',
+        timeDuration: 25,
+        habit: {
+          frequency: 1,
+          piece: 10,
+          complete: 0
+        },
+        taskNotes: '',
+        loopTimes: {
+          value: 1,
+          custom: ''
+        },
+        restTime: {
+          value: 5,
+          custom: ''
+        },
+        hideAfterComplete: false
+      },
+      type2text: {}
+    },
     todoSet: []
 
   },
@@ -96,7 +157,5 @@ export default new Vuex.Store({
       state.todos.push(todo)
     }
   },
-  actions: {
-
-  }
+  actions: {}
 })
