@@ -18,7 +18,7 @@
           <div
             class="com-popup__header-btn-area"
           >
-            <slot name="headerIcon" />
+            <slot name="header-icon" />
 
             <span
               v-if="topOptionBtn"
@@ -209,7 +209,7 @@ export default {
 }
 
 .com-popup__header-btn {
-  margin-left: 15px;
+  margin-left: 25px;
 }
 
 .com-popup__content {
