@@ -22,7 +22,7 @@
       :title="todo.name"
       class="box-edit"
     >
-      <template v-slot:headerIcon>
+      <template v-slot:header-icon>
         <span class="btn-header">
           <i class="fa fa-clock-o" />
           <span class="text">定时提醒/学霸</span>
@@ -52,7 +52,7 @@
             <span
               ref="btnMove"
               class="btn btn-small"
-              @click="move"
+              @click="onBtnMoveClick"
             >排序|移动
             </span>
             <transition name="fade">
@@ -66,10 +66,10 @@
                   class="drop-inline"
                 >
                   <ul>
-                    <li @click="showBoxSort=true">
+                    <li @click="sort">
                       上下位置排序
                     </li>
-                    <li @click="showMoveBox=true">
+                    <li @click="moveToSet">
                       移动到待办集
                     </li>
                   </ul>
@@ -186,8 +186,44 @@
       title="长按拖动排序"
       class="box-sort"
       :show.sync="showBoxSort"
+      :z-index="2050"
+      top-option-btn
     >
-      <ComList :data="listSort" />
+      <template v-slot:header-icon>
+        <span class="btn-header">
+          <i
+            aria-hidden="true"
+            class="fa fa-question-circle"
+            @click="$message(description.sortTodo)"
+          />
+        </span>
+      </template>
+      <ComList>
+        <ComCell
+          v-for="(item,index) in todos"
+          :key="index"
+          ref="sortCell"
+          :title="item.name"
+          class="sort-cell"
+          style="top:0"
+          @touchstart.native="onTouchStart(index)"
+          @touchmove.native="onTouchMove"
+          @touchend.native="onTouchEnd"
+        >
+          <template v-slot:right-icon>
+            <i
+              :id="'item'+index"
+              class="fa fa-trash delete-icon"
+              aria-hidden="true"
+              draggable="true"
+              @dragstart="drag()"
+              @dragover.prevent
+              @drop="drop()"
+              @click="deleteTodo(index)"
+            />
+          </template>
+        </ComCell>
+      </ComList>
     </ComPopup>
 
     <BoxAddToDo
@@ -221,7 +257,24 @@ export default {
       todo: this.todos[0],
       showBoxAddToDo: false,
       showBtnMoveDrop: false,
-      showBoxSort: false
+      showBoxSort: true,
+      description: {
+        sortTodo: {
+          title: '帮助',
+          content: '<p>排序->长按并拖动</p><p>删除->点击删除按钮</p><p>注意，由于已完成的待办始终排在最后面，若对它们排序，会将它们的状态变为待完成时才生效。</p>'
+        }
+      },
+      mouse: { originY: 0 },
+      target: {
+        originY: 0,
+        startY: 0,
+        index: 0
+      },
+      next: {
+        originY: 0,
+        startY: 0,
+        index: -1
+      }
     }
   },
   computed: {
@@ -302,9 +355,6 @@ export default {
         bd,
         data
       }
-    },
-    listSort () {
-      return this.todos.map((todo) => ({ name: todo.name }))
     }
   },
   watch: {},
@@ -334,15 +384,72 @@ export default {
       this.showBoxAddToDo = true
       this.showBoxInfo = false
     },
-    move () {
+    onBtnMoveClick () {
       this.showBtnMoveDrop = true
       this.setPosition(this.$refs.moveDrop, this.$refs.btnMove)
     },
-    moveUpDown () {
-
+    sort () {
+      this.showBoxSort = true
+      this.showBtnMoveDrop = false
     },
     moveToSet () {
+      this.showMoveBox = true
+      this.showBtnMoveDrop = false
+    },
+    deleteTodo (index) {
+      this.todos.splice(index, 1)
+    },
+    drag () {
+      console.log(event)
+      event.dataTransfer.setData('Text', event.target.id)
+    },
+    drop () {
+      console.log(event)
+    },
+    onTouchStart (index) {
+      console.log(event)
+      const touch = event.targetTouches[0]
+      const el = touch.target
+      el.style.opacity = 0.5
+      this.mouse.originY = this.mouse.startY = touch.clientY
+      this.target.startY = parseInt(el.style.top)
+      this.target.index = index
+      this.target.height = el.clientHeight
+      this.next.index = -1
+    },
+    onTouchMove () {
+      const touch = event.targetTouches[0]
+      const el = touch.target
+      const dy = touch.clientY - this.mouse.startY
+      console.log(touch.clientY)
+      console.log(this.mouse.startYs)
 
+
+      if (dy > 0) {
+        this.next.index = this.next.index !== -1 ? this.next.index : this.target.index + 1
+        this.$refs.sortCell[this.next.index].$el.style.top = this.next.startY - dy + 'px'
+      } else {
+        this.next.index = this.next.index !== -1 ? this.next.index : (this.target.index - 1)
+        this.$refs.sortCell[this.next.index].$el.style.top = this.next.startY - dy + 'px'
+      }
+      el.style.top = this.target.startY + dy + 'px'
+      this.mouse.startY = touch.clientY
+      this.target.startY += dy
+      this.next.startY -= dy
+      if (Math.abs(parseInt(el.style.top)) >= this.target.height * this.next.index) {
+        this.target.index = this.next.index
+        this.next.index = -1
+        this.mouse.startY = this.target.startY
+      }
+      console.log(event)
+    },
+    onTouchEnd () {
+      console.log(event)
+      const el = event.target
+      el.style.opacity = 1
+      // if(Math.abs(parseInt(el.style.top))>(this.target.height/2)){
+
+      // }
     }
   }
 }
@@ -355,13 +462,13 @@ export default {
   .list-item {
     margin-top: 8px;
   }
-
-  .com-popup__header {
-    padding: 10px 5px 10px 10px;
-  }
 }
 
 .box-edit {
+  .com-popup__header {
+    padding: 10px 5px 10px 10px;
+  }
+
   .btn-header {
     .flex(@flex-direction: column; @align-items: center;);
     font-size: 20px;
@@ -461,7 +568,7 @@ export default {
 
   .progress {
     .cell-hd {
-          letter-spacing: 0;
+      letter-spacing: 0;
     }
 
     .text,.unit {
@@ -504,6 +611,22 @@ export default {
         margin-top: 1px;
       }
     }
+  }
+}
+
+.box-sort {
+  .delete-icon {
+    font-size: 18px;
+    color:rgb(90, 90, 90);
+  }
+
+  .com-popup__content {
+    padding: 0;
+  }
+
+  .com-cell {
+    padding: 15px 25px;
+    position: relative;
   }
 }
 </style>
