@@ -1,22 +1,15 @@
 <template>
-  <ul>
-    <li
-      v-for="(item,index) in data"
-      :key="index"
-    >
-      <span class="hd">{{ data.title }}</span>
-      <span class="bd">{{ data.content }}</span>
-      <span class="ft">{{ data.footer }}</span>
-    </li>
-  </ul>
+  <div class="com-list">
+    <slot />
+  </div>
 </template>
 
 <script>
 export default {
   props: {
     data: {
-      type: Object,
-      default: () => ({})
+      type: Array,
+      default: () => ([])
     }
   },
   data () {

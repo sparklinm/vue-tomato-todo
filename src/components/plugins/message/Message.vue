@@ -68,15 +68,15 @@ export default {
   .title {
     font-size: 16px;
     font-weight: 500;
+    text-align: left;
   }
 
   .content {
     font-size: 14px;
     line-height: 1.4;
     text-align: justify;
-    letter-spacing: 1px;
     p {
-      margin:0;
+      margin:10px 0;
     }
   }
 
