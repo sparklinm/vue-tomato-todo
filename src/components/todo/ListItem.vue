@@ -51,16 +51,10 @@ export default {
     }
   },
   data () {
-    return {
-
-    }
+    return {}
   },
-  computed: {
-
-  },
-  watch: {
-
-  },
+  computed: {},
+  watch: {},
   mounted () {
 
   },

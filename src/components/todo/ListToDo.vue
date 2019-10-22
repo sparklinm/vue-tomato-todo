@@ -53,8 +53,7 @@
               ref="btnMove"
               class="btn btn-small"
               @click="onBtnMoveClick"
-            >排序|移动
-            </span>
+            >排序|移动</span>
             <transition name="fade">
               <div
                 v-show="showBtnMoveDrop"
@@ -77,7 +76,10 @@
               </div>
             </transition>
 
-            <span class="btn btn-small">删除</span>
+            <span
+              class="btn btn-small"
+              @click="deleteTodo(todoIndex)"
+            >删除</span>
           </div>
         </div>
         <div class="cell">
@@ -130,9 +132,7 @@
           v-if="showProgress"
           class="cell btn-big btn data progress"
         >
-          <div
-            class="cell-hd"
-          >
+          <div class="cell-hd">
             {{ progress.hd }}
           </div>
           <div class="cell-bd">
@@ -188,6 +188,7 @@
       :show.sync="showBoxSort"
       :z-index="2050"
       top-option-btn
+      :submit="submitSort"
     >
       <template v-slot:header-icon>
         <span class="btn-header">
@@ -198,17 +199,17 @@
           />
         </span>
       </template>
-      <ComList>
+      <ComList
+        id="container"
+        ref="container"
+      >
         <ComCell
           v-for="(item,index) in todos"
-          :key="index"
+          :id="'item'+index"
+          :key="item.name+Math.random()"
           ref="sortCell"
           :title="item.name"
           class="sort-cell"
-          style="top:0"
-          @touchstart.native="onTouchStart(index)"
-          @touchmove.native="onTouchMove"
-          @touchend.native="onTouchEnd"
         >
           <template v-slot:right-icon>
             <i
@@ -239,6 +240,7 @@ import ListItem from './ListItem'
 import ProgressCircle from './ProgressCircle'
 import BoxAddToDo from '@/components/todo/add/BoxAddToDo'
 import util from '@/util.js'
+import Sorter from '@/sort.js'
 export default {
   components: {
     ListItem,
@@ -255,26 +257,18 @@ export default {
     return {
       showBoxInfo: false,
       todo: this.todos[0],
+      todoIndex: 0,
       showBoxAddToDo: false,
       showBtnMoveDrop: false,
-      showBoxSort: true,
+      showBoxSort: false,
       description: {
         sortTodo: {
           title: '帮助',
-          content: '<p>排序->长按并拖动</p><p>删除->点击删除按钮</p><p>注意，由于已完成的待办始终排在最后面，若对它们排序，会将它们的状态变为待完成时才生效。</p>'
+          content:
+            '<p>排序->长按并拖动</p><p>删除->点击删除按钮</p><p>注意，由于已完成的待办始终排在最后面，若对它们排序，会将它们的状态变为待完成时才生效。</p>'
         }
       },
-      mouse: { originY: 0 },
-      target: {
-        originY: 0,
-        startY: 0,
-        index: 0
-      },
-      next: {
-        originY: 0,
-        startY: 0,
-        index: -1
-      }
+      sorter: null
     }
   },
   computed: {
@@ -322,7 +316,9 @@ export default {
       })
     },
     creatTime () {
-      return util.timeFormat(this.todo.create, { unit: true })
+      return util.timeFormat(this.todo.create, {
+        unit: true
+      })
     },
     showReminders () {
       return this.todo.reminders.length
@@ -339,7 +335,9 @@ export default {
       bd.total = '计划总数'
 
       if (goal) {
-        hd = `目标截止日期：${util.timeFormat(goal.deadline, { cut: '-' })} 剩余:382天`
+        hd = `目标截止日期：${util.timeFormat(goal.deadline, {
+          cut: '-'
+        })} 剩余:382天`
         bd.progress = '长期计划完成度'
         data = goal
         data.number = this.getProgress(goal.complete, goal.total)
@@ -361,23 +359,24 @@ export default {
   mounted () {
     console.log(this.datas)
     console.log(this.todos)
-
+    console.log(Sorter)
   },
   methods: {
-    start () { },
+    start () {},
     getProgress (complete, total) {
-      return Math.ceil(complete / total * 100)
+      return Math.ceil((complete / total) * 100)
     },
     setPosition (element, target) {
       this.$nextTick(() => {
         const targetRect = target.getBoundingClientRect()
-        element.style.left = targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
+        element.style.left =
+          targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
         element.style.top = targetRect.bottom + 'px'
       })
     },
     edit (index) {
       this.todo = this.todos[index]
-      console.log(this.todo)
+      this.todoIndex = index
       this.showBoxInfo = true
     },
     editToDo () {
@@ -391,6 +390,11 @@ export default {
     sort () {
       this.showBoxSort = true
       this.showBtnMoveDrop = false
+      this.showBoxInfo = false
+      this.sorter = new Sorter('#container', this.todos)
+      setTimeout(() => {
+        this.sorter.init()
+      }, 300)
     },
     moveToSet () {
       this.showMoveBox = true
@@ -406,50 +410,12 @@ export default {
     drop () {
       console.log(event)
     },
-    onTouchStart (index) {
-      console.log(event)
-      const touch = event.targetTouches[0]
-      const el = touch.target
-      el.style.opacity = 0.5
-      this.mouse.originY = this.mouse.startY = touch.clientY
-      this.target.startY = parseInt(el.style.top)
-      this.target.index = index
-      this.target.height = el.clientHeight
-      this.next.index = -1
-    },
-    onTouchMove () {
-      const touch = event.targetTouches[0]
-      const el = touch.target
-      const dy = touch.clientY - this.mouse.startY
-      console.log(touch.clientY)
-      console.log(this.mouse.startYssss)
-
-
-      if (dy > 0) {
-        this.next.index = this.next.index !== -1 ? this.next.index : this.target.index + 1
-        this.$refs.sortCell[this.next.index].$el.style.top = this.next.startY - dy + 'px'
-      } else {
-        this.next.index = this.next.index !== -1 ? this.next.index : (this.target.index - 1)
-        this.$refs.sortCell[this.next.index].$el.style.top = this.next.startY - dy + 'px'
+    submitSort () {
+      if (this.sorter) {
+        this.$emit('update-todos', this.sorter.getData())
+        this.sorter.destroy()
       }
-      el.style.top = this.target.startY + dy + 'px'
-      this.mouse.startY = touch.clientY
-      this.target.startY += dy
-      this.next.startY -= dy
-      if (Math.abs(parseInt(el.style.top)) >= this.target.height * this.next.index) {
-        this.target.index = this.next.index
-        this.next.index = -1
-        this.mouse.startY = this.target.startY
-      }
-      console.log(event)
-    },
-    onTouchEnd () {
-      console.log(event)
-      const el = event.target
-      el.style.opacity = 1
-      // if(Math.abs(parseInt(el.style.top))>(this.target.height/2)){
-
-      // }
+      this.showBoxSort = false
     }
   }
 }
@@ -571,7 +537,8 @@ export default {
       letter-spacing: 0;
     }
 
-    .text,.unit {
+    .text,
+    .unit {
       opacity: 0.9;
     }
 
@@ -581,8 +548,8 @@ export default {
 
     .row {
       width: 80%;
-      margin:0 auto 8px;
-      .flex(@align-items: center;@justify-content: space-between;);
+      margin: 0 auto 8px;
+      .flex(@align-items: center; @justify-content: space-between;);
 
       .title {
         span:first-child {
@@ -600,14 +567,13 @@ export default {
 
     .drop-inline {
       position: absolute;
-
     }
 
     li {
       line-height: normal;
       padding: 10px 20px;
       background-color: rgb(43, 43, 43);
-      &:not(:first-child){
+      &:not(:first-child) {
         margin-top: 1px;
       }
     }
@@ -617,7 +583,7 @@ export default {
 .box-sort {
   .delete-icon {
     font-size: 18px;
-    color:rgb(90, 90, 90);
+    color: rgb(90, 90, 90);
   }
 
   .com-popup__content {
@@ -629,4 +595,9 @@ export default {
     position: relative;
   }
 }
+
+.sort-cell {
+  transition: all 0.1s ease;
+}
+
 </style>
