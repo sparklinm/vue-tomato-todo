@@ -6,6 +6,7 @@ import 'normalize.css'
 import 'font-awesome/css/font-awesome.css'
 import '@/styles/index.less'
 
+
 // 自动化全局注册common目录下的组件
 const requireComponent = require.context('./components/common', true, /\.vue$/)
 

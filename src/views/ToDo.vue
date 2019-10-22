@@ -1,11 +1,14 @@
 <template>
   <div>
-    <ListToDo :todos="todos" />
+    <ListToDo
+      :todos="todos"
+      @update-todos="setToDos($event)"
+    />
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import ListToDo from '../components/todo/ListToDo'
 
 
@@ -14,8 +17,7 @@ export default {
     ListToDo
   },
   data () {
-    return {
-    }
+    return {}
   },
   computed: {
     ...mapState({
@@ -23,8 +25,10 @@ export default {
     })
   },
   mounted () {
+
   },
   methods: {
+    ...mapMutations(['setToDos'])
   }
 }
 </script>
