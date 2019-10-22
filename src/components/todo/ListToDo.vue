@@ -422,7 +422,7 @@ export default {
       const el = touch.target
       const dy = touch.clientY - this.mouse.startY
       console.log(touch.clientY)
-      console.log(this.mouse.startYs)
+      console.log(this.mouse.startYssss)
 
 
       if (dy > 0) {
