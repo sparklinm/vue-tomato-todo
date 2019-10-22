@@ -27,6 +27,66 @@ export default new Vuex.Store({
         ]
       },
       {
+        name: '普通2',
+        type: 'common',
+        timeWay: '正向计时',
+        taskNotes: '普通普通普通',
+        loopTimes: 1,
+        restTime: 5,
+        hideAfterComplete: false,
+        create: new Date(2019, 8, 24),
+        focus: {
+          number: 0,
+          duration: 0
+        },
+        reminders: [
+          {
+            time: '17:33',
+            day: '每天'
+          }
+        ]
+      },
+      {
+        name: '普通3',
+        type: 'common',
+        timeWay: '正向计时',
+        taskNotes: '普通普通普通',
+        loopTimes: 1,
+        restTime: 5,
+        hideAfterComplete: false,
+        create: new Date(2019, 8, 24),
+        focus: {
+          number: 0,
+          duration: 0
+        },
+        reminders: [
+          {
+            time: '17:33',
+            day: '每天'
+          }
+        ]
+      },
+      {
+        name: '普通4',
+        type: 'common',
+        timeWay: '正向计时',
+        taskNotes: '普通普通普通',
+        loopTimes: 1,
+        restTime: 5,
+        hideAfterComplete: false,
+        create: new Date(2019, 8, 24),
+        focus: {
+          number: 0,
+          duration: 0
+        },
+        reminders: [
+          {
+            time: '17:33',
+            day: '每天'
+          }
+        ]
+      },
+      {
         name: '目标',
         type: 'goal',
         timeWay: '倒计时',
@@ -155,6 +215,9 @@ export default new Vuex.Store({
   mutations: {
     addToDo (state, todo) {
       state.todos.push(todo)
+    },
+    setToDos (state, todos) {
+      state.todos = todos
     }
   },
   actions: {}

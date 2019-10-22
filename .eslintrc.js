@@ -146,7 +146,7 @@ module.exports = {
     'object-curly-newline': [
       'error',
       {
-        'ObjectExpression': { "multiline": true, "minProperties": 2 },
+        'ObjectExpression': { "multiline": true, "minProperties": 1 },
         'ObjectPattern': {
           'multiline': true
         },
