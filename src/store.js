@@ -209,15 +209,182 @@ export default new Vuex.Store({
       },
       type2text: {}
     },
-    todoSet: []
-
+    todoSets: [
+      {
+        name: '1',
+        background: '#0000FF',
+        todos: [
+          {
+            name: '目标',
+            type: 'goal',
+            timeWay: '倒计时',
+            timeDuration: 25,
+            goal: {
+              deadline: new Date(2019, 8, 28),
+              total: 360,
+              complete: 100,
+              customUnit: '页'
+            },
+            taskNotes: '目标目标目标',
+            loopTimes: 1,
+            restTime: 10,
+            hideAfterComplete: false,
+            create: new Date(2019, 8, 24),
+            focus: {
+              number: 100,
+              duration: 1000
+            },
+            reminders: [
+              {
+                time: '17:33',
+                day: '每天'
+              }
+            ],
+            stickDays: {
+              total: 2,
+              continuation: 2
+            }
+          },
+          {
+            name: '普通',
+            type: 'common',
+            timeWay: '正向计时',
+            taskNotes: '普通普通普通',
+            loopTimes: 1,
+            restTime: 5,
+            hideAfterComplete: false,
+            create: new Date(2019, 8, 24),
+            focus: {
+              number: 0,
+              duration: 0
+            },
+            reminders: [
+              {
+                time: '17:33',
+                day: '每天'
+              }
+            ]
+          },
+          {
+            name: '普通2',
+            type: 'common',
+            timeWay: '正向计时',
+            taskNotes: '普通普通普通',
+            loopTimes: 1,
+            restTime: 5,
+            hideAfterComplete: false,
+            create: new Date(2019, 8, 24),
+            focus: {
+              number: 0,
+              duration: 0
+            },
+            reminders: [
+              {
+                time: '17:33',
+                day: '每天'
+              }
+            ]
+          },
+          {
+            name: '普通3',
+            type: 'common',
+            timeWay: '正向计时',
+            taskNotes: '普通普通普通',
+            loopTimes: 1,
+            restTime: 5,
+            hideAfterComplete: false,
+            create: new Date(2019, 8, 24),
+            focus: {
+              number: 0,
+              duration: 0
+            },
+            reminders: [
+              {
+                time: '17:33',
+                day: '每天'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: '2',
+        background: '#CCFFFF',
+        todos: [
+          {
+            name: '普通',
+            type: 'common',
+            timeWay: '正向计时',
+            taskNotes: '普通普通普通',
+            loopTimes: 1,
+            restTime: 5,
+            hideAfterComplete: false,
+            create: new Date(2019, 8, 24),
+            focus: {
+              number: 0,
+              duration: 0
+            },
+            reminders: [
+              {
+                time: '17:33',
+                day: '每天'
+              }
+            ]
+          },
+          {
+            name: '普通2',
+            type: 'common',
+            timeWay: '正向计时',
+            taskNotes: '普通普通普通',
+            loopTimes: 1,
+            restTime: 5,
+            hideAfterComplete: false,
+            create: new Date(2019, 8, 24),
+            focus: {
+              number: 0,
+              duration: 0
+            },
+            reminders: [
+              {
+                time: '17:33',
+                day: '每天'
+              }
+            ]
+          },
+          {
+            name: '普通3',
+            type: 'common',
+            timeWay: '正向计时',
+            taskNotes: '普通普通普通',
+            loopTimes: 1,
+            restTime: 5,
+            hideAfterComplete: false,
+            create: new Date(2019, 8, 24),
+            focus: {
+              number: 0,
+              duration: 0
+            },
+            reminders: [
+              {
+                time: '17:33',
+                day: '每天'
+              }
+            ]
+          }
+        ]
+      }
+    ]
   },
+  getters: {},
   mutations: {
     addToDo (state, todo) {
       state.todos.push(todo)
     },
     setToDos (state, todos) {
       state.todos = todos
+    },
+    addToDoSet (state, set) {
+      state.todoSets.push(set)
     }
   },
   actions: {}

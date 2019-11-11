@@ -1,34 +1,29 @@
 <template>
   <div class="com-cell">
-    <i
-      v-if="icon"
-      class="fa"
-      aria-hidden="true"
-      :class="iconObj"
-    />
-    <div
-      v-if="title!==''"
-      class="com-cell__hd"
-    >
+    <div class="com-cell__hd">
+      <ComIcon :name="icon" />
+      <div
+        v-if="title!==''"
+        class="com-cell__hd-inner"
+      />
       <span>{{ title }}</span>
       <div>{{ label }}</div>
     </div>
-    <div
-      v-if="text!==''"
-      class="com-cell__bd"
-    >
-      <span>{{ text }}</span>
+    <div class="com-cell__bd">
+      <div
+        v-if="text!==''"
+        class="com-cell__bd-inner"
+      >
+        <span>{{ text }}</span>
+      </div>
     </div>
-    <div
-      v-if="false"
-      class="com-cell__ft"
-    />
-    <!-- <i
-      class="fa"
-      aria-hidden="true"
-      :class="rightIconObj"
-    />-->
-    <slot name="right-icon" />
+    <div class="com-cell__ft">
+      <div
+        v-if="false"
+        class="com-cell__ft-inner"
+      />
+      <slot name="right-icon" />
+    </div>
   </div>
 </template>
 
@@ -61,10 +56,14 @@ export default {
   },
   computed: {
     iconObj () {
-      return { ['fa' + this.icon]: true }
+      return {
+        ['fa' + this.icon]: true
+      }
     },
     rightIconObj () {
-      return { ['fa' + this.rightIcon]: true }
+      return {
+        ['fa' + this.rightIcon]: true
+      }
     }
   },
   methods: {}

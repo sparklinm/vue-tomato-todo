@@ -1,6 +1,6 @@
 <template>
-  <div class="com-input boreder-bottom-20">
-    <label class="com-input__area">
+  <div class="com-input">
+    <label class="com-input__area boreder-bottom-20">
       <span
         ref="placeholder"
         class="com-input__placeholder"
@@ -148,6 +148,7 @@ export default {
 }
 
 .com-input__area {
+  position: relative;
   flex: 1;
   .flex(@align-items: center);
 }
@@ -155,7 +156,6 @@ export default {
 .com-input__placeholder {
   position: absolute;
   transform-origin: left top;
-  letter-spacing: 1px;
 }
 
 .com-input__box {

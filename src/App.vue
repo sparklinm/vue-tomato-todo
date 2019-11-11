@@ -4,19 +4,20 @@
   >
     <Nav />
     <router-view />
+    <TabBar />
   </div>
 </template>
 
 <script>
-import Nav from './components/header/Nav.vue'
+import Nav from './components/nav/Nav.vue'
+import TabBar from './components/tabbar/TabBar.vue'
 export default {
   components: {
-    Nav
+    Nav,
+    TabBar
   },
   data () {
-    return {
-
-    }
+    return {}
   },
   mounted () {
     window.addEventListener('resize', () => {

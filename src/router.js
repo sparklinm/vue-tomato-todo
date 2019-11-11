@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import ToDo from './views/ToDo.vue'
+import ToDoSet from './views/ToDoSet.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -8,6 +9,10 @@ export default new Router({
     {
       path: '/',
       component: ToDo
+    },
+    {
+      path: '/set',
+      component: ToDoSet
     }
   ]
 })
