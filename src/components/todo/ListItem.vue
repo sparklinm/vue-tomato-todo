@@ -71,7 +71,7 @@ export default {
 <style lang="less">
 
 .list-item {
-  padding: 15px 0px 5px 15px;
+  padding: 15px 0px 10px 20px;
   background-color: rgb(49, 159, 202);
   color: white;
   border-radius: 5px;
@@ -136,6 +136,7 @@ export default {
       left: 50%;
       padding: 5px;
       transform: translate(-50%,-50%);
+      white-space: nowrap;
     }
   }
 }

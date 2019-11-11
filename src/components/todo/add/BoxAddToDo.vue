@@ -15,7 +15,7 @@
         v-model="todo.name"
         type="textarea"
         icon="question"
-        placeholder="请输入代办名称"
+        placeholder="请输入待办名称"
         :tips="description.todo.name"
         autofocus
       />

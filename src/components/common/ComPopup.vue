@@ -118,7 +118,9 @@ export default {
     }
   },
   data () {
-    return { showBox: false }
+    return {
+      showBox: false
+    }
   },
   watch: {
     showBox (val) {
@@ -223,7 +225,7 @@ export default {
 
 .com-popup__footer-btn {
   width: 100%;
-  height: 30px;
+  height: 34px;
   font-size: 14px;
   letter-spacing: 1px;
   border: none;

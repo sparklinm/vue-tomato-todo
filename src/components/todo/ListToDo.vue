@@ -49,12 +49,39 @@
               class="btn btn-small"
               @click="editToDo"
             >编辑</span>
-            <span
-              ref="btnMove"
-              class="btn btn-small"
-              @click="onBtnMoveClick"
-            >排序|移动</span>
-            <transition name="fade">
+
+            <ComToolTip>
+              <span
+                ref="btnMove"
+                class="btn btn-small"
+                @click="onBtnMoveClick"
+              >排序|移动</span>
+              <span>456</span>
+              <template v-slot:content>
+                <!-- <transition name="fade"> -->
+                <div
+                  v-show="showBtnMoveDrop"
+                  class="drop"
+                  @click.self="showBtnMoveDrop=false"
+                >
+                  <div
+                    ref="moveDrop"
+                    class="drop-inline"
+                  >
+                    <ul>
+                      <li @click="sort">
+                        上下位置排序
+                      </li>
+                      <li @click="moveToSet">
+                        移动到待办集
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <!-- </transition> -->
+              </template>
+            </ComToolTip>
+            <!-- <transition name="fade">
               <div
                 v-show="showBtnMoveDrop"
                 class="drop"
@@ -74,7 +101,7 @@
                   </ul>
                 </div>
               </div>
-            </transition>
+            </transition> -->
 
             <span
               class="btn btn-small"
@@ -200,8 +227,7 @@
         </span>
       </template>
       <ComList
-        id="container"
-        ref="container"
+        :id="'container'+_uid"
       >
         <ComCell
           v-for="(item,index) in todos"
@@ -217,9 +243,6 @@
               class="fa fa-trash delete-icon"
               aria-hidden="true"
               draggable="true"
-              @dragstart="drag()"
-              @dragover.prevent
-              @drop="drop()"
               @click="deleteTodo(index)"
             />
           </template>
@@ -366,14 +389,14 @@ export default {
     getProgress (complete, total) {
       return Math.ceil((complete / total) * 100)
     },
-    setPosition (element, target) {
-      this.$nextTick(() => {
-        const targetRect = target.getBoundingClientRect()
-        element.style.left =
-          targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
-        element.style.top = targetRect.bottom + 'px'
-      })
-    },
+    // setPosition (element, target) {
+    //   this.$nextTick(() => {
+    //     const targetRect = target.getBoundingClientRect()
+    //     element.style.left =
+    //       targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
+    //     element.style.top = targetRect.bottom + 'px'
+    //   })
+    // },
     edit (index) {
       this.todo = this.todos[index]
       this.todoIndex = index
@@ -391,7 +414,7 @@ export default {
       this.showBoxSort = true
       this.showBtnMoveDrop = false
       this.showBoxInfo = false
-      this.sorter = new Sorter('#container', this.todos)
+      this.sorter = new Sorter(`#container${this._uid}`, this.todos)
       setTimeout(() => {
         this.sorter.init()
       }, 300)
@@ -402,13 +425,6 @@ export default {
     },
     deleteTodo (index) {
       this.todos.splice(index, 1)
-    },
-    drag () {
-      console.log(event)
-      event.dataTransfer.setData('Text', event.target.id)
-    },
-    drop () {
-      console.log(event)
     },
     submitSort () {
       if (this.sorter) {
