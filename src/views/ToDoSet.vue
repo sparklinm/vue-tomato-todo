@@ -1,16 +1,14 @@
 <template>
   <div>
-    {{ content }}
+    <ListToDoSet />
   </div>
 </template>
 
 <script>
+import ListToDoSet from '@/components/todo/ListToDoSet'
 export default {
-  props: {
-    content: {
-      type: String,
-      default: ''
-    }
+  components: {
+    ListToDoSet
   },
   data () {
     return {}
@@ -22,7 +20,6 @@ export default {
 }
 </script>
 
-<style lang='less'>
-
+<style lang='less' scoped>
 
 </style>
