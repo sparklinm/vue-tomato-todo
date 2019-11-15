@@ -11,9 +11,7 @@ module.exports = {
     'sourceType': 'module'
   },
   'extends': ['plugin:vue/recommended', 'eslint:recommended'],
-  "plugins": [
-    "vue"
-  ],
+  'plugins': ['vue'],
   'rules': {
     'indent': [
       'error',
@@ -52,7 +50,12 @@ module.exports = {
     'no-tabs': 'error',
     'no-var': 'error',
     'one-var': ['error', 'never'],
-    'prefer-const':["error", {"destructuring": "all"}],
+    'prefer-const': [
+      'error',
+      {
+        'destructuring': 'all'
+      }
+    ],
     'no-trailing-spaces': 'error',
     'operator-assignment': ['error', 'always'],
     'dot-location': ['error', 'property'],
@@ -146,7 +149,10 @@ module.exports = {
     'object-curly-newline': [
       'error',
       {
-        'ObjectExpression': { "multiline": true, "minProperties": 1 },
+        'ObjectExpression': {
+          'multiline': true,
+          'minProperties': 1
+        },
         'ObjectPattern': {
           'multiline': true
         },
@@ -157,7 +163,7 @@ module.exports = {
         }
       }
     ],
-    'space-in-parens': ["error", "never"]
+    'space-in-parens': ['error', 'never']
   },
   'plugins': ['html'],
   'settings': {
@@ -182,6 +188,6 @@ module.exports = {
     'accounting': true,
     'LIOUtil': true,
     'module': true,
-    'Velocity':true
+    'Velocity': true
   }
 }

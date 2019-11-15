@@ -1,9 +1,9 @@
 <template>
   <div class="list-todo">
     <ListItem
-      v-for="(data,index) in datas"
+      v-for="(data, index) in datas"
       :key="index"
-      v-bind="{...data}"
+      v-bind="{ ...data }"
       class="list-todo__item"
       @start="start(index)"
       @edit="edit(index)"
@@ -54,42 +54,12 @@
               <span
                 ref="btnMove"
                 class="btn btn-small"
-                @click="onBtnMoveClick"
               >排序|移动</span>
-              <span>456</span>
               <template v-slot:content>
                 <!-- <transition name="fade"> -->
                 <div
-                  v-show="showBtnMoveDrop"
-                  class="drop"
-                  @click.self="showBtnMoveDrop=false"
-                >
-                  <div
-                    ref="moveDrop"
-                    class="drop-inline"
-                  >
-                    <ul>
-                      <li @click="sort">
-                        上下位置排序
-                      </li>
-                      <li @click="moveToSet">
-                        移动到待办集
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <!-- </transition> -->
-              </template>
-            </ComToolTip>
-            <!-- <transition name="fade">
-              <div
-                v-show="showBtnMoveDrop"
-                class="drop"
-                @click.self="showBtnMoveDrop=false"
-              >
-                <div
                   ref="moveDrop"
-                  class="drop-inline"
+                  class="move-drop"
                 >
                   <ul>
                     <li @click="sort">
@@ -100,9 +70,9 @@
                     </li>
                   </ul>
                 </div>
-              </div>
-            </transition> -->
-
+                <!-- </transition> -->
+              </template>
+            </ComToolTip>
             <span
               class="btn btn-small"
               @click="deleteTodo(todoIndex)"
@@ -141,7 +111,7 @@
               class="list"
             >
               <li
-                v-for="(reminder,index) in todo.reminders"
+                v-for="(reminder, index) in todo.reminders"
                 :key="index"
               >
                 {{ reminder.time }} {{ reminder.day }}
@@ -166,7 +136,7 @@
             <div class="column">
               <span class="text">{{ progress.bd.completed }}</span>
               <span class="number">{{ progress.data.complete }}</span>
-              <span class="unit">{{ progress.data.customUnit||'分钟' }}</span>
+              <span class="unit">{{ progress.data.customUnit || "分钟" }}</span>
             </div>
             <div class="column">
               <span class="text">{{ progress.bd.progress }}</span>
@@ -178,8 +148,10 @@
             </div>
             <div class="column">
               <span class="text">{{ progress.bd.total }}</span>
-              <span class="number">{{ progress.data.total||progress.data.piece }}</span>
-              <span class="unit">{{ progress.data.customUnit||'分钟' }}</span>
+              <span class="number">{{
+                progress.data.total || progress.data.piece
+              }}</span>
+              <span class="unit">{{ progress.data.customUnit || "分钟" }}</span>
             </div>
           </div>
           <div class="cell-footer">
@@ -226,20 +198,18 @@
           />
         </span>
       </template>
-      <ComList
-        :id="'container'+_uid"
-      >
+      <ComList :id="'container' + _uid">
         <ComCell
-          v-for="(item,index) in todos"
-          :id="'item'+index"
-          :key="item.name+Math.random()"
+          v-for="(item, index) in todos"
+          :id="'item' + index"
+          :key="item.name + Math.random()"
           ref="sortCell"
           :title="item.name"
           class="sort-cell"
         >
           <template v-slot:right-icon>
             <i
-              :id="'item'+index"
+              :id="'item' + index"
               class="fa fa-trash delete-icon"
               aria-hidden="true"
               draggable="true"
@@ -282,7 +252,6 @@ export default {
       todo: this.todos[0],
       todoIndex: 0,
       showBoxAddToDo: false,
-      showBtnMoveDrop: false,
       showBoxSort: false,
       description: {
         sortTodo: {
@@ -389,14 +358,6 @@ export default {
     getProgress (complete, total) {
       return Math.ceil((complete / total) * 100)
     },
-    // setPosition (element, target) {
-    //   this.$nextTick(() => {
-    //     const targetRect = target.getBoundingClientRect()
-    //     element.style.left =
-    //       targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
-    //     element.style.top = targetRect.bottom + 'px'
-    //   })
-    // },
     edit (index) {
       this.todo = this.todos[index]
       this.todoIndex = index
@@ -405,10 +366,6 @@ export default {
     editToDo () {
       this.showBoxAddToDo = true
       this.showBoxInfo = false
-    },
-    onBtnMoveClick () {
-      this.showBtnMoveDrop = true
-      this.setPosition(this.$refs.moveDrop, this.$refs.btnMove)
     },
     sort () {
       this.showBoxSort = true
@@ -574,26 +531,6 @@ export default {
       }
     }
   }
-
-  .drop {
-    .fixed-full-screen();
-    background-color: transparent;
-    font-size: 10px;
-    color: white;
-
-    .drop-inline {
-      position: absolute;
-    }
-
-    li {
-      line-height: normal;
-      padding: 10px 20px;
-      background-color: rgb(43, 43, 43);
-      &:not(:first-child) {
-        margin-top: 1px;
-      }
-    }
-  }
 }
 
 .box-sort {
@@ -616,4 +553,16 @@ export default {
   transition: all 0.1s ease;
 }
 
+.move-drop {
+  position: absolute;
+
+  li {
+    line-height: normal;
+    padding: 10px 20px;
+    background-color: rgb(43, 43, 43);
+    &:not(:first-child) {
+      margin-top: 1px;
+    }
+  }
+}
 </style>
