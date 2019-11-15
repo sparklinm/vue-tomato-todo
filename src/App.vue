@@ -1,7 +1,5 @@
 <template>
-  <div
-    id="app"
-  >
+  <div id="app">
     <Nav />
     <router-view />
     <TabBar />
@@ -21,13 +19,14 @@ export default {
   },
   mounted () {
     window.addEventListener('resize', () => {
-      document.documentElement.style.fontSize = document.documentElement.clientWidth / 414 * 50 + 'px'
+      document.documentElement.style.fontSize =
+        (document.documentElement.clientWidth / 414) * 50 + 'px'
     })
-    document.documentElement.style.fontSize = document.documentElement.clientWidth / 414 * 50 + 'px'
+    document.documentElement.style.fontSize =
+      (document.documentElement.clientWidth / 414) * 50 + 'px'
     document.body.className = 'theme-1'
   }
 }
 </script>
 
-<style lang="less">
-</style>
+<style lang="less"></style>
