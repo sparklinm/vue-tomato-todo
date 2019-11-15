@@ -10,6 +10,15 @@ module.exports = {
       patterns: [path.resolve(__dirname, 'src/styles/mixin.less'), path.resolve(__dirname, 'src/styles/variable.less')]
     }
   },
-  configureWebpack: { plugins: [new webpack.ProvidePlugin({ Velocity: 'velocity-animate' }), new webpack.ProvidePlugin({ _: 'lodash' })] }
+  configureWebpack: {
+    plugins: [
+      new webpack.ProvidePlugin({
+        Velocity: 'velocity-animate'
+      }),
+      new webpack.ProvidePlugin({
+        _: 'lodash'
+      })
+    ]
+  }
 
 }

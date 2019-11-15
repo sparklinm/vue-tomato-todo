@@ -55,9 +55,7 @@ export default {
   },
   computed: {},
   watch: {},
-  mounted () {
-
-  },
+  mounted () {},
   methods: {
     edit () {
       if (event.target.id !== 'btn-start') {
@@ -69,7 +67,6 @@ export default {
 </script>
 
 <style lang="less">
-
 .list-item {
   padding: 15px 0px 10px 20px;
   background-color: rgb(49, 159, 202);
@@ -92,7 +89,7 @@ export default {
 
       .description {
         transform-origin: left center;
-        transform: scale(0.8)
+        transform: scale(0.8);
       }
 
       .progress {
@@ -105,7 +102,7 @@ export default {
           margin-right: 4px;
         }
 
-        .progress-text{
+        .progress-text {
           font-size: 10px;
           transform: scale(0.7);
           transform-origin: left center;
@@ -123,7 +120,7 @@ export default {
       position: absolute;
       top: 0;
       left: 50%;
-      transform: translate(-50%,-50%) scale(0.7);
+      transform: translate(-50%, -50%) scale(0.7);
       font-size: 10px;
       letter-spacing: 1px;
       white-space: nowrap;
@@ -135,7 +132,7 @@ export default {
       top: 50%;
       left: 50%;
       padding: 5px;
-      transform: translate(-50%,-50%);
+      transform: translate(-50%, -50%);
       white-space: nowrap;
     }
   }

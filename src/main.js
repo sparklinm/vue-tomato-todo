@@ -26,7 +26,6 @@ requireComponent.keys().forEach(fileName => {
 import MyPlugins from './components/plugins'
 Vue.use(MyPlugins)
 
-
 Vue.config.productionTip = false
 
 

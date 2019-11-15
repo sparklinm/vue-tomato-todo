@@ -22,6 +22,8 @@ function creatMaskPlugin (Vue, options) {
     setMask () {
       instance.show = true
       if (this.data.length) {
+        console.log(this.data)
+
         instance.zIndex = this.data[this.data.length - 1].style.zIndex - 1
       }
     },
