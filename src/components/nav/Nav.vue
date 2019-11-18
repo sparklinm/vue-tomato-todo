@@ -17,6 +17,7 @@
     <BoxAddToDo
       v-if="showBoxAddToDo"
       :show.sync="showBoxAddToDo"
+      @submit="addToDo($event)"
     />
     <BoxAddToDoSet
       :show.sync="showBoxAddToDoSet"
@@ -25,6 +26,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import BoxAddToDo from '@/components/todo/add/BoxAddToDo'
 import BoxAddToDoSet from '@/components/todo/add/BoxAddToDoSet'
 export default {
@@ -58,19 +60,41 @@ export default {
         {
           name: 'addTodo',
           icon: 'plus',
-          event: this.addToDo,
+          event: this.showBox.bind(this, 'showBoxAddToDo'),
           limits: ['todo']
         },
         {
           name: 'addTodoSet',
           icon: 'plus-square',
-          event: this.addToDoSet,
+          event: this.showBox.bind(this, 'showBoxAddToDoSet'),
           limits: ['set']
         },
         {
           name: 'more',
           icon: 'ellipsis-v',
-          event: () => {}
+          event: () => {},
+          limits: ['todo', 'set']
+        },
+        {
+          // 旋转屏幕
+          name: 'rotateScreen',
+          icon: '',
+          event: () => {},
+          limits: ['do']
+        },
+        {
+          // 分享
+          name: 'share',
+          icon: 'share-alt',
+          event: () => {},
+          limits: ['do']
+        },
+        {
+          // 下载
+          name: 'download',
+          icon: 'download',
+          event: () => {},
+          limits: ['do']
         }
       ]
 
@@ -89,12 +113,9 @@ export default {
     }
   },
   methods: {
-    addToDo () {
-      // this.$store.commit('toggleBoxAddToDo', true, null)
-      this.showBoxAddToDo = true
-    },
-    addToDoSet () {
-      this.showBoxAddToDoSet = true
+    ...mapMutations(['addToDo']),
+    showBox (key) {
+      this[key] = true
     }
   }
 }

@@ -52,7 +52,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations['addToDoSet'],
+    ...mapMutations(['addToDoSet']),
     selectColor (index) {
       this.todoSet.background = this.colors[index]
     },

@@ -11,7 +11,7 @@
       @click.self="handleCancel"
     >
       <div class="com-popup">
-        <div class="com-popup__header background-color-20">
+        <div class="com-popup__header">
           <div class="text">
             {{ title }}
           </div>
@@ -47,15 +47,17 @@
           <slot />
         </div>
         <div
-          v-if="bottomConfirmBtn"
+          v-if="showFooter"
           class="com-popup__footer"
         >
           <button
-            class="com-popup__footer-btn font-color-base-10"
+            v-if="bottomConfirmBtn"
+            class="com-popup__footer-btn"
             @click="handleSubmit"
           >
             确定
           </button>
+          <slot name="footer" />
         </div>
       </div>
     </div>
@@ -120,6 +122,11 @@ export default {
   data () {
     return {
       showBox: false
+    }
+  },
+  computed: {
+    showFooter () {
+      return this.bottomConfirmBtn || (this.$slots.footer && this.$slots.footer.length)
     }
   },
   watch: {
@@ -197,6 +204,7 @@ export default {
   width: 6.5rem;
   vertical-align: middle;
   background-color: white;
+  text-align: left;
 }
 
 .com-popup__header {

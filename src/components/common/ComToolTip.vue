@@ -13,19 +13,24 @@ export default {
     }
   },
   mounted () {
-    const vNode = this.$slots.default[0]
-    console.log(vNode)
-    console.log(this.$slots.content)
-
     this.$el.addEventListener('click', () => {
+      this.creatContent()
+    })
+  },
+  methods: {
+    creatContent () {
+    // 创建content组件
       const Content = Vue.extend({
         render: () => this.$slots.content
       })
       const content = new Content()
+      // 创建父容器com-tooltip，fixed定位且全屏
       const container = document.createElement('div')
       container.className = 'com-tooltip'
       container.style.zIndex = 5000
+      // content组件挂载元素
       container.innerHTML = '<div id="com-tooltip-content"></div>'
+      // 点击父容器时，关闭content
       container.addEventListener('click', e => {
         if (e.target.className.includes('com-tooltip')) {
           content.$el.classList.add('com-tooltip__content_ani-out')
@@ -35,15 +40,15 @@ export default {
         }
       })
       document.body.appendChild(container)
+      // 挂载
       content.$mount('#com-tooltip-content')
+      // 动画效果
       content.$el.classList.add('com-tooltip__content_ani-in')
       content.$el.addEventListener('animationend', () => {
         content.$el.classList.remove('com-tooltip__content_ani-in')
       })
       this.setPosition(content.$el, this.$el)
-    })
-  },
-  methods: {
+    },
     setPosition (element, target) {
       const targetRect = target.getBoundingClientRect()
       element.style.left =
