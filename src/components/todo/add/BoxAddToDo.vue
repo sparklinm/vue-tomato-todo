@@ -155,19 +155,10 @@
       :cancel="cancelAdvancedSettings"
       :submit="submitAdvancedSettings"
     >
-      <label class="label-checkbox">
-        <input
-          v-model="advancedSettings.hideAfterComplete.value"
-          type="checkbox"
-        >
-        <span class="icon-checked">
-          <i
-            aria-hidden="true"
-            class="fa fa-check"
-          />
-        </span>
-        <span>完成后第二天不再显示</span>
-      </label>
+      <ComCheckBox
+        v-model="advancedSettings.hideAfterComplete.value"
+        content="完成后第二天不再显示"
+      />
       <div class="setting-list">
         <ComInput
           ref="input-task-notes"
@@ -550,7 +541,8 @@ export default {
       }
       this.todo.creat = new Date()
 
-      this.addToDo(this.todo)
+      // this.addToDo(this.todo)
+      this.$emit('submit', this.todo)
       done()
     }
   }
@@ -645,53 +637,6 @@ export default {
     letter-spacing: 1px;
     font-size: 14px;
 
-    .label-checkbox {
-      position: relative;
-      @checkbox-w: 20px;
-      @checkbox-h: 20px;
-
-      .checkbox-wh {
-        width: @checkbox-w;
-        height: @checkbox-h;
-      }
-
-      input[type="checkbox"] {
-        vertical-align: middle;
-        margin-right: 8px;
-        background: #fff;
-        border: 1px solid black;
-        border-radius: 2px;
-        appearance: none;
-        outline: none;
-        .checkbox-wh;
-
-        &:checked {
-          background: darken(@theme-base-color-1, 20%);
-          border: none;
-        }
-
-        &:checked + .icon-checked {
-          display: inline-block;
-          position: absolute;
-          left: 0;
-          text-align: center;
-          color: white;
-          .checkbox-wh;
-
-          i {
-            line-height: @checkbox-h;
-          }
-        }
-      }
-
-      .icon-checked {
-        display: none;
-      }
-
-      span {
-        vertical-align: middle;
-      }
-    }
 
     .setting-list {
       padding-right: 20px;
