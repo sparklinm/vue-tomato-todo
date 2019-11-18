@@ -53,8 +53,8 @@ export default {
   bottom: 0;
   width: 100%;
   padding: 10px 0;
-  border-top: 1px solid rgb(196, 196, 196);
-  color: #5a5a5a;
+  border-top: 1px solid @gray-l-m;
+  color: @gray-d;
 
   .tab-bar-inner {
     .flex(@justify-content: space-between;);

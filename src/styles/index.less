@@ -17,51 +17,65 @@ body {
     color: @theme-base-color-1-10;
   }
 
-  .background-color-base {
+  .background-color-base() {
     background-color: @theme-base-color-1;
   }
 
-  .boreder-bottom-base {
+  .boreder-bottom-base() {
     border-bottom: 2px solid @theme-base-color-1;
   }
 
-  .background-color-10 {
+  .background-color-10() {
     background-color: @theme-base-color-1-10;
   }
 
-  .boreder-bottom-10 {
+  .boreder-bottom-10() {
     border-bottom: 2px solid @theme-base-color-1-10;
   }
 
-  .background-color-20 {
+  .background-color-20() {
     background-color: @theme-base-color-1-20;
   }
 
-  .boreder-bottom-20 {
+  .boreder-bottom-20() {
     border-bottom: 2px solid @theme-base-color-1-20;
   }
 
-  .com-input {
-    .com-input__placeholder {
+  .com-popup__header {
+    .background-color-20();
+  }
+
+  .com-popup__footer-btn {
+    .font-color-base-10();
+  }
+
+  .com-input__area {
+    border-bottom: 1px solid @theme-base-color-1;
+  }
+
+  .com-input__placeholder {
+    color: @theme-base-color-1;
+  }
+
+  .com-input__box_focus {
+    border-bottom: 2px solid @theme-base-color-1-20;
+  }
+
+  .com-input__box {
+    &::-webkit-input-placeholder {
       color: @theme-base-color-1;
     }
 
-    .com-input__box {
-      &::-webkit-input-placeholder {
-        color: @theme-base-color-1;
-      }
+    &:-moz-placeholder {
+      color: @theme-base-color-1;
+    }
 
-      &:-moz-placeholder {
-        color: @theme-base-color-1;
-      }
+    &::-moz-placeholder {
+      color: @theme-base-color-1;
+    }
 
-      &::-moz-placeholder {
-        color: @theme-base-color-1;
-      }
-
-      &:-ms-input-placeholder {
-        color: @theme-base-color-1;
-      }
+    &:-ms-input-placeholder {
+      color: @theme-base-color-1;
     }
   }
 
@@ -89,7 +103,7 @@ body {
 
   .progress-bar-circle {
     .circle-sector {
-      fill:gray;
+      fill: gray;
     }
 
     .sector {
@@ -144,6 +158,21 @@ ul {
   height: 100%;
   width: 0;
   vertical-align: middle;
+}
+
+.drop-list_simple {
+  position: absolute;
+  text-align: left;
+
+  li {
+    line-height: normal;
+    padding: 10px 20px;
+    background-color: rgb(43, 43, 43);
+
+    &:not(:first-child) {
+      margin-top: 1px;
+    }
+  }
 }
 
 .popup-enter-active {

@@ -1,6 +1,9 @@
 <template>
   <div class="com-input">
-    <label class="com-input__area boreder-bottom-20">
+    <label
+      class="com-input__area"
+      :class="{'com-input__box_focus':isFocus}"
+    >
       <span
         ref="placeholder"
         class="com-input__placeholder"
@@ -12,7 +15,9 @@
         class="com-input__box com-input-box"
         rows="1"
         :autofocus="autofocus"
-        @input="inputHandle"
+        @focus="isFocus=true"
+        @blur="isFocus=false"
+        @input="handleInput"
       />
       <input
         v-else
@@ -23,7 +28,9 @@
         :max="max"
         :type="type==='number'?type:'text'"
         :autofocus="autofocus"
-        @input="inputHandle"
+        @focus="isFocus=true"
+        @blur="isFocus=false"
+        @input="handleInput"
       >
     </label>
     <span
@@ -78,7 +85,8 @@ export default {
   data () {
     return {
       currentValue: this.value,
-      checkedValue: ''
+      checkedValue: '',
+      isFocus: false
     }
   },
   computed: {
@@ -128,14 +136,14 @@ export default {
     console.log(this.$listeners)
   },
   methods: {
-    inputHandle () {
+    handleInput () {
       this.$emit('input', this.currentValue)
     },
     focus () {
       this.$refs.input.focus()
     },
     toPositiveInteger (val) {
-      return val.match(/^[0-9]*/)[0]
+      return String(val).match(/^[0-9]*/)[0]
     }
   }
 }
@@ -164,6 +172,10 @@ export default {
   outline: none;
   padding: 5px 0;
   resize: none;
+}
+
+.com-input__box_focus {
+
 }
 
 .com-input__icon {

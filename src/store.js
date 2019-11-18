@@ -11,8 +11,14 @@ export default new Vuex.Store({
         type: 'common',
         timeWay: '正向计时',
         taskNotes: '普通普通普通',
-        loopTimes: 1,
-        restTime: 5,
+        loopTimes: {
+          default: 1,
+          custom: ''
+        },
+        restTime: {
+          default: 5,
+          custom: ''
+        },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
         focus: {
@@ -31,8 +37,14 @@ export default new Vuex.Store({
         type: 'common',
         timeWay: '正向计时',
         taskNotes: '普通普通普通',
-        loopTimes: 1,
-        restTime: 5,
+        loopTimes: {
+          default: 1,
+          custom: ''
+        },
+        restTime: {
+          default: 5,
+          custom: ''
+        },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
         focus: {
@@ -51,8 +63,14 @@ export default new Vuex.Store({
         type: 'common',
         timeWay: '正向计时',
         taskNotes: '普通普通普通',
-        loopTimes: 1,
-        restTime: 5,
+        loopTimes: {
+          default: 1,
+          custom: ''
+        },
+        restTime: {
+          default: 5,
+          custom: ''
+        },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
         focus: {
@@ -71,8 +89,14 @@ export default new Vuex.Store({
         type: 'common',
         timeWay: '正向计时',
         taskNotes: '普通普通普通',
-        loopTimes: 1,
-        restTime: 5,
+        loopTimes: {
+          default: 1,
+          custom: ''
+        },
+        restTime: {
+          default: 5,
+          custom: ''
+        },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
         focus: {
@@ -98,8 +122,14 @@ export default new Vuex.Store({
           customUnit: '页'
         },
         taskNotes: '目标目标目标',
-        loopTimes: 1,
-        restTime: 10,
+        loopTimes: {
+          default: 1,
+          custom: 10
+        },
+        restTime: {
+          default: 5,
+          custom: 30
+        },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
         focus: {
@@ -128,8 +158,14 @@ export default new Vuex.Store({
           complete: 30
         },
         taskNotes: '习惯习惯习惯',
-        loopTimes: 5,
-        restTime: 20,
+        loopTimes: {
+          default: 1,
+          custom: 5
+        },
+        restTime: {
+          default: 5,
+          custom: 20
+        },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
         focus: {
@@ -213,6 +249,9 @@ export default new Vuex.Store({
       {
         name: '1',
         background: '#0000FF',
+        resetTimeSingle: '',
+        resetTimeAll: '',
+        continuousExcute: true,
         todos: [
           {
             name: '目标',
@@ -226,8 +265,14 @@ export default new Vuex.Store({
               customUnit: '页'
             },
             taskNotes: '目标目标目标',
-            loopTimes: 1,
-            restTime: 10,
+            loopTimes: {
+              default: 1,
+              custom: ''
+            },
+            restTime: {
+              default: 5,
+              custom: ''
+            },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
             focus: {
@@ -250,8 +295,14 @@ export default new Vuex.Store({
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
-            loopTimes: 1,
-            restTime: 5,
+            loopTimes: {
+              default: 1,
+              custom: ''
+            },
+            restTime: {
+              default: 5,
+              custom: ''
+            },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
             focus: {
@@ -270,8 +321,14 @@ export default new Vuex.Store({
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
-            loopTimes: 1,
-            restTime: 5,
+            loopTimes: {
+              default: 1,
+              custom: ''
+            },
+            restTime: {
+              default: 5,
+              custom: ''
+            },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
             focus: {
@@ -290,8 +347,14 @@ export default new Vuex.Store({
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
-            loopTimes: 1,
-            restTime: 5,
+            loopTimes: {
+              default: 1,
+              custom: ''
+            },
+            restTime: {
+              default: 5,
+              custom: ''
+            },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
             focus: {
@@ -310,14 +373,23 @@ export default new Vuex.Store({
       {
         name: '2',
         background: '#CCFFFF',
+        resetTimeSingle: '',
+        resetTimeAll: '',
+        continuousExcute: true,
         todos: [
           {
             name: '普通',
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
-            loopTimes: 1,
-            restTime: 5,
+            loopTimes: {
+              default: 1,
+              custom: ''
+            },
+            restTime: {
+              default: 5,
+              custom: ''
+            },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
             focus: {
@@ -336,8 +408,14 @@ export default new Vuex.Store({
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
-            loopTimes: 1,
-            restTime: 5,
+            loopTimes: {
+              default: 1,
+              custom: ''
+            },
+            restTime: {
+              default: 5,
+              custom: ''
+            },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
             focus: {
@@ -356,8 +434,14 @@ export default new Vuex.Store({
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
-            loopTimes: 1,
-            restTime: 5,
+            loopTimes: {
+              default: 1,
+              custom: ''
+            },
+            restTime: {
+              default: 5,
+              custom: ''
+            },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
             focus: {
@@ -385,6 +469,9 @@ export default new Vuex.Store({
     },
     addToDoSet (state, set) {
       state.todoSets.push(set)
+    },
+    modifyToDoSet (state, { set, index }) {
+      state.todoSets[index] = set
     }
   },
   actions: {}
