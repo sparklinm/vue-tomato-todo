@@ -8,6 +8,7 @@
     <i
       class="come-icon__inner"
       :class="classObj"
+      :style="{fontSize:size+'px'}"
     />
     <span
       v-if="text"
@@ -25,6 +26,10 @@ export default {
     },
     text: {
       type: String,
+      default: ''
+    },
+    size: {
+      type: [Number, String],
       default: ''
     }
   },
@@ -50,9 +55,6 @@ export default {
 <style lang='less'>
 .flex {
   .flex(@flex-direction: column; @align-items: center);
-}
-.com-icon {
-
 }
 
 .come-icon__inner {

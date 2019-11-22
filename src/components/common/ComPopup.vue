@@ -11,7 +11,10 @@
       @click.self="handleCancel"
     >
       <div class="com-popup">
-        <div class="com-popup__header">
+        <div
+          v-if="!noHeader"
+          class="com-popup__header"
+        >
           <div class="text">
             {{ title }}
           </div>
@@ -66,6 +69,10 @@
 <script>
 export default {
   props: {
+    noHeader: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       default: ''
@@ -81,10 +88,6 @@ export default {
     show: {
       type: Boolean,
       default: false
-    },
-    animationed: {
-      type: Boolean,
-      default: true
     },
     zIndex: {
       type: Number,
@@ -233,9 +236,9 @@ export default {
 
 .com-popup__footer-btn {
   width: 100%;
-  height: 34px;
   font-size: 14px;
   letter-spacing: 1px;
+  padding: 10px 6px;
   border: none;
   background: white;
   box-shadow: 0 2px 1px 1px rgb(238, 238, 238);

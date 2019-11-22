@@ -419,7 +419,7 @@ export default {
     .text {
       margin-top: 6px;
       letter-spacing: 0.5px;
-      .sacle-font(0.7;center;center);
+      .scale-font(0.7;center;center);
     }
   }
 
@@ -454,7 +454,7 @@ export default {
 
     .cell-hd {
       font-size: 10px;
-      .sacle-font(0.95);
+      .scale-font(0.95);
       padding: 8px 12px;
       text-align: left;
     }
@@ -474,7 +474,7 @@ export default {
     }
 
     .text {
-      .sacle-font(0.9;center;center);
+      .scale-font(0.9;center;center);
       opacity: 0.7;
     }
 
@@ -483,7 +483,7 @@ export default {
     }
 
     .unit {
-      .sacle-font(0.8;center;center);
+      .scale-font(0.8;center;center);
       opacity: 0.7;
     }
   }

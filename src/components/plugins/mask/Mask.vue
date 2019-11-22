@@ -1,12 +1,10 @@
 <template>
-  <Fade>
-    <div
-      v-show="show"
-      class="mask"
-      :style="{zIndex:zIndex}"
-      @click.prevent="cancel"
-    />
-  </Fade>
+  <div
+    v-show="show"
+    class="mask"
+    :style="{zIndex:zIndex}"
+    @click.prevent="cancel"
+  />
 </template>
 
 <script>

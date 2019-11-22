@@ -70,6 +70,7 @@
     />
     <ComPopup
       class="box-set-settings"
+      no-header
       :show.sync="showBoxModifySet"
     >
       <ComInput
@@ -209,58 +210,6 @@ export default {
 
   .btn-option {
     margin-left: 20px;
-  }
-}
-
-.box-set-settings {
-  .com-popup__header {
-    display: none;
-  }
-
-  .com-popup__content {
-    font-size: 15px;
-    padding: 15px 20px 5px;
-  }
-
-  .com-popup .com-input__placeholder {
-    color: @gray-l;
-    letter-spacing: 1px;
-  }
-
-  .com-popup .com-input__area {
-    border-bottom: 1px solid darken(@gray-l, 10%);
-  }
-
-  .com-popup .com-input__box_focus {
-    border-bottom: 2px solid rgb(51, 21, 160);
-  }
-
-  .com-popup__footer {
-    padding: 0 30px;
-    text-align: right;
-  }
-
-  .com-popup .com-popup__footer-btn {
-    width: 25%;
-    color: black;
-    margin-left: 15px;
-  }
-
-  .com-input:first-child {
-    margin-bottom: 25px;
-  }
-
-  .checkbox-container {
-    text-align: right;
-    margin: 20px 0 5px;
-  }
-
-  .set-setting-checkbox {
-    margin-right: 20px;
-  }
-
-  .tip-setting {
-    .sacle-font(0.7);
   }
 }
 </style>
