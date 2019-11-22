@@ -79,17 +79,15 @@ body {
     }
   }
 
-  .box-add-todo {}
-
   .custom-time {
     .title {
-      .background-color-base
+      .background-color-base;
     }
   }
 
   .box-advanced-setting {
     .title {
-      .background-color-base
+      .background-color-base;
     }
   }
 
@@ -98,28 +96,26 @@ body {
   }
 
   .box-edit .btn {
-    .background-color-base
+    .background-color-base;
   }
 
-  .progress-bar-circle {
-    .circle-sector {
-      fill: gray;
-    }
+  .progress-bar__circle-sector {
+    fill: gray;
+  }
 
-    .sector {
-      fill: @theme-base-color-1;
-    }
+  .progress-bar__sector {
+    fill: @theme-base-color-1;
+  }
 
-    .circle-arc {
-      fill: @theme-base-color-1;
-      stroke: rgb(88, 88, 88);
-      stroke-opacity: 0.35;
-    }
+  .progress-bar__circle-arc {
+    fill: @theme-base-color-1;
+    stroke: rgb(88, 88, 88);
+    stroke-opacity: 0.35;
+  }
 
-    .arc {
-      fill: none;
-      stroke: @theme-base-color-1-l10;
-    }
+  .progress-bar__arc {
+    fill: none;
+    stroke: @theme-base-color-1-l10;
   }
 
   .box-sort {
@@ -129,6 +125,9 @@ body {
     }
   }
 
+  .todo-music-default {
+    background: @theme-base-color-1;
+  }
 }
 
 ul {
@@ -153,7 +152,7 @@ ul {
 }
 
 .box-wrap::after {
-  content: "";
+  content: '';
   display: inline-block;
   height: 100%;
   width: 0;
@@ -172,6 +171,59 @@ ul {
     &:not(:first-child) {
       margin-top: 1px;
     }
+  }
+}
+
+.box-set-settings,.box-set-loop {
+  .com-popup__content {
+    font-size: 15px;
+    padding: 15px 20px 5px;
+  }
+
+  .com-input__placeholder {
+    color: @gray-l;
+    letter-spacing: 1px;
+  }
+
+  .com-input__area {
+    border-bottom: 1px solid darken(@gray-l, 10%);
+  }
+
+  .com-popup .com-input__box_focus {
+    border-bottom: 2px solid rgb(51, 21, 160);
+  }
+
+  .com-popup__footer {
+    padding: 0 30px;
+    text-align: right;
+  }
+
+  .com-popup__footer-btn {
+    font-size: 12px;
+    width: 23%;
+    color: black;
+    margin-left: 12px;
+  }
+
+  .com-popup__footer-btn_w-auto {
+    width: auto;
+  }
+
+  .com-input:first-child {
+    margin-bottom: 25px;
+  }
+
+  .checkbox-container {
+    text-align: right;
+    margin: 20px 0 5px;
+  }
+
+  .set-setting-checkbox {
+    margin-right: 20px;
+  }
+
+  .tip-setting {
+    .scale-font(0.7);
   }
 }
 
