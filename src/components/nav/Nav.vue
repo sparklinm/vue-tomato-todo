@@ -1,6 +1,9 @@
 <template>
   <div class="nav-wrap">
-    <div class="nav">
+    <div
+      class="nav"
+      :style="navStyle"
+    >
       <div class="left">
         {{ page.title }}
       </div>
@@ -41,14 +44,15 @@ export default {
     }
   },
   computed: {
+    pathName () {
+      const path = this.$route.path.slice(1)
+      return path || 'todo'
+    },
     page () {
       const maps = {
         todo: '待办',
         set: '待办集'
       }
-
-      const path = this.$route.path.slice(1)
-      const name = path || 'todo'
 
       const buttons = [
         {
@@ -99,17 +103,24 @@ export default {
       ]
 
       const page = {
-        title: maps[name]
+        title: maps[this.pathName]
       }
 
       page.buttons = buttons.filter(item => {
         if (!item.limits) {
           return item
         }
-        return item.limits.some(limit => limit === name)
+        return item.limits.some(limit => limit === this.pathName)
       })
 
       return page
+    },
+    navStyle () {
+      const styleObj = {}
+      if (this.pathName === 'do') {
+        styleObj.background = 'transparent'
+      }
+      return styleObj
     }
   },
   methods: {

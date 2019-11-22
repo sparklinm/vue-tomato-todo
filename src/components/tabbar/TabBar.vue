@@ -1,5 +1,8 @@
 <template>
-  <nav class="tab-bar">
+  <nav
+    v-show="showTabBar"
+    class="tab-bar"
+  >
     <ul class="tab-bar-inner">
       <li
         v-for="item in tabBars"
@@ -32,6 +35,12 @@ export default {
           path: 'set'
         }
       ]
+    }
+  },
+  computed: {
+    showTabBar () {
+      const paths = ['/do']
+      return !paths.includes(this.$route.path)
     }
   },
   mounted () {

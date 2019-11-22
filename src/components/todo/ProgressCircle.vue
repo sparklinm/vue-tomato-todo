@@ -1,7 +1,7 @@
 <template>
   <div
     class="progress-bar-circle"
-    :style="{width:width+'px',height:width+'px'}"
+    :style="{ width: width + 'px', height: width + 'px' }"
   >
     <svg>
       <circle
@@ -9,7 +9,10 @@
         :cy="centreY"
         :r="radius"
         :stroke-width="strokeWidth"
-        :class="{'circle-sector':type==='sector','circle-arc':type==='arc'}"
+        :class="{
+          'progress-bar__circle-sector': type === 'sector',
+          'progress-bar__circle-arc': type === 'arc'
+        }"
       />
       <!-- <path
         v-else
@@ -22,14 +25,19 @@
         :d="path"
         :stroke-width="strokeWidth"
         stroke-linecap="round"
-        :class="{sector:type==='sector',arc:type==='arc'}"
+        :class="{
+          'progress-bar__sector': type === 'sector',
+          'progress-bar__arc': type === 'arc'
+        }"
       />
       <text
         :x="centreX"
         :y="centreY"
         fill="white"
-        style="font-size:8px;dominant-baseline:middle;text-anchor:middle;"
-      >{{ progress }}%</text>
+        class="progress-bar__text"
+      >
+        {{ text || progress + '%' }}
+      </text>
     </svg>
   </div>
 </template>
@@ -52,8 +60,11 @@ export default {
     strokeWidth: {
       type: Number,
       default: 4
+    },
+    text: {
+      type: String,
+      default: ''
     }
-
   },
   data () {
     return {}
@@ -68,12 +79,19 @@ export default {
     centreY () {
       return this.width / 2
     },
+    currentProgress () {
+      return this.progress > 100 ? 100 : this.progress
+    },
     circlePath () {
-      return `M ${this.centreX} ${this.strokeWidth} A ${this.radius} ${this.radius} 0 1 1 ${this.centreX} ${this.centreY + this.radius} A ${this.radius} ${this.radius} 0 1 1 ${this.centreX} ${this.strokeWidth}`
+      return `M ${this.centreX} ${this.strokeWidth} A ${this.radius} ${
+        this.radius
+      } 0 1 1 ${this.centreX} ${this.centreY + this.radius} A ${this.radius} ${
+        this.radius
+      } 0 1 1 ${this.centreX} ${this.strokeWidth}`
     },
     path () {
-      const angle = this.progress / 100 * Math.PI * 2
-      const endX = Math.sin(angle) * this.radius + this.centreX
+      const angle = (this.currentProgress / 100) * Math.PI * 2
+      const endX = Math.floor(Math.sin(angle) * this.radius + this.centreX)
       const endY = this.centreY - Math.cos(angle) * this.radius
       // 决定弧线是大角度还是小角度
       const largeArcFlag = angle > Math.PI ? 1 : 0
@@ -96,5 +114,11 @@ export default {
   .sector {
     fill: @theme-base-color-1;
   }
+}
+
+.progress-bar__text {
+  font-size: 8px;
+  dominant-baseline: middle;
+  text-anchor: middle;
 }
 </style>

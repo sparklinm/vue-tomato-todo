@@ -457,7 +457,45 @@ export default new Vuex.Store({
           }
         ]
       }
-    ]
+    ],
+    doToDo: {
+      name: '目标',
+      type: 'goal',
+      timeWay: 'down',
+      timeDuration: 1,
+      goal: {
+        deadline: new Date(2019, 8, 28),
+        total: 360,
+        complete: 100,
+        customUnit: '页'
+      },
+      taskNotes: '目标目标目标',
+      loopTimes: {
+        default: 1,
+        custom: 10
+      },
+      restTime: {
+        default: 5,
+        custom: 1,
+        long: 60
+      },
+      hideAfterComplete: false,
+      create: new Date(2019, 8, 24),
+      focus: {
+        number: 100,
+        duration: 1000
+      },
+      reminders: [
+        {
+          time: '17:33',
+          day: '每天'
+        }
+      ],
+      stickDays: {
+        total: 2,
+        continuation: 2
+      }
+    }
   },
   getters: {},
   mutations: {
