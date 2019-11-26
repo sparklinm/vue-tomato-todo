@@ -15,7 +15,7 @@
           v-if="!noHeader"
           class="com-popup__header"
         >
-          <div class="text">
+          <div class="com-popup__header-text">
             {{ title }}
           </div>
           <div
