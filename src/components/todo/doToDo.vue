@@ -203,7 +203,7 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState('todo', {
       todo: state => state.doToDo
     }),
     progress () {

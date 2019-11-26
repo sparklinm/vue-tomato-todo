@@ -20,7 +20,7 @@ export default {
     return {}
   },
   computed: {
-    ...mapState({
+    ...mapState('todo', {
       todos: state => state.todos
     })
   },
@@ -28,7 +28,7 @@ export default {
 
   },
   methods: {
-    ...mapMutations(['setToDos'])
+    ...mapMutations('todo', ['setToDos'])
   }
 }
 </script>

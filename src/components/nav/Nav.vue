@@ -124,7 +124,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['addToDo']),
+    ...mapMutations('todo', ['addToDo']),
     showBox (key) {
       this[key] = true
     }
