@@ -6,7 +6,7 @@
           “
         </span>
         <div class="sentence">
-          喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。
+          {{ $t('sentence.one') }}
         </div>
       </div>
       <div class="todo-info">
@@ -65,17 +65,16 @@
       <div class="time">
         {{ timePause }}
       </div>
-      <div class="description">
-        以上是暂停的限制时间 <br>
-        同一个代办最多可暂停3分钟，以免打断 <br>
-        番茄工作法流程
-      </div>
+      <div
+        class="description"
+        v-html="$t('tips.pause_todo')"
+      />
       <template v-slot:footer>
         <button
           class="com-popup__footer-btn"
           @click="continueTime"
         >
-          继续计时
+          {{ $t('todo.continue_time') }}
         </button>
       </template>
     </ComPopup>
@@ -107,13 +106,13 @@
       <ComInput
         v-model="currentToDo.loopTimes.custom"
         type="number"
-        placeholder="请输入循环次数"
+        :placeholder="$t('todo.input_loop_times')"
         autofocus
       />
       <ComInput
         v-model="currentToDo.restTime.long"
         type="number"
-        placeholder="循环结束后长休息分钟数"
+        :placeholder="$t('todo.loop_end_rest_time')"
         autofocus
       />
 
@@ -122,19 +121,19 @@
           class="com-popup__footer-btn com-popup__footer-btn_w-auto"
           @click="submitSetLoopTimes"
         >
-          无限循环
+          {{ $t('todo.infinite_loop') }}
         </button>
         <button
           class="com-popup__footer-btn"
           @click="submitSetLoopTimes"
         >
-          确定
+          {{ $t('action.confirm') }}
         </button>
         <button
           class="com-popup__footer-btn"
           @click="showBoxSetLoop=false"
         >
-          取消
+          {{ $t('action.cancel') }}
         </button>
       </template>
     </ComPopup>
@@ -142,10 +141,31 @@
     <ComPopup
       class="box-skip-time fade"
       :show.sync="showBoxSkipTime"
-      title="请选择你的操作"
+      :title="$t('todo.choose_your_operation')"
     >
-      <ul>
-        <li />
+      <ul v-if="isDoing">
+        <li class="option">
+          <span>
+            {{ $t('todo.abandon_time') }}
+          </span>
+        </li>
+        <li class="option">
+          <span>
+            {{ $t('todo.complete_time_advance') }}
+          </span>
+        </li>
+        <li class="option">
+          <span>
+            {{ $t('action.cancel') }}
+          </span>
+        </li>
+      </ul>
+      <ul v-else>
+        <li class="option">
+          <span>
+            {{ $t('todo.complete_time_advance') }}
+          </span>
+        </li>
       </ul>
     </ComPopup>
   </div>
@@ -153,7 +173,7 @@
 
 <script>
 import ProgressCircle from './ProgressCircle'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import util from '@/util.js'
 export default {
   components: {
@@ -161,7 +181,7 @@ export default {
   },
   data () {
     return {
-      status: '正在进行中',
+      status: this.$t('todo.is_doing'),
       showBoxPause: false,
       showBoxChangeMusic: false,
       duration: 0,
@@ -172,7 +192,7 @@ export default {
       pasueTimer: null,
       musics: [
         {
-          name: '默认背景音乐|默认白噪音',
+          name: `${this.$t('music.defalut')}|${this.$t('music.defalut_white_noise')}`,
           cover: ''
         },
         {
@@ -199,12 +219,12 @@ export default {
         loopTimes: {},
         restTime: {}
       },
-      showBoxSkipTime: false
+      showBoxSkipTime: true
     }
   },
   computed: {
     ...mapState('todo', {
-      todo: state => state.doToDo
+      todo: state => state.target
     }),
     progress () {
       if (this.isDoing) {
@@ -222,7 +242,7 @@ export default {
     timesLeft () {
       const { custom: customTimes } = this.todo.loopTimes
       if (customTimes > 0) {
-        return `还剩 ${customTimes} 次`
+        return this.$t('todo.remain_time', [customTimes])
       }
       return ''
     },
@@ -237,6 +257,7 @@ export default {
     this.currentToDo = _.cloneDeep(this.todo)
   },
   methods: {
+    ...mapMutations('todo', ['modifyTarget']),
     initRestDuration () {
       this.restDuration = this.getRestDuration()
     },
@@ -250,7 +271,7 @@ export default {
     setRestDuration () {
       if (this.restDuration <= 0) {
         this.isDoing = true
-        this.status = '正在进行中'
+        this.status = this.$t('todo.is_doing')
         this.initDuration()
         this.setDuration()
         return
@@ -277,7 +298,7 @@ export default {
         case 'up':
           if (this.duration >= this.todo.timeDuration * 60) {
             this.isDoing = false
-            this.status = '休息中'
+            this.status = this.$t('todo.is_resting')
             this.initRestDuration()
             this.setRestDuration()
             return
@@ -287,7 +308,7 @@ export default {
         case 'down':
           if (this.duration <= 0) {
             this.isDoing = false
-            this.status = '休息中'
+            this.status = this.$t('todo.is_resting')
             this.initRestDuration()
             this.setRestDuration()
             return
@@ -332,12 +353,13 @@ export default {
         this.currentToDo = _.cloneDeep(this.todo)
       } else {
         this.currentToDo.loopTimes.custom = ''
-        this.currentToDo.restTime.custom = ''
+        this.currentToDo.restTime.long = ''
         this.submitSetLoopTimes()
       }
     },
     submitSetLoopTimes () {
-      // this.todo = this.currentToDo
+      this.modifyTarget(this.currentToDo)
+      this.showBoxSetLoop = false
     },
     infiniteLoog () {
       this.currentToDo.loopTimes.custom = -1
@@ -469,6 +491,21 @@ export default {
 .box-set-loop {
   .com-popup__footer {
     margin-top: 15px;
+  }
+}
+
+.box-skip-time {
+  .com-popup__header-text {
+    .scale-font(0.9);
+  }
+
+  .option {
+    line-height: 3;
+    letter-spacing: 1px;
+    span {
+      display: block;
+      .scale-font(0.9);
+    }
   }
 }
 </style>

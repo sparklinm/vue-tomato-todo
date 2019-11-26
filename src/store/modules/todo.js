@@ -454,7 +454,7 @@ export default {
         ]
       }
     ],
-    doToDo: {
+    target: {
       name: '目标',
       type: 'goal',
       timeWay: 'down',
@@ -506,6 +506,11 @@ export default {
     },
     modifyToDoSet (state, { set, index }) {
       state.todoSets[index] = set
+    },
+    modifyTarget (state, obj) {
+      for (const [key, value] of Object.entries(obj)) {
+        state.target[key] = value
+      }
     }
   },
   actions: {}

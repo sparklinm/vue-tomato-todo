@@ -25,21 +25,21 @@
       <template v-slot:header-icon>
         <span class="btn-header">
           <i class="fa fa-clock-o" />
-          <span class="text">定时提醒/学霸</span>
+          <span class="text">{{ $t('todo.timed_reminder') }}</span>
         </span>
         <span class="btn-header">
           <i
             class="fa fa-picture-o"
             aria-hidden="true"
           />
-          <span class="text">更换背景</span>
+          <span class="text">{{ $t('todo.change_background') }}</span>
         </span>
         <span class="btn-header">
           <i
             class="fa fa-mobile"
             aria-hidden="true"
           />
-          <span class="text">独立白名单</span>
+          <span class="text">{{ $t('todo.independent_white_list') }}</span>
         </span>
       </template>
       <div class="cells">
@@ -48,62 +48,60 @@
             <span
               class="btn btn-small"
               @click="editToDo"
-            >编辑</span>
+            >{{ $t('action.edit') }}</span>
 
             <ComToolTip>
               <span
                 ref="btnMove"
                 class="btn btn-small"
-              >排序|移动</span>
+              >{{ $t('action.sort') }}|{{ $t('action.move') }}</span>
               <template v-slot:content>
-                <!-- <transition name="fade"> -->
                 <div
                   ref="moveDrop"
                   class="drop-list_simple"
                 >
                   <ul>
                     <li @click="sort">
-                      上下位置排序
+                      {{ $t('todo.sort_up_and_down') }}
                     </li>
                     <li @click="moveToSet">
-                      移动到待办集
+                      {{ $t('todo.move_to_set') }}
                     </li>
                   </ul>
                 </div>
-                <!-- </transition> -->
               </template>
             </ComToolTip>
             <span
               class="btn btn-small"
               @click="deleteTodo(todoIndex)"
-            >删除</span>
+            >{{ $t('action.delete') }}</span>
           </div>
         </div>
         <div class="cell">
           <div class="cell-bd">
-            <span class="btn btn-middle">历史记录时间轴</span>
-            <span class="btn btn-middle">数据分析</span>
+            <span class="btn btn-middle">{{ $t('todo.history_record_time_axis') }}</span>
+            <span class="btn btn-middle">{{ $t('todo.data_analysis') }}</span>
           </div>
         </div>
         <div class="cell btn-big btn data">
           <div class="cell-hd">
-            累计数据
+            {{ $t('todo.cumulative_data') }}
           </div>
           <div class="cell-bd">
             <div class="column">
-              <span class="text">专注次数</span>
+              <span class="text">{{ $t('todo.focus_times') }}</span>
               <span class="number">{{ todo.focus.number }}</span>
             </div>
             <div class="column">
-              <span class="text">专注时长</span>
+              <span class="text">{{ $t('todo.focus_duration') }}</span>
               <span class="number">{{ todo.focus.duration }}</span>
-              <span class="unit">分钟</span>
+              <span class="unit">{{ $t('word.minute') }}</span>
             </div>
           </div>
         </div>
         <div class="cell btn-big btn time-reminder">
           <div class="cell-hd">
-            定时提醒
+            {{ $t('todo.timed_reminder') }}
           </div>
           <div class="cell-bd">
             <div
@@ -121,7 +119,7 @@
               v-else
               class="default"
             >
-              没有设置定时提醒
+              {{ $t('todo.no_timed_reminder') }}
             </div>
           </div>
         </div>
@@ -136,7 +134,7 @@
             <div class="column">
               <span class="text">{{ progress.bd.completed }}</span>
               <span class="number">{{ progress.data.complete }}</span>
-              <span class="unit">{{ progress.data.customUnit || "分钟" }}</span>
+              <span class="unit">{{ progress.data.customUnit || $t('word.minute') }}</span>
             </div>
             <div class="column">
               <span class="text">{{ progress.bd.progress }}</span>
@@ -151,28 +149,28 @@
               <span class="number">{{
                 progress.data.total || progress.data.piece
               }}</span>
-              <span class="unit">{{ progress.data.customUnit || "分钟" }}</span>
+              <span class="unit">{{ progress.data.customUnit || $t('word.minute') }}</span>
             </div>
           </div>
           <div class="cell-footer">
             <div class="row">
               <div class="title">
                 <span>1</span>
-                <span>总共坚持天数</span>
+                <span>{{ $t('todo.stick_days_total') }}</span>
               </div>
-              <span>{{ todo.stickDays.total }} 天</span>
+              <span>{{ todo.stickDays.total }} {{ $t('word.day') }}</span>
             </div>
             <div class="row">
               <div class="title">
                 <span>2</span>
-                <span>连续坚持天数</span>
+                <span>{{ $t('todo.stick_days_continue') }}</span>
               </div>
-              <span>{{ todo.stickDays.continuation }} 天</span>
+              <span>{{ todo.stickDays.continuation }} {{ $t('word.day') }}</span>
             </div>
             <div class="row">
               <div class="title">
                 <span>3</span>
-                <span>创建日期</span>
+                <span>{{ $t('todo.creat_time') }}</span>
               </div>
               <span>{{ creatTime }}</span>
             </div>
@@ -182,7 +180,7 @@
     </ComPopup>
 
     <ComPopup
-      title="长按拖动排序"
+      :title="$t('todo.long_press_drag_sort')"
       class="box-sort"
       :show.sync="showBoxSort"
       :z-index="2050"
@@ -255,9 +253,9 @@ export default {
       showBoxSort: false,
       description: {
         sortTodo: {
-          title: '帮助',
-          content:
-            '<p>排序->长按并拖动</p><p>删除->点击删除按钮</p><p>注意，由于已完成的待办始终排在最后面，若对它们排序，会将它们的状态变为待完成时才生效。</p>'
+          title: this.$t('word.help'),
+          content: this.$t('tips.sort_todo')
+
         }
       },
       sorter: null
@@ -270,31 +268,33 @@ export default {
         let progress = ''
         let deadline = ''
         let progressBar = ''
-        const type2tex = {
-          common: '普通番茄时钟',
-          goal: '目标',
-          habit: '习惯'
+        const type2text = {
+          common: this.$t('todo.common_todo'),
+          goal: this.$t('word.goal'),
+          habit: this.$t('word.habit')
         }
 
         if (todo.timeDuration) {
-          description += `${todo.timeDuration} 分钟`
+          description += `${todo.timeDuration} ${this.$t('word.minute')}`
         } else {
           description += todo.timeWay
         }
         if (todo.type !== 'common') {
-          description += `-${type2tex[todo.type]}`
+          description += `-${type2text[todo.type]}`
         }
 
         if (todo.goal) {
           progress += `${todo.goal.complete}/${todo.goal.total} ${todo.goal
-            .customUnit || '分钟'}`
+            .customUnit || this.$t('word.minute')}`
           progressBar = this.getProgress(todo.goal.complete, todo.goal.total)
-          deadline = `离计划结束:${Math.ceil(
-            (todo.goal.deadline - new Date()) / (1000 * 60 * 60 * 24)
-          )}天`
+          deadline = this.$t('todo.time_remain_end_plan', [
+            Math.ceil(
+              (todo.goal.deadline - new Date()) / (1000 * 60 * 60 * 24)
+            )
+          ])
         } else if (todo.habit) {
-          progress += `今日:${todo.habit.complete}/${todo.habit.piece} ${todo
-            .habit.customUnit || '分钟'}`
+          progress += `${this.$t('word.today')}:${todo.habit.complete}/${todo.habit.piece} ${todo.habit.customUnit || this.$t('word.minute')}`
+
           progressBar = this.getProgress(todo.habit.complete, todo.habit.piece)
         }
 
@@ -323,19 +323,22 @@ export default {
       const bd = {}
       let data = {}
       const { goal, habit } = this.todo
-      bd.completed = '计划内已完成'
-      bd.total = '计划总数'
+      bd.completed = this.$t('todo.plan_already_complete')
+      bd.total = this.$t('todo.plan_total')
 
       if (goal) {
-        hd = `目标截止日期：${util.timeFormat(goal.deadline, {
-          cut: '-'
-        })} 剩余:382天`
-        bd.progress = '长期计划完成度'
+        hd = this.$t('todo.goal_deadline', [
+          util.timeFormat(goal.deadline, {
+            cut: '-'
+          }),
+          382
+        ])
+        bd.progress = this.$t('todo.long_plan_completion')
         data = goal
         data.number = this.getProgress(goal.complete, goal.total)
       } else if (habit) {
-        hd = '习惯周期:今天'
-        bd.progress = '习惯完成度'
+        hd = this.$t('todo.habit_cycle')
+        bd.progress = this.$t('todo.habit_completion')
         data = habit
         data.number = this.getProgress(habit.complete, habit.piece)
       }
@@ -352,6 +355,7 @@ export default {
     console.log(this.datas)
     console.log(this.todos)
     console.log(Sorter)
+
   },
   methods: {
     start () {

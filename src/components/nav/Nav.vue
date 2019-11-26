@@ -16,7 +16,6 @@
         />
       </div>
     </div>
-
     <BoxAddToDo
       v-if="showBoxAddToDo"
       :show.sync="showBoxAddToDo"

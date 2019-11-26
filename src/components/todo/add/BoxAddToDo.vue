@@ -1,7 +1,7 @@
 <template>
   <div class="box-add-todo">
     <ComPopup
-      title="添加待办"
+      :title="this.$t('todo.add_todo')"
       top-option-btn
       :show="show"
       :submit="submitAddToDo"
