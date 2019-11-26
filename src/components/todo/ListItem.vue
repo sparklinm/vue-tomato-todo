@@ -25,7 +25,7 @@
         id="btn-start"
         class="btn-start"
         @click="$emit('start')"
-      >开始</span>
+      >{{ $t('action.start') }}</span>
     </div>
   </div>
 </template>
@@ -35,19 +35,19 @@ export default {
   props: {
     name: {
       type: String,
-      default: '待办事件'
+      default: ''
     },
     description: {
       type: String,
-      default: '25分钟'
+      default: ''
     },
     progress: {
       type: String,
-      default: '0/60 分钟'
+      default: ''
     },
     deadline: {
       type: String,
-      default: '离计划结束:365天'
+      default: ''
     }
   },
   data () {
@@ -77,10 +77,6 @@ export default {
 
   .left {
     .flex(@flex-direction: column);
-
-    .name {
-      // font-weight: 600;
-    }
 
     .card {
       margin-top: 12px;
@@ -114,7 +110,6 @@ export default {
   .right {
     position: relative;
     width: 90px;
-    // .flex(@align-items: center; @flex-direction: column;);
 
     .deadline {
       position: absolute;

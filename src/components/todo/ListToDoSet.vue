@@ -36,10 +36,10 @@
               <div class="drop-list_simple">
                 <ul>
                   <li>
-                    查看此待办集的统计数据
+                    {{ $t('todo.view_todo_set_statistics') }}
                   </li>
                   <li>
-                    查看按待办集名称分类的全部数据
+                    {{ $t('todo.view_all_statistics') }}
                   </li>
                 </ul>
               </div>
@@ -76,38 +76,38 @@
       <ComInput
         v-model="currentSet.resetTimeSingle"
         type="number"
-        placeholder="设置完成单个待办后休息时间"
+        :placeholder="$t('todo.set_complete_one_restime')"
         autofocus
       />
       <ComInput
         v-model="currentSet.resetTimeAll"
         type="number"
-        placeholder="设置全部完成后的长休息时间"
+        :placeholder="$t('todo.set_complete_all_restime')"
         autofocus
       />
       <div class="checkbox-container">
         <ComCheckBox
           v-model="currentSet.continuousExcute"
           left
-          content="连续执行待办"
+          :content="$t('todo.do_continue')"
           class="set-setting-checkbox"
         />
       </div>
       <div class="tip-setting">
-        *仅支持倒计时的连续执行，不支持正计时
+        {{ $t('todo.do_continue_tip') }}
       </div>
       <template v-slot:footer>
         <button
           class="com-popup__footer-btn"
           @click="submitModifySet"
         >
-          确定
+          {{ $t('action.confirm') }}
         </button>
         <button
           class="com-popup__footer-btn"
           @click="showBoxModifySet=false"
         >
-          取消
+          {{ $t('action.cancel') }}
         </button>
       </template>
     </ComPopup>
