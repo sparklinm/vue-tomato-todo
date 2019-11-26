@@ -133,12 +133,12 @@ export default {
     }
   },
   computed: {
-    ...mapState({
+    ...mapState('todo', {
       sets: state => state.todoSets
     })
   },
   methods: {
-    ...mapMutations(['modifyToDoSet']),
+    ...mapMutations('todo', ['modifyToDoSet']),
     setShowToDos (index, isShow) {
       if (typeof isShow === 'undefined') {
         this.showToDos[index] = !this.showToDos[index]

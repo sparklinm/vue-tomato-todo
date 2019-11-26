@@ -344,7 +344,7 @@ export default {
         return item.value === this.todo.timeWay
       }).description
     },
-    ...mapState({
+    ...mapState('todo', {
       showBoxAddToDo: state => state.showBoxAddToDo,
       template: state => state.template
     })
@@ -371,7 +371,7 @@ export default {
     this.setBtnAdvancedSettings()
   },
   methods: {
-    ...mapMutations(['addToDo', 'toggleBoxAddToDo']),
+    ...mapMutations('todo', ['addToDo', 'toggleBoxAddToDo']),
     checkNumber ({ value, max }) {
       return value - max <= 0
     },
