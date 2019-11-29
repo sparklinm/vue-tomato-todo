@@ -17,10 +17,12 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        focus: {
-          number: 0,
-          duration: 0
-        },
+        focus: [
+          {
+            time: new Date(2019, 8, 24),
+            duration: 30
+          }
+        ],
         reminders: [
           {
             time: '17:33',
@@ -43,10 +45,12 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        focus: {
-          number: 0,
-          duration: 0
-        },
+        focus: [
+          {
+            time: new Date(),
+            duration: 30
+          }
+        ],
         reminders: [
           {
             time: '17:33',
@@ -69,10 +73,12 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        focus: {
-          number: 0,
-          duration: 0
-        },
+        focus: [
+          {
+            time: new Date(2019, 8, 24),
+            duration: 30
+          }
+        ],
         reminders: [
           {
             time: '17:33',
@@ -95,10 +101,12 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        focus: {
-          number: 0,
-          duration: 0
-        },
+        focus: [
+          {
+            time: new Date(),
+            duration: 30
+          }
+        ],
         reminders: [
           {
             time: '17:33',
@@ -128,10 +136,12 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        focus: {
-          number: 100,
-          duration: 1000
-        },
+        focus: [
+          {
+            time: new Date(),
+            duration: 30
+          }
+        ],
         reminders: [
           {
             time: '17:33',
@@ -164,10 +174,12 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        focus: {
-          number: 5,
-          duration: 100
-        },
+        focus: [
+          {
+            time: new Date(),
+            duration: 30
+          }
+        ],
         reminders: [
           {
             time: '17:33',
@@ -271,10 +283,12 @@ export default {
             },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
-            focus: {
-              number: 100,
-              duration: 1000
-            },
+            focus: [
+              {
+                time: new Date(),
+                duration: 30
+              }
+            ],
             reminders: [
               {
                 time: '17:33',
@@ -301,10 +315,12 @@ export default {
             },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
-            focus: {
-              number: 0,
-              duration: 0
-            },
+            focus: [
+              {
+                time: new Date(),
+                duration: 30
+              }
+            ],
             reminders: [
               {
                 time: '17:33',
@@ -327,10 +343,12 @@ export default {
             },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
-            focus: {
-              number: 0,
-              duration: 0
-            },
+            focus: [
+              {
+                time: new Date(),
+                duration: 30
+              }
+            ],
             reminders: [
               {
                 time: '17:33',
@@ -353,10 +371,12 @@ export default {
             },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
-            focus: {
-              number: 0,
-              duration: 0
-            },
+            focus: [
+              {
+                time: new Date(),
+                duration: 30
+              }
+            ],
             reminders: [
               {
                 time: '17:33',
@@ -388,10 +408,12 @@ export default {
             },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
-            focus: {
-              number: 0,
-              duration: 0
-            },
+            focus: [
+              {
+                time: new Date(),
+                duration: 30
+              }
+            ],
             reminders: [
               {
                 time: '17:33',
@@ -414,10 +436,12 @@ export default {
             },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
-            focus: {
-              number: 0,
-              duration: 0
-            },
+            focus: [
+              {
+                time: new Date(),
+                duration: 30
+              }
+            ],
             reminders: [
               {
                 time: '17:33',
@@ -440,10 +464,12 @@ export default {
             },
             hideAfterComplete: false,
             create: new Date(2019, 8, 24),
-            focus: {
-              number: 0,
-              duration: 0
-            },
+            focus: [
+              {
+                time: new Date(),
+                duration: 30
+              }
+            ],
             reminders: [
               {
                 time: '17:33',
@@ -458,7 +484,7 @@ export default {
       name: '目标',
       type: 'goal',
       timeWay: 'down',
-      timeDuration: 1,
+      timeDuration: 10,
       goal: {
         deadline: new Date(2019, 8, 28),
         total: 360,
@@ -472,15 +498,17 @@ export default {
       },
       restTime: {
         default: 5,
-        custom: 1,
+        custom: 5,
         long: 60
       },
       hideAfterComplete: false,
       create: new Date(2019, 8, 24),
-      focus: {
-        number: 100,
-        duration: 1000
-      },
+      focus: [
+        {
+          time: new Date(),
+          duration: 30
+        }
+      ],
       reminders: [
         {
           time: '17:33',
@@ -490,21 +518,22 @@ export default {
       stickDays: {
         total: 2,
         continuation: 2
-      }
+      },
+      abandons: []
     }
   },
   getters: {},
   mutations: {
-    addToDo (state, todo) {
+    addTodo (state, todo) {
       state.todos.push(todo)
     },
-    setToDos (state, todos) {
+    setTodos (state, todos) {
       state.todos = todos
     },
-    addToDoSet (state, set) {
+    addTodoSet (state, set) {
       state.todoSets.push(set)
     },
-    modifyToDoSet (state, { set, index }) {
+    modifyTodoSet (state, { set, index }) {
       state.todoSets[index] = set
     },
     modifyTarget (state, obj) {

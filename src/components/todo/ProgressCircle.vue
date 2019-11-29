@@ -35,6 +35,7 @@
         :y="centreY"
         fill="white"
         class="progress-bar__text"
+        :style="{fontSize:fontSize+'px'}"
       >
         {{ text || progress + '%' }}
       </text>
@@ -64,6 +65,10 @@ export default {
     text: {
       type: String,
       default: ''
+    },
+    fontSize: {
+      type: Number,
+      default: -1
     }
   },
   data () {

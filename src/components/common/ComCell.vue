@@ -6,8 +6,12 @@
         v-if="title!==''"
         class="com-cell__hd-inner"
       />
-      <span>{{ title }}</span>
-      <div>{{ label }}</div>
+      <span class="com-cell__hd-title">{{ title }}</span>
+      <div
+        class="com-cell__hd-lable"
+      >
+        {{ lable }}
+      </div>
     </div>
     <div class="com-cell__bd">
       <div
@@ -38,7 +42,7 @@ export default {
       type: String || Number,
       default: ''
     },
-    label: {
+    lable: {
       type: String,
       default: ''
     },
@@ -78,5 +82,11 @@ export default {
 
 .com-cell__hd {
   font-size: 12px;
+}
+
+.com-cell__hd-lable {
+  .scale-font(0.8);
+  margin-top: 5px;
+  color: @gray;
 }
 </style>

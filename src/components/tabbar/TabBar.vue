@@ -26,13 +26,18 @@ export default {
       tabBars: [
         {
           icon: 'clock-o',
-          text: '待办',
+          text: this.$t('word.todo'),
           path: ''
         },
         {
           icon: 'clock-o',
-          text: '待办集',
+          text: this.$t('word.todo_set'),
           path: 'set'
+        },
+        {
+          icon: 'clock-o',
+          text: this.$t('word.statistics'),
+          path: 'statistics'
         }
       ]
     }

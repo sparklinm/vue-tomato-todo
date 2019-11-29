@@ -47,7 +47,7 @@
           <div class="cell-bd">
             <span
               class="btn btn-small"
-              @click="editToDo"
+              @click="editTodo"
             >{{ $t('action.edit') }}</span>
 
             <ComToolTip>
@@ -218,9 +218,9 @@
       </ComList>
     </ComPopup>
 
-    <BoxAddToDo
-      v-if="showBoxAddToDo"
-      :show.sync="showBoxAddToDo"
+    <BoxAddTodo
+      v-if="showBoxAddTodo"
+      :show.sync="showBoxAddTodo"
       :data="todo"
     />
   </div>
@@ -229,14 +229,14 @@
 <script>
 import ListItem from './ListItem'
 import ProgressCircle from './ProgressCircle'
-import BoxAddToDo from '@/components/todo/add/BoxAddToDo'
+import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
 import util from '@/util.js'
 import Sorter from '@/sort.js'
 export default {
   components: {
     ListItem,
     ProgressCircle,
-    BoxAddToDo
+    BoxAddTodo
   },
   props: {
     todos: {
@@ -249,12 +249,12 @@ export default {
       showBoxInfo: false,
       todo: this.todos[0],
       todoIndex: 0,
-      showBoxAddToDo: false,
+      showBoxAddTodo: false,
       showBoxSort: false,
       description: {
         sortTodo: {
           title: this.$t('word.help'),
-          content: this.$t('tips.sort_todo')
+          content: this.$t('message.sort_todo')
 
         }
       },
@@ -371,8 +371,8 @@ export default {
       this.todoIndex = index
       this.showBoxInfo = true
     },
-    editToDo () {
-      this.showBoxAddToDo = true
+    editTodo () {
+      this.showBoxAddTodo = true
       this.showBoxInfo = false
     },
     sort () {
