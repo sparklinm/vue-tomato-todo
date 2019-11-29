@@ -7,6 +7,8 @@ import 'font-awesome/css/font-awesome.css'
 import '@/styles/index.less'
 import MyPlugins from './components/plugins'
 import VueI18n from 'vue-i18n'
+import ECharts from 'vue-echarts'
+import 'echarts'
 
 // 自动化全局注册common目录下的组件
 const requireComponent = require.context('./components/common', true, /\.vue$/)
@@ -26,6 +28,7 @@ requireComponent.keys().forEach(fileName => {
 
 Vue.use(MyPlugins)
 Vue.use(VueI18n)
+Vue.component('v-chart', ECharts)
 
 
 const i18n = new VueI18n({

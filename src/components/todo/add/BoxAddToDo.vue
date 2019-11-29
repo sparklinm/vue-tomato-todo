@@ -4,8 +4,8 @@
       :title="this.$t('todo.add_todo')"
       top-option-btn
       :show="show"
-      :submit="submitAddToDo"
-      :before-open="beforeBoxAddToDoOpen"
+      :submit="submitAddTodo"
+      :before-open="beforeBoxAddTodoOpen"
       :z-index="2010"
       :class="customClass"
       @closed="$emit('update:show',false)"
@@ -188,6 +188,7 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
+import util from '@/util.js'
 export default {
   props: {
     data: {
@@ -345,7 +346,7 @@ export default {
       }).description
     },
     ...mapState('todo', {
-      showBoxAddToDo: state => state.showBoxAddToDo,
+      showBoxAddTodo: state => state.showBoxAddTodo,
       template: state => state.template
     })
   },
@@ -371,9 +372,12 @@ export default {
     this.setBtnAdvancedSettings()
   },
   methods: {
-    ...mapMutations('todo', ['addToDo', 'toggleBoxAddToDo']),
+    ...mapMutations('todo', ['addTodo', 'toggleBoxAddTodo']),
     checkNumber ({ value, max }) {
-      return value - max <= 0
+      return util.checkLess({
+        value,
+        max
+      })
     },
     setBtnAdvancedSettings () {
       for (const setting of Object.values(this.advancedSettings)) {
@@ -474,7 +478,7 @@ export default {
       for (const key of Object.keys(this.advancedSettings)) {
         const { max = 'NO_VALUE' } = this.advancedSettings[key]
         if (
-          !max === 'NO_VALUE' &&
+          max !== 'NO_VALUE' &&
           !this.checkNumber(this.advancedSettings[key])
         ) {
           this.$tips(this.error.todo[key])
@@ -500,12 +504,12 @@ export default {
         done()
       }
     },
-    beforeBoxAddToDoOpen (done) {
+    beforeBoxAddTodoOpen (done) {
       this.$nextTick(() => {
         done()
       })
     },
-    submitAddToDo (done) {
+    submitAddTodo (done) {
       const { name } = this.todo
       if (name === '') {
         this.$message({
@@ -541,7 +545,7 @@ export default {
       }
       this.todo.creat = new Date()
 
-      // this.addToDo(this.todo)
+      // this.addTodo(this.todo)
       this.$emit('submit', this.todo)
       done()
     }

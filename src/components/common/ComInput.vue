@@ -12,7 +12,7 @@
         v-if="type==='textarea'"
         ref="input"
         v-model="currentValue"
-        class="com-input__box com-input-box"
+        class="com-input__box"
         rows="1"
         :autofocus="autofocus"
         @focus="isFocus=true"
@@ -23,7 +23,7 @@
         v-else
         ref="input"
         v-model="currentValue"
-        class="com-input__box com-input-box"
+        class="com-input__box"
         :min="min"
         :max="max"
         :type="type==='number'?type:'text'"
@@ -153,6 +153,7 @@ export default {
 .com-input {
   .flex(@justify-content: space-between; @align-items: center);
   position: relative;
+  font-size: 14px;
 }
 
 .com-input__area {

@@ -12,20 +12,20 @@
         :title="item.name"
         class="todo-set-inner"
         :style="{borderLeftColor:item.background}"
-        @click.native.self="setShowToDos(index)"
+        @click.native.self="setShowTodos(index)"
       >
         <template v-slot:right-icon>
           <ComIcon
-            v-show="!showToDos[index]"
+            v-show="!showTodos[index]"
             name="chevron-right"
             class="btn-option"
-            @click="setShowToDos(index, true)"
+            @click="setShowTodos(index, true)"
           />
           <ComIcon
-            v-show="showToDos[index]"
+            v-show="showTodos[index]"
             name="chevron-down"
             class="btn-option"
-            @click="setShowToDos(index, false)"
+            @click="setShowTodos(index, false)"
           />
           <ComToolTip>
             <ComIcon
@@ -53,20 +53,20 @@
           <ComIcon
             name="plus"
             class="btn-option"
-            @click="showBox('showBoxAddToDo',index)"
+            @click="showBox('showBoxAddTodo',index)"
           />
         </template>
       </ComCell>
-      <ListToDo
-        v-show="showToDos[index]"
+      <ListTodo
+        v-show="showTodos[index]"
         :todos="item.todos"
         class="list-set-todo"
       />
     </div>
-    <BoxAddToDo
-      v-if="showBoxAddToDo"
-      :show.sync="showBoxAddToDo"
-      @submit="submitAddToDo"
+    <BoxAddTodo
+      v-if="showBoxAddTodo"
+      :show.sync="showBoxAddTodo"
+      @submit="submitAddTodo"
     />
     <ComPopup
       class="box-set-settings"
@@ -116,17 +116,17 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-import ListToDo from './ListToDo'
-import BoxAddToDo from './add/BoxAddToDo'
+import ListTodo from './ListTodo'
+import BoxAddTodo from './add/BoxAddTodo'
 export default {
   components: {
-    ListToDo,
-    BoxAddToDo
+    ListTodo,
+    BoxAddTodo
   },
   data () {
     return {
-      showToDos: [false, false],
-      showBoxAddToDo: false,
+      showTodos: [false, false],
+      showBoxAddTodo: false,
       showBoxModifySet: false,
       currentSet: {},
       currentSetIndex: 0
@@ -138,14 +138,14 @@ export default {
     })
   },
   methods: {
-    ...mapMutations('todo', ['modifyToDoSet']),
-    setShowToDos (index, isShow) {
+    ...mapMutations('todo', ['modifyTodoSet']),
+    setShowTodos (index, isShow) {
       if (typeof isShow === 'undefined') {
-        this.showToDos[index] = !this.showToDos[index]
+        this.showTodos[index] = !this.showTodos[index]
       } else {
-        this.showToDos[index] = isShow
+        this.showTodos[index] = isShow
       }
-      this.showToDos = Object.assign([], this.showToDos)
+      this.showTodos = Object.assign([], this.showTodos)
     },
     showBox (key, index) {
       this[key] = true
@@ -153,13 +153,13 @@ export default {
       this.currentSetIndex = index
     },
     submitModifySet () {
-      this.modifyToDoSet({
+      this.modifyTodoSet({
         set: this.currentSet,
         index: this.currentSetIndex
       })
       this.showBoxModifySet = false
     },
-    submitAddToDo (todo) {
+    submitAddTodo (todo) {
       this.currentSet.todos.push(todo)
       this.submitModifySet()
     }

@@ -1,23 +1,28 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ToDo from './views/ToDo.vue'
-import ToDoSet from './views/ToDoSet.vue'
-import doToDo from './views/doToDo.vue'
+import Todo from './views/Todo.vue'
+import TodoSet from './views/TodoSet.vue'
+import DoTodo from './views/DoTodo.vue'
+import Statistics from './views/Statistics.vue'
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
       path: '/',
-      component: ToDo
+      component: Todo
     },
     {
       path: '/set',
-      component: ToDoSet
+      component: TodoSet
     },
     {
       path: '/do',
-      component: doToDo
+      component: DoTodo
+    },
+    {
+      path: '/statistics',
+      component: Statistics
     }
   ]
 })

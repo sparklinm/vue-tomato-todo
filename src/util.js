@@ -19,5 +19,8 @@ module.exports = {
   },
   addZero (num, limit) {
     return num < limit ? '0' + num : num
+  },
+  checkLess ({ value, max }) {
+    return value - max <= 0
   }
 }

@@ -52,13 +52,13 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('todo', ['addToDoSet']),
+    ...mapMutations('todo', ['addTodoSet']),
     selectColor (index) {
       this.todoSet.background = this.colors[index]
     },
     submitAddSet (done) {
       this.todoSet.todos = []
-      this.addToDoSet(this.todoSet)
+      this.addTodoSet(this.todoSet)
       done()
     }
   }

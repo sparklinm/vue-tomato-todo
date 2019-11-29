@@ -6,7 +6,11 @@ module.exports = {
     minute: '分钟',
     today: '今日',
     day: '天',
-    help: '帮助'
+    help: '帮助',
+    tip: '提示',
+    todo: '待办',
+    todo_set: '待办集',
+    statistics: '统计数据'
   },
   action: {
     edit: '编辑',
@@ -36,6 +40,7 @@ module.exports = {
     cumulative_data: '累计数据',
     focus_times: '专注次数',
     focus_duration: '专注时长',
+    everyday_focus: '日均专注',
     no_timed_reminder: '没有设置定时提醒',
     stick_days_total: '总共坚持天数',
     stick_days_continue: '连续坚持天数',
@@ -57,15 +62,25 @@ module.exports = {
     remain_time: '还剩 {0} 次',
     add_todo: '添加待办',
     abandon_time: '放弃当前计时',
-    complete_time_advance: '提前完成计时'
+    complete_time_advance: '提前完成计时',
+    skip_rest_time: '跳过当前休息计时',
+    skip_all_time: '跳过往后所有计时',
+    in_this_todo: '您当前处在待办循环中',
+    please_input_abandon_reason: '请输入放弃原因'
   },
-  tips: {
+  message: {
     sort_todo: `<p>排序->长按并拖动</p>
                 <p>删除->点击删除按钮</p>
                 <p>注意，由于已完成的待办始终排在最后面，若对它们排序，会将它们的状态变为待完成时才生效。</p>`,
     pause_todo: `以上是暂停的限制时间 <br>
                  同一个代办最多可暂停3分钟，以免打断 <br>
-                 番茄工作法流程`
+                 番茄工作法流程`,
+    loop_times: '不能大于50次',
+    long_rest_time: '休息时长不能超过100分钟',
+    do_todo_duration: '不记录5秒钟以下的todo'
+  },
+  tips: {
+    do_todo_duration: '不记录5秒钟以下的todo'
   },
   sentence: {
     one: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。'
