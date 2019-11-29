@@ -9,11 +9,14 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "echarts": "^4.5.0",
     "font-awesome": "^4.7.0",
     "lodash": "^4.17.15",
     "normalize.css": "^8.0.1",
+    "postcss-pxtorem": "^4.0.1",
     "velocity-animate": "^1.5.2",
     "vue": "^2.6.10",
+    "vue-echarts": "^4.0.4",
     "vue-i18n": "^8.15.0",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1"

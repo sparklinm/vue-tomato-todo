@@ -8,7 +8,7 @@
       ref="box"
       class="box-wrap"
       :style="{zIndex:zIndex}"
-      @click.self="handleCancel"
+      @click.self="handleCloseOnClickMask"
     >
       <div class="com-popup">
         <div
@@ -24,7 +24,7 @@
             <slot name="header-icon" />
 
             <span
-              v-if="topOptionBtn"
+              v-if="topBtn"
               class="com-popup__header-btn"
             >
               <i
@@ -34,7 +34,7 @@
               />
             </span>
             <span
-              v-if="topOptionBtn"
+              v-if="topBtn"
               class="com-popup__header-btn"
             >
               <i
@@ -77,7 +77,7 @@ export default {
       type: String,
       default: ''
     },
-    topOptionBtn: {
+    topBtn: {
       type: Boolean,
       default: false
     },
@@ -120,6 +120,10 @@ export default {
     cancel: {
       type: Function,
       default: null
+    },
+    closeOnClickMask: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -196,7 +200,19 @@ export default {
       } else {
         this.close()
       }
+    },
+    handleCloseOnClickMask () {
+      if (this.closeOnClickMask) {
+        if (this.cancel) {
+          this.cancel(() => {
+            this.close()
+          })
+        } else {
+          this.close()
+        }
+      }
     }
+
   }
 }
 </script>
@@ -240,6 +256,7 @@ export default {
   letter-spacing: 1px;
   padding: 10px 6px;
   border: none;
+  border-radius: 2px;
   background: white;
   box-shadow: 0 2px 1px 1px rgb(238, 238, 238);
   cursor: pointer;

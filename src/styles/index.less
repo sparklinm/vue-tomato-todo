@@ -3,7 +3,7 @@
 body {
   font-family: 'Helvetica Neue', 'Microsoft YaHei', Helvetica,
     'Hiragino Sans GB', '黑体', Arial, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 0.5px;
 }
 
@@ -77,6 +77,10 @@ body {
     &:-ms-input-placeholder {
       color: @theme-base-color-1;
     }
+  }
+
+ .data-panel {
+    background: @theme-base-color-1;
   }
 
   .custom-time {
@@ -226,6 +230,12 @@ ul {
     .scale-font(0.7);
   }
 }
+
+
+.text_red {
+  color: rgb(189, 0, 0);
+}
+
 
 .popup-enter-active {
   animation: slide 0.3s ease;

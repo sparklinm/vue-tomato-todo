@@ -16,30 +16,30 @@
         />
       </div>
     </div>
-    <BoxAddToDo
-      v-if="showBoxAddToDo"
-      :show.sync="showBoxAddToDo"
-      @submit="addToDo($event)"
+    <BoxAddTodo
+      v-if="showBoxAddTodo"
+      :show.sync="showBoxAddTodo"
+      @submit="addTodo($event)"
     />
-    <BoxAddToDoSet
-      :show.sync="showBoxAddToDoSet"
+    <BoxAddTodoSet
+      :show.sync="showBoxAddTodoSet"
     />
   </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
-import BoxAddToDo from '@/components/todo/add/BoxAddToDo'
-import BoxAddToDoSet from '@/components/todo/add/BoxAddToDoSet'
+import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
+import BoxAddTodoSet from '@/components/todo/add/BoxAddTodoSet'
 export default {
   components: {
-    BoxAddToDo,
-    BoxAddToDoSet
+    BoxAddTodo,
+    BoxAddTodoSet
   },
   data () {
     return {
-      showBoxAddToDo: false,
-      showBoxAddToDoSet: false
+      showBoxAddTodo: false,
+      showBoxAddTodoSet: false
     }
   },
   computed: {
@@ -58,25 +58,25 @@ export default {
           name: 'clock',
           icon: 'clock-o',
           event: () => {},
-          limits: ['todo', 'set']
+          limits: ['todo', 'set', 'statistics']
         },
         {
           name: 'addTodo',
           icon: 'plus',
-          event: this.showBox.bind(this, 'showBoxAddToDo'),
+          event: this.showBox.bind(this, 'showBoxAddTodo'),
           limits: ['todo']
         },
         {
           name: 'addTodoSet',
           icon: 'plus-square',
-          event: this.showBox.bind(this, 'showBoxAddToDoSet'),
+          event: this.showBox.bind(this, 'showBoxAddTodoSet'),
           limits: ['set']
         },
         {
           name: 'more',
           icon: 'ellipsis-v',
           event: () => {},
-          limits: ['todo', 'set']
+          limits: ['todo', 'set', 'statistics']
         },
         {
           // 旋转屏幕
@@ -123,7 +123,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('todo', ['addToDo']),
+    ...mapMutations('todo', ['addTodo']),
     showBox (key) {
       this[key] = true
     }
@@ -132,10 +132,18 @@ export default {
 </script>
 
 <style lang='less'>
+.nav-wrap {
+  height: 56px;
+}
 .nav {
-  padding: 18px 15px;
-  font-size: 16px;
   color: white;
+  font-size: 16px;
+  position: fixed;
+  width: 100%;
+  z-index: 1234;
+  padding: 0px 15px;
+  height: 56px;
+  box-sizing: border-box;
   .flex(@align-items: center; @justify-content: space-between;);
 
   .right {

@@ -1,14 +1,14 @@
 <template>
   <div>
-    <ListToDoSet />
+    <ListTodoSet />
   </div>
 </template>
 
 <script>
-import ListToDoSet from '@/components/todo/ListToDoSet'
+import ListTodoSet from '@/components/todo/ListTodoSet'
 export default {
   components: {
-    ListToDoSet
+    ListTodoSet
   },
   data () {
     return {}

@@ -1,12 +1,12 @@
 <template>
-  <doToDo />
+  <doTodo />
 </template>
 
 <script>
-import doToDo from '@/components/todo/doToDo'
+import doTodo from '@/components/todo/DoTodo'
 export default {
   components: {
-    doToDo
+    doTodo
   },
   data () {
     return {}

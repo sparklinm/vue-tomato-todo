@@ -11,10 +11,11 @@
       </div>
       <div class="todo-info">
         <ProgressCircle
-          :width="220"
+          :width="timeClockWidth"
           :progress="progress"
           type="arc"
           :text="time"
+          :font-size="timeClockFont"
         />
         <div class="name">
           {{ todo.name }}
@@ -24,16 +25,17 @@
         </div>
       </div>
       <div class="options">
-        <span class="btns-group">
+        <span
+          class="btns-group btn-option"
+        >
           <ComIcon
             name="music"
-            class="btn-option"
             :class="{'btn_close':isMusicClose}"
             @click="closeMusic"
           />
           <ComIcon
             name="angle-down"
-            class="btn-option icon-down"
+            class="icon-down"
             size="24"
             @click="showBoxChangeMusic = true"
           />
@@ -48,12 +50,13 @@
         <ComIcon
           name="circle-o"
           class="btn-option"
-          :class="{'btn_close':isNoLoop}"
+          :class="{'btn_close':!isLoop}"
           @click="setLoopTimes"
         />
         <ComIcon
           name="stop"
           class="btn-option"
+          @click="stop"
         />
       </div>
     </div>
@@ -67,7 +70,7 @@
       </div>
       <div
         class="description"
-        v-html="$t('tips.pause_todo')"
+        v-html="$t('message.pause_todo')"
       />
       <template v-slot:footer>
         <button
@@ -104,13 +107,13 @@
       :show.sync="showBoxSetLoop"
     >
       <ComInput
-        v-model="currentToDo.loopTimes.custom"
+        v-model="loopTimes.value"
         type="number"
         :placeholder="$t('todo.input_loop_times')"
         autofocus
       />
       <ComInput
-        v-model="currentToDo.restTime.long"
+        v-model="restTimeLong.value"
         type="number"
         :placeholder="$t('todo.loop_end_rest_time')"
         autofocus
@@ -119,7 +122,7 @@
       <template v-slot:footer>
         <button
           class="com-popup__footer-btn com-popup__footer-btn_w-auto"
-          @click="submitSetLoopTimes"
+          @click="infiniteLoop"
         >
           {{ $t('todo.infinite_loop') }}
         </button>
@@ -131,7 +134,7 @@
         </button>
         <button
           class="com-popup__footer-btn"
-          @click="showBoxSetLoop=false"
+          @click="cancleSetLoopTimes"
         >
           {{ $t('action.cancel') }}
         </button>
@@ -142,31 +145,90 @@
       class="box-skip-time fade"
       :show.sync="showBoxSkipTime"
       :title="$t('todo.choose_your_operation')"
+      :close-on-click-mask="false"
+      @closed="submitSkipTime"
     >
       <ul v-if="isDoing">
-        <li class="option">
-          <span>
+        <li
+          class="option text_red"
+          @click="abandonTime"
+        >
+          <span class="option-text">
             {{ $t('todo.abandon_time') }}
           </span>
         </li>
-        <li class="option">
-          <span>
+        <li
+          class="option"
+          @click="skipTime"
+        >
+          <span class="option-text">
             {{ $t('todo.complete_time_advance') }}
           </span>
         </li>
-        <li class="option">
-          <span>
+        <li
+          class="option"
+          @click="cancleSkipTime"
+        >
+          <span class="option-text">
             {{ $t('action.cancel') }}
           </span>
         </li>
       </ul>
       <ul v-else>
-        <li class="option">
-          <span>
-            {{ $t('todo.complete_time_advance') }}
+        <li
+          class="option"
+          @click="skipTime"
+        >
+          <span class="option-text">
+            {{ $t('todo.skip_rest_time') }}
+          </span>
+        </li>
+        <li
+          class="option"
+          @click="skipAllTime"
+        >
+          <ComCell
+            :title="$t('todo.skip_all_time')"
+            :lable="$t('todo.in_this_todo')"
+          />
+        </li>
+        <li
+          class="
+            option"
+          @click="cancleSkipTime"
+        >
+          <span class="option-text">
+            {{ $t('action.cancel') }}
           </span>
         </li>
       </ul>
+    </ComPopup>
+    <ComPopup
+      class="box-abandon-reason fade"
+      :show.sync="showBoxAbandonReason"
+      no-header
+      :close-on-click-mask="false"
+    >
+      <ComInput
+        v-model="abandonReason"
+        :placeholder="$t('todo.please_input_abandon_reason')"
+        autofocus
+      />
+      <div class="options">
+        <button
+          class="com-popup__footer-btn"
+          @click="submitAbandonTime"
+        >
+          {{ $t('action.confirm') }}
+        </button>
+        <button
+          class="com-popup__footer-btn"
+          @click="cancelAbandonTime"
+        >
+          {{ $t('action.cancel') }}
+        </button>
+      </div>
+      <!-- <chart /> -->
     </ComPopup>
   </div>
 </template>
@@ -181,9 +243,11 @@ export default {
   },
   data () {
     return {
-      status: this.$t('todo.is_doing'),
+      timeClockWidth: 220,
+      timeClockFont: 36,
       showBoxPause: false,
       showBoxChangeMusic: false,
+      totalDuration: 0,
       duration: 0,
       isDoing: true,
       restDuration: 0,
@@ -213,13 +277,29 @@ export default {
         }
       ],
       isMusicClose: false,
-      isNoLoop: false,
+      isLoop: false,
       showBoxSetLoop: false,
-      currentToDo: {
+      currentTodo: {
         loopTimes: {},
         restTime: {}
       },
-      showBoxSkipTime: true
+      error: {
+        loopTimes: this.$t('message.loop_times'),
+        restTime: this.$t('message.long_rest_time'),
+        total: this.$t('tips.do_todo_duration')
+      },
+      restTimeLong: {
+        value: '',
+        max: 50
+      },
+      loopTimes: {
+        value: '',
+        max: 100
+      },
+      showBoxSkipTime: false,
+      isSkipTime: false,
+      showBoxAbandonReason: false,
+      abandonReason: ''
     }
   },
   computed: {
@@ -240,24 +320,54 @@ export default {
 
     },
     timesLeft () {
-      const { custom: customTimes } = this.todo.loopTimes
+      const { custom: customTimes } = this.currentTodo.loopTimes
       if (customTimes > 0) {
         return this.$t('todo.remain_time', [customTimes])
+      } if (customTimes === -1) {
+        return this.$t('todo.infinite_loop')
       }
       return ''
     },
     timePause () {
       return util.getTimeView(this.pauseDuration)
+    },
+    status () {
+      return this.isDoing && this.$t('todo.is_doing') || this.$t('todo.is_resting')
+    }
+  },
+  watch: {
+    isDoing (val) {
+      clearTimeout(this.timer)
+      if (val) {
+        this.currentTodo.loopTimes.custom--
+        this.initDuration()
+        this.setDuration()
+      } else {
+        this.initRestDuration()
+        this.setRestDuration()
+      }
     }
   },
   mounted () {
+    this.currentTodo = _.cloneDeep(this.todo)
     this.initDuration()
     this.setDuration()
     this.initRestDuration()
-    this.currentToDo = _.cloneDeep(this.todo)
+    this.setTimeClockWidth()
+    window.addEventListener('resize', this.setTimeClockWidth)
+  },
+  destroyed () {
+    clearTimeout(this.timer)
+    clearTimeout(this.pasueTimer)
+    window.removeEventListener('resize', this.setTimeClockWidth)
   },
   methods: {
     ...mapMutations('todo', ['modifyTarget']),
+    setTimeClockWidth () {
+      this.timeClockWidth = (document.documentElement.clientWidth / 414) * 250
+      this.timeClockWidth = this.timeClockWidth > 300 ? 300 : this.timeClockWidth
+      this.timeClockFont = this.timeClockWidth / 250 * 36
+    },
     initRestDuration () {
       this.restDuration = this.getRestDuration()
     },
@@ -265,19 +375,16 @@ export default {
       const {
         default: defaultTime,
         custom: customTime
-      } = this.todo.restTime
+      } = this.currentTodo.restTime
       return customTime >= 0 ? customTime * 60 : defaultTime * 60
     },
     setRestDuration () {
       if (this.restDuration <= 0) {
         this.isDoing = true
-        this.status = this.$t('todo.is_doing')
-        this.initDuration()
-        this.setDuration()
         return
       }
       this.restDuration--
-      setTimeout(() => {
+      this.timer = setTimeout(() => {
         this.setRestDuration()
       }, 1000)
     },
@@ -287,38 +394,33 @@ export default {
           this.duration = 0
           break
         case 'down':
-          this.duration = this.todo.timeDuration * 60
+          this.duration = this.currentTodo.timeDuration * 60
           break
         default:
           break
       }
     },
     setDuration () {
-      switch (this.todo.timeWay) {
-        case 'up':
-          if (this.duration >= this.todo.timeDuration * 60) {
-            this.isDoing = false
-            this.status = this.$t('todo.is_resting')
-            this.initRestDuration()
-            this.setRestDuration()
-            return
-          }
-          this.duration++
-          break
-        case 'down':
-          if (this.duration <= 0) {
-            this.isDoing = false
-            this.status = this.$t('todo.is_resting')
-            this.initRestDuration()
-            this.setRestDuration()
-            return
-          }
-          this.duration--
-          break
-        default:
-          break
-      }
       this.timer = setTimeout(() => {
+        this.totalDuration++
+        switch (this.todo.timeWay) {
+          case 'up':
+            this.duration++
+            if (this.duration >= this.currentTodo.timeDuration * 60) {
+              this.isDoing = false
+              return
+            }
+            break
+          case 'down':
+            this.duration--
+            if (this.duration <= 0) {
+              this.isDoing = false
+              return
+            }
+            break
+          default:
+            break
+        }
         this.setDuration()
       }, 1000)
     },
@@ -347,23 +449,95 @@ export default {
     changeMusic () {},
 
     setLoopTimes () {
-      this.isNoLoop = !this.isNoLoop
-      if (this.isNoLoop === false) {
+      this.isLoop = !this.isLoop
+      if (this.isLoop === true) {
         this.showBoxSetLoop = true
-        this.currentToDo = _.cloneDeep(this.todo)
       } else {
-        this.currentToDo.loopTimes.custom = ''
-        this.currentToDo.restTime.long = ''
-        this.submitSetLoopTimes()
+        this.currentTodo.loopTimes.custom = ''
+        this.currentTodo.restTime.long = ''
+        this.showBoxSetLoop = false
       }
     },
-    submitSetLoopTimes () {
-      this.modifyTarget(this.currentToDo)
+    infiniteLoop () {
+      this.currentTodo.loopTimes.custom = -1
       this.showBoxSetLoop = false
     },
-    infiniteLoog () {
-      this.currentToDo.loopTimes.custom = -1
-      this.submitSetLoopTimes()
+    checkValue (key, { value, max }) {
+      if (!util.checkLess({
+        value,
+        max
+      })) {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.error[key]
+        })
+        return false
+      }
+      return true
+    },
+    submitSetLoopTimes () {
+      const { loopTimes, restTime } = this.currentTodo
+
+      if (!this.checkValue('loopTimes', this.loopTimes)) {
+        return
+      }
+      if (!this.checkValue('restTime', this.restTimeLong)) {
+        return
+      }
+
+      loopTimes.custom = this.loopTimes.value
+      restTime.long = this.restTimeLong.value
+      this.showBoxSetLoop = false
+    },
+    cancleSetLoopTimes () {
+      this.loopTimes.value = ''
+      this.restTimeLong.value = ''
+      this.showBoxSetLoop = false
+    },
+    stop () {
+      if (this.totalDuration < 5) {
+        this.$tips(this.error.total)
+        history.back()
+        return
+      }
+      this.showBoxSkipTime = true
+    },
+    skipTime () {
+      this.showBoxSkipTime = false
+      this.isSkipTime = true
+    },
+    cancleSkipTime () {
+      this.showBoxSkipTime = false
+      this.isSkipTime = false
+    },
+    submitSkipTime () {
+      if (this.isSkipTime) {
+        this.isDoing = !this.isDoing
+      }
+    },
+    abandonTime () {
+      this.showBoxAbandonReason = true
+      this.showBoxSkipTime = false
+    },
+    submitAbandonTime () {
+      const obj = {
+        time: new Date(),
+        reason: this.abandonReason
+      }
+      this.currentTodo.abandons.push(obj)
+      this.modifyTarget({
+        abandons: this.currentTodo.abandons
+      })
+      this.showBoxAbandonReason = false
+      this.skipAllTime()
+    },
+    cancelAbandonTime () {
+      this.showBoxAbandonReason = false
+      this.abandonReason = ''
+    },
+    skipAllTime () {
+      this.showBoxSkipTime = false
+      history.back()
     }
   }
 }
@@ -373,10 +547,14 @@ export default {
 .do-todo {
   .fixed-full-screen();
   text-align: left;
-  padding: 50px 70px 70px;
+  padding: 50px 1.4rem 70px;
   background: rgb(51, 51, 51);
   color: white;
-  .flex(@justify-content:space-between; @flex-direction:column;);
+  .flex(@justify-content:space-between; @flex-direction:column;@align-items:center;);
+
+  .verse {
+    max-width: 360px;
+  }
 
   .quo-marks {
     font-size: 44px;
@@ -407,6 +585,8 @@ export default {
 
   .options {
     padding: 0 20px;
+    width: 100%;
+    max-width: 360px;
     .flex(@justify-content:space-between);
 
     .btns-group {
@@ -495,17 +675,70 @@ export default {
 }
 
 .box-skip-time {
+  .com-popup {
+    width: 6rem;
+  }
+
+  .com-popup__header {
+    padding: 15px 20px;
+  }
+
   .com-popup__header-text {
-    .scale-font(0.9);
+    font-size: 12px;
   }
 
   .option {
-    line-height: 3;
+    padding: 20px 0 13px;
     letter-spacing: 1px;
-    span {
-      display: block;
-      .scale-font(0.9);
-    }
+  }
+
+  .option-text {
+    display: block;
+    font-size: 12px;
+  }
+
+  .com-popup__content {
+    padding: 0 20px;
+  }
+
+  .com-cell {
+    padding: 0;
+  }
+}
+
+.box-abandon-reason {
+  .com-popup {
+    width: 6rem;
+  }
+
+  .com-popup__content {
+    padding: 20px 15px 12px;
+  }
+
+  .com-input {
+    letter-spacing: 1px;
+  }
+
+  .com-input__box {
+    padding: 10px 0;
+  }
+
+  .com-popup__footer-btn {
+    width: 30%;
+    background: @gray-l-p;
+    color: black;
+    font-size: 12px;
+    margin-left: 8px;
+    padding: 11px 0;
+  }
+
+  .options .com-popup__footer-btn {
+    color: rgb(43, 42, 42);
+  }
+
+  .options {
+    margin-top: 10px;
+    text-align: right;
   }
 }
 </style>
