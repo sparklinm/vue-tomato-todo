@@ -1,5 +1,5 @@
 <template>
-  <div class="page-statistics">
+  <div class="page-statistics main">
     <CumulativeData />
   </div>
 </template>

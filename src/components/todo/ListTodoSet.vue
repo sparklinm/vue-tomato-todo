@@ -86,7 +86,7 @@
         autofocus
       />
       <div class="checkbox-container">
-        <ComCheckBox
+        <ComCheckbox
           v-model="currentSet.continuousExcute"
           left
           :content="$t('todo.do_continue')"

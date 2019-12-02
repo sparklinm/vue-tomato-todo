@@ -17,16 +17,24 @@ export default {
   data () {
     return {}
   },
-  mounted () {
+  created () {
     window.addEventListener('resize', () => {
-      document.documentElement.style.fontSize =
-        (document.documentElement.clientWidth / 414) * 50 + 'px'
+      const rootFont = (document.documentElement.clientWidth / 414) * 50 + 'px'
+
+      document.documentElement.style.fontSize = rootFont
     })
     document.documentElement.style.fontSize =
       (document.documentElement.clientWidth / 414) * 50 + 'px'
     document.body.className = 'theme-1'
+  },
+  mounted () {
   }
 }
 </script>
 
-<style lang="less"></style>
+<style lang="less">
+#app .echarts {
+  width: 100%;
+  height: 100%;
+}
+</style>
