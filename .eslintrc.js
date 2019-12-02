@@ -131,15 +131,15 @@ module.exports = {
     'array-bracket-newline': [
       'error',
       {
-        'multiline': true
+        'multiline': true,
       }
     ],
-    'array-element-newline': [
-      'error',
-      {
-        'multiline': true
-      }
-    ],
+    // 'array-element-newline': [
+    //   'error',
+    //   {
+    //     'multiline': true,
+    //   }
+    // ],
     'object-property-newline': [
       'error',
       {

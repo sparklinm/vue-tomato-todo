@@ -1,22 +1,24 @@
 <template>
-  <nav
-    v-show="showTabBar"
-    class="tab-bar"
-  >
-    <ul class="tab-bar-inner">
-      <li
-        v-for="item in tabBars"
-        :key="item.text"
-        class="tab-bar-items"
-      >
-        <ComIcon
-          :name="item.icon"
-          :text="item.text"
-          @click="toPage(item.path)"
-        />
-      </li>
-    </ul>
-  </nav>
+  <div class="tab-bar-wrap">
+    <nav
+      v-show="showTabBar"
+      class="tab-bar"
+    >
+      <ul class="tab-bar-inner">
+        <li
+          v-for="item in tabBars"
+          :key="item.text"
+          class="tab-bar-items"
+        >
+          <ComIcon
+            :name="item.icon"
+            :text="item.text"
+            @click="toPage(item.path)"
+          />
+        </li>
+      </ul>
+    </nav>
+  </div>
 </template>
 
 <script>
@@ -67,8 +69,11 @@ export default {
   bottom: 0;
   width: 100%;
   padding: 10px 0;
+  height: 56px;
+  box-sizing: border-box;
   border-top: 1px solid @gray-l-m;
   color: @gray-d;
+  background: white;
 
   .tab-bar-inner {
     .flex(@justify-content: space-between;);

@@ -6,11 +6,17 @@ module.exports = {
     minute: '分钟',
     today: '今日',
     day: '天',
+    day1: '日',
+    week: '周',
+    month: '月',
+    customize: '自定义',
     help: '帮助',
     tip: '提示',
     todo: '待办',
     todo_set: '待办集',
-    statistics: '统计数据'
+    statistics: '统计数据',
+    oclock: '点',
+    times: '次'
   },
   action: {
     edit: '编辑',
@@ -66,7 +72,18 @@ module.exports = {
     skip_rest_time: '跳过当前休息计时',
     skip_all_time: '跳过往后所有计时',
     in_this_todo: '您当前处在待办循环中',
-    please_input_abandon_reason: '请输入放弃原因'
+    please_input_abandon_reason: '请输入放弃原因',
+    focus_duration_distribution: '专注时长分布',
+    work_duration_distribution: '本月工作时间段分布',
+    monthly_statistics: '月度统计时间',
+    yearly_statistics: '年度统计时间',
+    get_up_clock_distribution: '起床打卡分布',
+    get_up_time: '起床时间',
+    get_up_time_average: '平均起床时间',
+    not_record: '无记录',
+    stop_reason_distribution: '本月打断原因分布',
+    total: '总计',
+    day_average: '日均'
   },
   message: {
     sort_todo: `<p>排序->长按并拖动</p>

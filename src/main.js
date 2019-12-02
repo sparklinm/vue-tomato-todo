@@ -9,6 +9,10 @@ import MyPlugins from './components/plugins'
 import VueI18n from 'vue-i18n'
 import ECharts from 'vue-echarts'
 import 'echarts'
+import roma from './roma'
+
+
+ECharts.registerTheme('roma', roma.theme)
 
 // 自动化全局注册common目录下的组件
 const requireComponent = require.context('./components/common', true, /\.vue$/)

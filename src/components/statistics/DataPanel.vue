@@ -4,6 +4,21 @@
       <span class="data-panel__hd-text">
         {{ title }}
       </span>
+      <div
+        v-if="topBtn"
+        class="data-panel__hd-btns"
+      >
+        <ComIcon
+          name="angle-left"
+          class="data-panel__hd-btn"
+          @click="$emit('previous')"
+        />
+        <ComIcon
+          name="angle-right"
+          class="data-panel__hd-btn"
+          @click="$emit('next')"
+        />
+      </div>
     </div>
     <div class="data-panel__bd">
       <slot />
@@ -20,7 +35,7 @@ export default {
     },
     topBtn: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   data () {
@@ -35,6 +50,7 @@ export default {
 .data-panel {
   padding: 0.16rem 0.16rem 0.24rem;
   border-radius: 0.12rem;
+  color: white;
 }
 
 .data-panel__hd {
@@ -47,7 +63,13 @@ export default {
   .scale-font(0.9);
 }
 
+.data-panel__hd-btn {
+  margin-left: 0.4rem;
+  padding: 0 5px;
+}
+
 .data-panel__bd {
   .flex(@justify-content: space-between;);
 }
+
 </style>
