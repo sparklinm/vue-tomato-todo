@@ -308,7 +308,7 @@ export default {
       })
     },
     creatTime () {
-      return util.timeFormat(this.todo.create, {
+      return util.formatTime(this.todo.create, {
         unit: true
       })
     },
@@ -328,7 +328,7 @@ export default {
 
       if (goal) {
         hd = this.$t('todo.goal_deadline', [
-          util.timeFormat(goal.deadline, {
+          util.formatTime(goal.deadline, {
             cut: '-'
           }),
           382

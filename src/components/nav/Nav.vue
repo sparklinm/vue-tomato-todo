@@ -58,7 +58,11 @@ export default {
           name: 'clock',
           icon: 'clock-o',
           event: () => {},
-          limits: ['todo', 'set', 'statistics']
+          limits: [
+            'todo',
+            'set',
+            'statistics'
+          ]
         },
         {
           name: 'addTodo',
@@ -76,7 +80,11 @@ export default {
           name: 'more',
           icon: 'ellipsis-v',
           event: () => {},
-          limits: ['todo', 'set', 'statistics']
+          limits: [
+            'todo',
+            'set',
+            'statistics'
+          ]
         },
         {
           // 旋转屏幕
@@ -136,9 +144,10 @@ export default {
   height: 56px;
 }
 .nav {
+  position: fixed;
+  top: 0;
   color: white;
   font-size: 16px;
-  position: fixed;
   width: 100%;
   z-index: 1234;
   padding: 0px 15px;

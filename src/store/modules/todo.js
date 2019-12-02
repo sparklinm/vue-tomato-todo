@@ -19,7 +19,7 @@ export default {
         create: new Date(2019, 8, 24),
         focus: [
           {
-            time: new Date(2019, 8, 24),
+            time: new Date(2019, 11, 1),
             duration: 30
           }
         ],
@@ -27,6 +27,12 @@ export default {
           {
             time: '17:33',
             day: '每天'
+          }
+        ],
+        stop: [
+          {
+            reason: 'reason1',
+            time: new Date(2019, 11, 5)
           }
         ]
       },
@@ -56,6 +62,12 @@ export default {
             time: '17:33',
             day: '每天'
           }
+        ],
+        stop: [
+          {
+            reason: 'reason2',
+            time: new Date(2019, 11, 12)
+          }
         ]
       },
       {
@@ -83,6 +95,12 @@ export default {
           {
             time: '17:33',
             day: '每天'
+          }
+        ],
+        stop: [
+          {
+            reason: 'reason3',
+            time: new Date(2019, 10, 5)
           }
         ]
       },
@@ -115,7 +133,7 @@ export default {
         ]
       },
       {
-        name: '目标',
+        name: '目标4',
         type: 'goal',
         timeWay: '倒计时',
         timeDuration: 25,
@@ -262,7 +280,7 @@ export default {
         continuousExcute: true,
         todos: [
           {
-            name: '目标',
+            name: '目标3',
             type: 'goal',
             timeWay: '倒计时',
             timeDuration: 25,
@@ -301,7 +319,7 @@ export default {
             }
           },
           {
-            name: '普通',
+            name: '普通5',
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
@@ -329,7 +347,7 @@ export default {
             ]
           },
           {
-            name: '普通2',
+            name: '普通6',
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
@@ -357,7 +375,7 @@ export default {
             ]
           },
           {
-            name: '普通3',
+            name: '普通7',
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
@@ -394,7 +412,7 @@ export default {
         continuousExcute: true,
         todos: [
           {
-            name: '普通',
+            name: '普8',
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
@@ -422,7 +440,7 @@ export default {
             ]
           },
           {
-            name: '普通2',
+            name: '普通9',
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
@@ -450,7 +468,7 @@ export default {
             ]
           },
           {
-            name: '普通3',
+            name: '普通10',
             type: 'common',
             timeWay: '正向计时',
             taskNotes: '普通普通普通',
@@ -481,7 +499,7 @@ export default {
       }
     ],
     target: {
-      name: '目标',
+      name: '目标2',
       type: 'goal',
       timeWay: 'down',
       timeDuration: 10,

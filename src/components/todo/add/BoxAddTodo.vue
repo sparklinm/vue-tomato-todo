@@ -155,7 +155,7 @@
       :cancel="cancelAdvancedSettings"
       :submit="submitAdvancedSettings"
     >
-      <ComCheckBox
+      <ComCheckbox
         v-model="advancedSettings.hideAfterComplete.value"
         content="完成后第二天不再显示"
       />
@@ -372,7 +372,8 @@ export default {
     this.setBtnAdvancedSettings()
   },
   methods: {
-    ...mapMutations('todo', ['addTodo', 'toggleBoxAddTodo']),
+    ...mapMutations('todo', ['addTodo',
+'toggleBoxAddTodo']),
     checkNumber ({ value, max }) {
       return util.checkLess({
         value,
@@ -401,7 +402,8 @@ export default {
       }
     },
     setAdvancedSettings () {
-      for (const [key, setting] of Object.entries(this.advancedSettings)) {
+      for (const [key,
+setting] of Object.entries(this.advancedSettings)) {
         if (this.todo[key]) {
           if (key === 'loopTimes' || key === 'restTime') {
             setting.value = setting.default = this.todo[key].custom
@@ -488,7 +490,8 @@ export default {
       }
 
       if (isChecked) {
-        for (const [key, setting] of Object.entries(this.advancedSettings)) {
+        for (const [key,
+setting] of Object.entries(this.advancedSettings)) {
           const { value } = setting
           setting.default = value
           if (key === 'loopTimes' || key === 'restTime') {
