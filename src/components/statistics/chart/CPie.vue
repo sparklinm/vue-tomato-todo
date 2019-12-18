@@ -7,8 +7,8 @@
     <v-chart
       id="pie"
       ref="chart"
-      :init-options="initOptions"
-      :options="options"
+      :init-options="chartInitOptions"
+      :options="chartOptions"
       autoresize
       theme="roma"
     />
@@ -21,13 +21,17 @@ export default {
     radius: {
       type: Number,
       default: 0.2
+    },
+    options: {
+      type: Object,
+      default: null
     }
   },
   data () {
     return {
       chartInitHeight: 0,
-      initOptions: {},
-      options: {
+      chartInitOptions: {},
+      chartOptions: {
         title: {
           text: ''
         },
@@ -53,7 +57,7 @@ export default {
         series: [
           {
             type: 'pie',
-            radius: 0.6,
+            radius: '60%',
             label: {
               show: true,
               formatter: `{b}({c}${this.$t('word.minute')})`,
@@ -79,6 +83,11 @@ export default {
       }
     }
   },
+  watch: {
+    options (val) {
+      Object.assign(this.chartOptions, val)
+    }
+  },
   mounted () {
     window.addEventListener('resize', this.resize)
     this.resize()
@@ -86,10 +95,9 @@ export default {
   methods: {
     resize () {
       const style = window.getComputedStyle(this.$refs.chartContainer)
-      this.initHeight = parseFloat(style.height)
-      this.initWidth = parseFloat(style.width)
-      const radius = this.initWidth * this.radius
-      this.options.series[0].radius = radius
+      const initWidth = parseFloat(style.width)
+      const radius = initWidth * this.radius
+      this.chartOptions.series[0].radius = radius
       this.setHeight()
     },
     setHeight () {

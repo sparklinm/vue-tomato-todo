@@ -49,8 +49,10 @@ export default {
     },
     page () {
       const maps = {
-        todo: '待办',
-        set: '待办集'
+        todo: this.$t('word.todo'),
+        set: this.$t('word.todo_set'),
+        statistics: this.$t('word.statistics'),
+        time_axis: this.$t('todo.history_record_time_axis')
       }
 
       const buttons = [
@@ -61,7 +63,8 @@ export default {
           limits: [
             'todo',
             'set',
-            'statistics'
+            'statistics',
+            'time_axis'
           ]
         },
         {
@@ -83,7 +86,8 @@ export default {
           limits: [
             'todo',
             'set',
-            'statistics'
+            'statistics',
+            'time_axis'
           ]
         },
         {

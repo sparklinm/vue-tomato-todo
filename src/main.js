@@ -2,15 +2,21 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store/index'
+
 import 'normalize.css'
 import 'font-awesome/css/font-awesome.css'
 import '@/styles/index.less'
+
 import MyPlugins from './components/plugins'
+
 import VueI18n from 'vue-i18n'
+
 import ECharts from 'vue-echarts'
 import 'echarts'
 import roma from './roma'
 
+import './components/plugins/calendar/style.less'
+import Calendar from './components/plugins/calendar'
 
 ECharts.registerTheme('roma', roma.theme)
 
@@ -33,7 +39,10 @@ requireComponent.keys().forEach(fileName => {
 Vue.use(MyPlugins)
 Vue.use(VueI18n)
 Vue.component('v-chart', ECharts)
-
+Vue.use(Calendar, {
+  locale: 'zh',
+  baseColor: '#f29543'
+})
 
 const i18n = new VueI18n({
   locale: 'zh', // 语言标识

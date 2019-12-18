@@ -7,6 +7,12 @@
       <div class="name">
         {{ name }}
       </div>
+      <div
+        v-if="content"
+        class="content"
+      >
+        {{ content }}
+      </div>
       <div class="card">
         <span class="description">{{ description }}</span>
         <ul class="progress">
@@ -48,6 +54,10 @@ export default {
     deadline: {
       type: String,
       default: ''
+    },
+    content: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -68,7 +78,7 @@ export default {
 
 <style lang="less">
 .list-item {
-  padding: 15px 0px 10px 20px;
+  padding: 8px 0px 8px 20px;
   background-color: rgb(49, 159, 202);
   color: white;
   border-radius: 5px;
@@ -77,6 +87,12 @@ export default {
 
   .left {
     .flex(@flex-direction: column);
+
+    .content {
+      margin-top: 15px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
 
     .card {
       margin-top: 12px;

@@ -1,0 +1,258 @@
+@media screen and (min-width: 768px) {
+  .ev-calendar-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ev-calendar {
+    width: 50%;
+  }
+
+  .ev-calendar__dates-value {
+    line-height: 50px;
+  }
+
+  .ev-calendar-wrapper .events-wrapper {
+    width: 50%;
+    background-color: #f29543;
+    color: #fff;
+    padding: 40px 45px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .ev-calendar {
+    width: 100%;
+  }
+
+  .ev-calendar__dates-value {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 8px;
+  }
+
+  .ev-calendar-wrapper .events-wrapper {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+.ev-calendar-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.ev-calendar-wrapper * {
+  box-sizing: border-box;
+}
+
+.ev-calendar-wrapper ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.ev-calendar-wrapper ::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.ev-calendar-wrapper ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.ev-calendar__header {
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+  color: white;
+  font-weight: 500;
+  overflow: hidden;
+  padding: 8px 18px;
+}
+
+.ev-calendar__title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+  float: left;
+}
+
+.ev-calendar_title-year {
+  font-size: 12px;
+  font-weight: 100;
+}
+
+.ev-calendar_today-icon {
+  font-size: 20px;
+  float: right;
+
+  path {
+    fill: white;
+  }
+}
+
+.ev-calendar__body {
+  width: 100%;
+}
+
+.ev-calendar__weeks {
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+  font-size: 12px;
+}
+
+.ev-calendar__weeks-item {
+  line-height: 50px;
+  float: left;
+  width: 14.285%;
+}
+
+.ev-calendar__main-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.ev-calendar__main {
+  transition: height 0.2s ease;
+}
+
+.ev-calendar__dates {
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+  font-size: 12px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+
+.ev-calendar__dates-item {
+  position: relative;
+  float: left;
+  display: block;
+  width: 14.285%;
+  cursor: default;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.ev-calendar__dates-value {
+  font-size: 12px;
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  border-radius: 50%;
+  border: 1px solid transparent;
+}
+
+.ev-calendar__dates-value_gray {
+  color:rgb(190, 190, 190);
+}
+
+//events
+.ev-events {
+}
+
+.ev-events__item {
+  position: relative;
+}
+
+.ev-events__hd {
+  padding: 5px;
+  height: 100%;
+  position: absolute;
+  text-align: center;
+}
+
+.ev-events__hd::after{
+  height: 100%;
+  display: inline-block;
+  content: "";
+  vertical-align: middle;
+}
+
+.ev-events__hd-text {
+  vertical-align: middle;
+  font-size:12px;
+}
+
+.ev-events__bd {
+  position: relative;
+  border-left: 2px solid #cacaca;
+  padding: 5px 10px 5px 20px;
+  margin-left: 60px;
+}
+
+.ev-events__dot {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  border-radius: 50%;
+  background-image:  radial-gradient(circle,#f29543 20%, #fdf4ec);
+  margin: -5px -7px;
+}
+
+.ev-events__content {
+  vertical-align: middle;
+  display: inline-block;
+  width: 100%;
+}
+
+.ev-calendar-wrapper .arrow-left.icon {
+  color: #000;
+  position: absolute;
+  left: 6%;
+  margin-top: 10px;
+}
+
+.ev-calendar-wrapper .arrow-left.icon:before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  -webkit-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+}
+
+.ev-calendar-wrapper .arrow-right.icon {
+  color: #000;
+  position: absolute;
+  right: 6%;
+  margin-top: 10px;
+}
+
+.ev-calendar-wrapper .arrow-right.icon:before {
+  content: "";
+  position: absolute;
+  right: 1px;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.ev-calendar-wrapper h3,
+.ev-calendar-wrapper p {
+  margin: 0;
+  padding: 0;
+}
+
+/*# sourceMappingURL=style.css.map*/

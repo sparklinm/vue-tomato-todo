@@ -34,6 +34,21 @@ export default {
             reason: 'reason1',
             time: new Date(2019, 11, 5)
           }
+        ],
+        completed: [
+          {
+            start: new Date(2020, 0, 2, 7, 20),
+            end: new Date(2020, 0, 2, 7, 30),
+            status: 'completed',
+            experience: '非常好'
+          },
+          {
+            start: new Date(2020, 0, 2, 10, 20),
+            end: new Date(2020, 0, 2, 10, 32),
+            status: 'stopped',
+            experience: '等待下一次',
+            reason: '临时有事'
+          }
         ]
       },
       {

@@ -40,6 +40,11 @@ export default {
           icon: 'clock-o',
           text: this.$t('word.statistics'),
           path: 'statistics'
+        },
+        {
+          icon: 'clock-o',
+          text: this.$t('word.time_axis'),
+          path: 'time_axis'
         }
       ]
     }
