@@ -5,7 +5,10 @@
     @previous="$emit('previous')"
     @next="$emit('next')"
   >
-    <CLine ref="line" />
+    <CLine
+      ref="line"
+      :options="options"
+    />
   </DataPanel>
 </template>
 
@@ -30,8 +33,13 @@ export default {
   },
   data () {
     return {
-      chartInitHeight: 0,
-      initOptions: {}
+      options: {},
+      test: {
+        title: {
+          text: '456'
+        }
+      }
+
     }
   },
   computed: {
@@ -51,8 +59,6 @@ export default {
   watch: {
     data: {
       handler (data) {
-        const chart = this.$refs.line
-        const options = chart.options
         const time = this.period[0]
         const year = time.getFullYear()
         const month = time.getMonth()
@@ -80,10 +86,22 @@ export default {
             seriesData.push([i, 0, ''])
           }
         }
-        options.xAxis[0].data = xAxisData
-        options.series[0].data = seriesData
-        options.series[0].name = this.panelTitle
-        options.series[0].label.formatter = '{@[2]}'
+
+        this.options = {
+          xAxis: [
+            {
+              data: xAxisData
+            }
+          ],
+          series: [
+            {
+              name: this.panelTitle,
+              data: seriesData,
+              label: '{@[2]}'
+            }
+          ]
+        }
+
       }
     }
   },
@@ -93,50 +111,5 @@ export default {
 </script>
 
 <style lang="less">
-.focus-chart {
-  .data-panel__bd {
-    display: block;
-  }
 
-  .filters {
-    text-align: right;
-  }
-
-  .filters-inline {
-    display: inline-block;
-    border: 1px solid white;
-    border-radius: 4px;
-    font-size: 12px;
-    .scale-font(0.9;right;center);
-  }
-
-  .custom-radio__text {
-    display: inline-block;
-    width: 1.1rem;
-    padding: 0.08rem 0;
-    text-align: center;
-  }
-
-  .custom-radio:not(:last-child) .custom-radio__text {
-    border-right: 1px solid white;
-  }
-
-  .custom-radio__inline {
-    width: 0;
-    &:checked + span {
-      background: white;
-      color: black;
-    }
-  }
-
-  .chart-container {
-    width: 7.56rem;
-    height: 3.8rem;
-  }
-
-  .echarts {
-    width: 100%;
-    height: 100%;
-  }
-}
 </style>

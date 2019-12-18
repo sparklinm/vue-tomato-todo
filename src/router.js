@@ -4,6 +4,7 @@ import Todo from './views/Todo.vue'
 import TodoSet from './views/TodoSet.vue'
 import DoTodo from './views/DoTodo.vue'
 import Statistics from './views/Statistics.vue'
+import TimeAxis from './views/TimeAxis.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -23,6 +24,10 @@ export default new Router({
     {
       path: '/statistics',
       component: Statistics
+    },
+    {
+      path: '/time_axis',
+      component: TimeAxis
     }
   ]
 })

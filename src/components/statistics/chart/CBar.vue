@@ -6,8 +6,8 @@
     <v-chart
       id="bar"
       ref="chart"
-      :init-options="initOptions"
-      :options="options"
+      :init-options="chartInitOptions"
+      :options="chartOptions"
       autoresize
       theme="roma"
     />
@@ -16,11 +16,20 @@
 
 <script>
 export default {
+  props: {
+    options: {
+      type: Object,
+      default: null
+    },
+    notMerge: {
+      type: Boolean,
+      default: true
+    }
+  },
   data () {
     return {
-      chartInitHeight: 0,
-      initOptions: {},
-      options: {
+      chartInitOptions: {},
+      chartOptions: {
         title: {
           text: ''
         },
@@ -116,6 +125,16 @@ export default {
           color: '#fff'
         },
         animationDuration: 2000
+      }
+    }
+  },
+  watch: {
+    options (val) {
+      if (!_.isEmpty(val)) {
+        if (!this.notMerge) {
+          this.chartOptions = val
+        }
+        Object.assign(this.chartOptions, val)
       }
     }
   }

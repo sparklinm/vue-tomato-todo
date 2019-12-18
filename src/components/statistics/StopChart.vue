@@ -10,6 +10,7 @@ c
       ref="pie"
       class="stop-pie"
       :radius="0.16"
+      :options="options"
     />
   </DataPanel>
 </template>
@@ -35,7 +36,8 @@ export default {
   },
   data () {
     return {
-      filterValue: 'day'
+      filterValue: 'day',
+      options: {}
     }
   },
   computed: {
@@ -73,16 +75,25 @@ export default {
           })
         }
         const chart = this.$refs.pie
-        const options = chart.options
-        options.legend.data = legend
-        options.series[0].data = seriesData
-        options.series[0].label.formatter = `{c}${this.$t('word.times')}`
-        options.legend.formatter = name => {
-          let cname = name
-          if (cname.length > 8) {
-            cname = name.slice(0, 8) + '...'
-          }
-          return cname
+        this.options = {
+          legend: {
+            data: legend,
+            formatter: name => {
+              let cname = name
+              if (cname.length > 8) {
+                cname = name.slice(0, 8) + '...'
+              }
+              return cname
+            }
+          },
+          series: [
+            {
+              data: seriesData,
+              label: {
+                formatter: `{b}({c}${this.$t('word.times')})`
+              }
+            }
+          ]
         }
         chart.setHeight()
       }
