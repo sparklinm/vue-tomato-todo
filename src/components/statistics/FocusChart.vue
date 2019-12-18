@@ -29,6 +29,7 @@ c
     </div>
     <CPie
       ref="pie"
+      :options="options"
     />
   </DataPanel>
 </template>
@@ -54,7 +55,8 @@ export default {
   },
   data () {
     return {
-      filterValue: 'day'
+      filterValue: 'day',
+      options: {}
     }
   },
   computed: {
@@ -88,7 +90,6 @@ export default {
     data: {
       handler (todos) {
         const legend = []
-        // todos = todos.slice(0, 3)
         const data = todos.map(todo => {
           legend.push(todo.name)
           return {
@@ -101,24 +102,32 @@ export default {
         const total = this.getTotalDuration(data)
         const ave = this.getAveDuration(total)
         const chart = this.$refs.pie
-        const options = chart.options
-        options.series[0].data = data
-        options.legend.data = legend
-        options.legend.formatter = name => {
-          const item = data.find(item => {
-            return item.name === name
-          })
-          let cname = name
-          if (cname.length > 8) {
-            cname = name.slice(0, 8) + '...'
-          }
-          if (!item) {
-            return
-          }
-          return `${cname}(${item.value}${this.$t('word.minute')})`
+        this.options = {
+          legend: {
+            data: legend,
+            formatter: name => {
+              const item = data.find(item => {
+                return item.name === name
+              })
+              let cname = name
+              if (cname.length > 8) {
+                cname = name.slice(0, 8) + '...'
+              }
+              if (!item) {
+                return
+              }
+              return `${cname}(${item.value}${this.$t('word.minute')})`
+            }
+          },
+          series: [
+            {
+              data: data
+            }
+          ]
         }
+
         if (this.filterValue !== 'day') {
-          options.graphic = {
+          this.options.graphic = {
             id: 'text',
             type: 'text',
             z: 100,
@@ -134,7 +143,7 @@ export default {
             }
           }
         } else {
-          options.graphic = {
+          this.options.graphic = {
             id: 'text',
             $action: 'remove'
           }

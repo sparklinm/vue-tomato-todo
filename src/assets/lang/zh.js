@@ -15,6 +15,7 @@ module.exports = {
     todo: '待办',
     todo_set: '待办集',
     statistics: '统计数据',
+    time_axis: '时间轴',
     oclock: '点',
     times: '次'
   },
@@ -83,8 +84,12 @@ module.exports = {
     not_record: '无记录',
     stop_reason_distribution: '本月打断原因分布',
     total: '总计',
-    day_average: '日均'
+    day_average: '日均',
+    click_fill_in_experience: '点击填写心得',
+    completed: '已完成',
+    abandon_in_half: '中途放弃'
   },
+  menu: {},
   message: {
     sort_todo: `<p>排序->长按并拖动</p>
                 <p>删除->点击删除按钮</p>

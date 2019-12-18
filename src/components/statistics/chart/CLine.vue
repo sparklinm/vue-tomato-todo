@@ -6,8 +6,8 @@
     <v-chart
       id="line"
       ref="chart"
-      :init-options="initOptions"
-      :options="options"
+      :init-options="chartInitOptions"
+      :options="chartOptions"
       autoresize
       theme="roma"
     />
@@ -16,11 +16,17 @@
 
 <script>
 export default {
+  props: {
+    options: {
+      type: Object,
+      default: null
+    }
+  },
   data () {
     return {
       chartInitHeight: 0,
-      initOptions: {},
-      options: {
+      chartInitOptions: {},
+      chartOptions: {
         title: {
           text: ''
         },
@@ -136,7 +142,8 @@ export default {
                   {
                     offset: 0,
                     color: '#fff'
-                  }, {
+                  },
+                  {
                     offset: 1,
                     color: '#fff'
                   }
@@ -153,9 +160,33 @@ export default {
       }
     }
   },
+  watch: {
+    options (val) {
+      if (!_.isEmpty(val)) {
+        Object.assign(this.chartOptions, val)
+      }
+    }
+  },
   mounted () {
     setTimeout(() => {
-      this.options.series[0].areaStyle.color.colorStops[1].color = window.getComputedStyle(document.querySelector('.data-panel')).backgroundColor
+      this.chartOptions.series = [
+        {
+          areaStyle: {
+            color: {
+              colorStops: [
+                {
+                  offset: 0,
+                  color: '#fff'
+                },
+                {
+                  offset: 1,
+                  color: window.getComputedStyle(document.querySelector('.data-panel')).backgroundColor
+                }
+              ]
+            }
+          }
+        }
+      ]
     })
   }
 }

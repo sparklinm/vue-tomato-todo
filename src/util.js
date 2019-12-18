@@ -72,6 +72,44 @@ export default {
     }
     return 30
   },
+  isEqualDate (cur, tag) {
+    if (!cur.getTime || !tag.getTime) {
+      return false
+    }
+    return cur.getTime() === tag.getTime()
+  },
+  isEqualDateFuzzy (cur, tag, ignore) {
+    if (!cur.getTime || !tag.getTime) {
+      return
+    }
+    const [curYear, curMonth, curDate] = [
+      cur.getFullYear(),
+      cur.getMonth(),
+      cur.getDate()
+    ]
+    const [tagYear, tagMonth, tagDate] = [
+      tag.getFullYear(),
+      tag.getMonth(),
+      tag.getDate()
+    ]
+    if (ignore === 'hour') {
+      return this.isEqualDate(
+        new Date(curYear, curMonth, curDate),
+        new Date(tagYear, tagMonth, tagDate)
+      )
+    }
+
+    if (ignore === 'date') {
+      return this.isEqualDate(
+        new Date(curYear, curMonth),
+        new Date(tagYear, tagMonth)
+      )
+    }
+    return this.isEqualDate(cur, tag)
+  },
+  getTimeDif (time1, time2, unit) {
+    // let
+  },
   assginLeafNode (target, source) {
     if (typeof source !== 'object' || typeof target !== 'object') {
       return

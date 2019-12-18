@@ -28,10 +28,7 @@ export default {
     }
   },
   data () {
-    return {
-      chartInitHeight: 0,
-      initOptions: {}
-    }
+    return {}
   },
   computed: {
     panelTitle () {
@@ -51,7 +48,7 @@ export default {
     data: {
       handler (data) {
         const chart = this.$refs.bar
-        const options = chart.options
+        const options = Object.assign({}, chart.chartOptions)
         const clocks = Object.keys(data)
 
         clocks.sort((a, b) => a - b)
@@ -60,7 +57,6 @@ export default {
           clocks[i] = parseInt(clocks[0]) + i
         }
         options.xAxis[0].data = clocks
-
 
         const legendData = []
         const series = []
@@ -99,11 +95,10 @@ export default {
         options.tooltip.formatter = obj => {
           return `${obj.seriesName}：${obj.data[1]}${this.$t('word.minute')}`
         }
+        chart.chartOptions = options
       }
     }
-  },
-  mounted () {},
-  methods: {}
+  }
 }
 </script>
 
