@@ -6,31 +6,189 @@
     >
       <template #events="scope">
         <ev-event
-          v-for="(todo,index) in completedTodos"
+          v-for="(todo, index) in completedTodos"
           :key="index"
-          :event="{date:todo.start}"
+          :event="{ date: todo.start }"
         >
-          <ListItem
-            :key="todo.name"
+          <div
             class="completed-item"
-            :name="todo.name"
-            :description="todo.duration"
-            :deadline="todo.status+todo.reason"
-            :content="todo.experience"
-          />
+            @click="edit(index)"
+          >
+            <div class="left">
+              <div class="hd">
+                {{ todo.name }}
+              </div>
+              <div class="bd">
+                {{ todo.experience }}
+              </div>
+              <div
+                v-if="todo.duration"
+                class="ft"
+              >
+                <span>{{ todo.duration }}</span>
+              </div>
+            </div>
+            <div class="right">
+              <div
+                class="hd"
+                :class="{ 'text-red': todo.reason }"
+              >
+                <div class="hd-text">
+                  {{ todo.status }}
+                </div>
+                <div
+                  v-if="todo.reason"
+                  class="hd-description"
+                >
+                  {{ todo.reason }}
+                </div>
+              </div>
+              <div
+                v-if="todo.progress"
+                class="ft"
+              >
+                <ProgressCircle :width="18" />
+              </div>
+            </div>
+          </div>
         </ev-event>
       </template>
     </ev-calendar>
+
+    <ComPopup
+      class="box-edit box-edit-completed"
+      :title="curTodo.name"
+      :show.sync="showBoxInfo"
+    >
+      <div class="cells">
+        <div class="cell">
+          <div class="cell-bd">
+            <span
+              class="btn btn-middle"
+              @click="editDuration"
+            >{{ $t("todo.edit_duration") }}
+            </span>
+            <span
+              class="btn btn-middle"
+              @click="submitDeleteFocus"
+            >{{ $t("action.delete") }}
+            </span>
+          </div>
+        </div>
+        <div class="cell btn">
+          <div class="cell-footer">
+            <div class="row">
+              <div class="title">
+                <span>{{ $t("todo.start_time") }}</span>
+              </div>
+              <span class="time">{{ dateFormatter(curTodo.start,timePattern) }}</span>
+            </div>
+            <div class="row">
+              <div class="title">
+                <span>{{ $t("todo.end_time") }}</span>
+              </div>
+              <span class="time">{{ dateFormatter(curTodo.end,timePattern) }}</span>
+            </div>
+            <div class="row">
+              <div class="title">
+                <span>{{ $t("todo.focus_time") }}</span>
+              </div>
+              <span>{{ curTodo.duration }}</span>
+            </div>
+            <div class="row">
+              <div class="title">
+                <span>{{ $t("todo.time_status") }}</span>
+              </div>
+              <div>
+                <span>{{ curTodo.status }}</span>
+                <div v-if="curTodo.reason">
+                  {{ curTodo.reason }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cell">
+          <div class="cell-bd">
+            <span
+              class="btn btn-big"
+              @click="editExperience"
+            >
+              {{ curTodo.experience }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </ComPopup>
+    <ComPopup
+      class="box-edit-duration"
+      :show.sync="showBoxDuration"
+      :z-index="2050"
+      no-header
+    >
+      <ComInput
+        v-model="focusDuration"
+        type="number"
+        :placeholder="$t('todo.modify_focus_duration')"
+        autofocus
+      />
+
+      <div class="tip-setting ">
+        {{ this.$t('tips.modify_focus_duration',[curTodo.duration]) }}
+      </div>
+      <template v-slot:footer>
+        <button
+          class="com-popup__footer-btn"
+          @click="submitEditDuration"
+        >
+          {{ $t('action.confirm') }}
+        </button>
+        <button
+          class="com-popup__footer-btn"
+          @click="showBoxDuration=false"
+        >
+          {{ $t('action.cancel') }}
+        </button>
+      </template>
+    </ComPopup>
+
+    <ComPopup
+      class="box-edit-text"
+      :show.sync="showBoxText"
+      :z-index="2050"
+      :title="$t('word.experience')"
+    >
+      <template v-slot:header-icon>
+        <ComIcon
+          name="pencil"
+          @click="changeCanEdit"
+        />
+        <ComIcon
+          name="check"
+          @click="submitEditExperience"
+        />
+      </template>
+      <ComInput
+        ref="inputExperience"
+        v-model="experience"
+        type="textarea"
+        rows="15"
+        :disabled="disableEditExperience"
+        :placeholder="$t('todo.please_input_experience')"
+        autofocus
+      />
+    </ComPopup>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import ListItem from '@/components/todo/ListItem'
+import { mapState, mapMutations } from 'vuex'
+import ProgressCircle from '@/components/todo/ProgressCircle'
 import util from '@/util.js'
 export default {
   components: {
-    ListItem
+    ProgressCircle
   },
   data () {
     return {
@@ -45,7 +203,19 @@ export default {
           }
         ]
       },
-      completedTodos: []
+      timePattern: 'yyyy-MM-dd hh:mm',
+      selectedDay: new Date(),
+      showBoxInfo: true,
+      curTodo: {},
+      showBoxDuration: false,
+      focusDuration: '',
+      showBoxText: true,
+      experience: '',
+      disableEditExperience: false,
+      error: {
+        focusDuration: this.$t('message.modify_focus_duration'),
+        delete: this.$t('message.confirm_delete')
+      }
     }
   },
   computed: {
@@ -61,49 +231,53 @@ export default {
         all.push(...set.todos)
       })
       return all
-    }
-  },
-  watch: {
-    slotProps (val) {
-      console.log(val)
-
-    }
-  },
-  mounted () {
-    console.log(this.events)
-
-  },
-  methods: {
-    getCompletedTodos (date) {
+    },
+    completedTodos () {
       const data = []
-      this.allTodos.forEach((todo) => {
-        if (todo.completed) {
-          todo.completed.forEach((item) => {
-            if (util.isEqualDateFuzzy(item.start, date, 'hour')) {
-              const duration = this.getTimeDif(item.start, item.end)
+      this.allTodos.forEach(todo => {
+        if (todo.focus) {
+          todo.focus.forEach(item => {
+            if (util.isEqualDateFuzzy(item.start, this.selectedDay, 'hour')) {
+              const duration = item.duration || this.getTimeDif(item.start, item.end)
               let progress = ''
               if (todo.timeDuration) {
                 progress = duration / todo.timeDuration
               }
+              const durationTxt =
+                duration > 0 ? duration + this.$t('word.minute') : ''
               const obj = {
                 start: item.start,
                 end: item.end,
                 name: todo.name,
-                experience: item.experience || this.$t('todo.click_fill_in_experience'),
-                duration: duration + this.$t('word.minute'),
-                status: item.reason ? this.$t('todo.abandon_in_half') : this.$t('todo.completed'),
+                experience:
+                  item.experience || this.$t('todo.click_fill_in_experience'),
+                duration: durationTxt,
+                status: item.reason
+                  ? this.$t('todo.abandon_in_half')
+                  : this.$t('todo.completed'),
                 reason: item.reason || '',
-                progress: progress
+                progress: progress,
+                data: item
               }
               data.push(obj)
             }
           })
         }
       })
-      this.completedTodos = data
-      console.log(this.completedTodos)
+      console.log(data)
+      return data
+    }
+  },
+  mounted () {
+    this.selectDay(new Date())
+    this.edit(0)
+    console.log(this)
 
-    },
+  },
+  methods: {
+    dateFormatter: util.dateFormatter,
+    ...mapMutations('todo', ['editFocus', 'deleteFocus']),
+
     getTimeDif (start, end) {
       return Math.floor((end.getTime() - start.getTime()) / (1000 * 60))
     },
@@ -111,7 +285,63 @@ export default {
       return Math.floor(duration / total) * 100
     },
     selectDay (date) {
-      this.getCompletedTodos(date)
+      this.selectedDay = date
+    },
+    edit (index) {
+      this.showBoxInfo = true
+      this.curTodo = this.completedTodos[index]
+    },
+    editDuration () {
+      this.showBoxDuration = true
+    },
+    submitEditDuration () {
+      if (this.focusDuration > this.curTodo.data.duration) {
+        this.error.focusDuration = this.$t('message.modify_focus_duration', [this.curTodo.data.duration])
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.error.focusDuration
+        })
+        return
+      }
+      this.editFocus({
+        id: this.curTodo.data.id,
+        duration: this.focusDuration
+      })
+      this.showBoxDuration = false
+    },
+    submitDeleteFocus () {
+      this.$message({
+        title: this.$t('word.tip'),
+        content: this.error.delete,
+        options: {
+          showCancel: true
+        }
+      }).then(() => {
+        this.deleteFocus(this.curTodo.data.id)
+        this.showBoxInfo = false
+      })
+    },
+    editExperience () {
+      this.showBoxText = true
+      this.experience = this.curTodo.experience
+      this.disableEditExperience = Boolean(this.experience)
+      this.$nextTick(() => {
+        this.$refs.inputExperience.focus()
+      })
+    },
+    submitEditExperience () {
+      this.editFocus({
+        id: this.curTodo.data.id,
+        experience: this.experience
+      })
+      this.showBoxText = false
+      this.showBoxInfo = false
+    },
+    changeCanEdit () {
+      this.disableEditExperience = false
+      this.$nextTick(() => {
+        this.$refs.inputExperience.focus()
+      })
     }
   }
 }
@@ -119,35 +349,85 @@ export default {
 
 <style lang="less">
 .completed-item {
-  padding: 8px 5px 8px 15px;
-
-  .right .btn-start {
-    display: none;
-  }
+  padding: 8px 8px 8px 15px;
+  background-color: rgb(49, 159, 202);
+  color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 5px 0px @gray;
+  font-size: 12px;
+  .flex(@justify-content: space-between);
 
   .left {
-    .content {
+    .flex(@flex-direction: column);
+
+    .bd {
       margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.8;
     }
 
-    .card {
+    .ft {
       margin-top: 10px;
     }
   }
 
   .right {
-    width: 50px;
     text-align: right;
+    .flex(@justify-content: space-between; @flex-direction: column);
+  }
 
-    .deadline {
-      position: relative;
-      top: 0;
-      left: 0;
-      transform: translate(0%, 0%) scale(1);
-      font-size: 10px;
-      letter-spacing: 1px;
-      white-space: normal;
+  .progress-bar-circle {
+    display: inline-block;
+  }
+
+  .progress-bar__sector {
+    display: none;
+  }
+
+  .progress-bar__text {
+    font-size: 6px;
+  }
+}
+
+.box-edit-completed {
+  font-size: 12px;
+  .cell {
+    .cell-bd {
+      padding: 0;
     }
+
+    .row {
+      width: auto;
+
+      &:not(:last-child){
+        margin-bottom: 8px;
+      }
+    }
+
+    .cell-footer {
+      padding: 8px;
+    }
+
+    .time {
+      letter-spacing: 0;
+    }
+  }
+}
+
+.box-wrap.box-edit-duration {
+  .com-input:first-child {
+    margin-bottom: 10px;
+  }
+}
+
+.box-edit-text {
+  .com-icon {
+    font-size: 16px;
+    margin-left: 20px;
+  }
+
+  .com-input__box {
+
   }
 }
 </style>

@@ -83,7 +83,7 @@
             <span class="btn btn-middle">{{ $t('todo.data_analysis') }}</span>
           </div>
         </div>
-        <div class="cell btn-big btn data">
+        <div class="cell btn data">
           <div class="cell-hd">
             {{ $t('todo.cumulative_data') }}
           </div>
@@ -99,7 +99,7 @@
             </div>
           </div>
         </div>
-        <div class="cell btn-big btn time-reminder">
+        <div class="cell btn time-reminder">
           <div class="cell-hd">
             {{ $t('todo.timed_reminder') }}
           </div>
@@ -125,7 +125,7 @@
         </div>
         <div
           v-if="showProgress"
-          class="cell btn-big btn data progress"
+          class="cell btn data progress"
         >
           <div class="cell-hd">
             {{ progress.hd }}
@@ -449,9 +449,13 @@ export default {
 
   .btn-big {
     width: 100%;
+    line-height: 50px;
+    font-size: 11px;
   }
 
   .cell {
+    width: 100%;
+
     &:not(:last-child) {
       margin-bottom: 7px;
     }
@@ -466,6 +470,17 @@ export default {
     .cell-bd {
       .flex(@justify-content: space-between;);
       padding-bottom: 6px;
+    }
+
+    .row {
+      width: 100%;
+      .flex(@align-items: center; @justify-content: space-between;);
+
+      .title {
+        span:first-child {
+          margin-right: 10px;
+        }
+      }
     }
   }
 

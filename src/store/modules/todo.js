@@ -3,10 +3,12 @@ export default {
   state: {
     todos: [
       {
+        id: 0,
         name: '普通',
         type: 'common',
-        timeWay: '正向计时',
+        timeWay: '倒计时',
         taskNotes: '普通普通普通',
+        timeDuration: 25,
         loopTimes: {
           default: 1,
           custom: ''
@@ -19,125 +21,21 @@ export default {
         create: new Date(2019, 8, 24),
         focus: [
           {
-            time: new Date(2019, 11, 1),
-            duration: 30
-          }
-        ],
-        reminders: [
-          {
-            time: '17:33',
-            day: '每天'
-          }
-        ],
-        stop: [
-          {
-            reason: 'reason1',
-            time: new Date(2019, 11, 5)
-          }
-        ],
-        completed: [
-          {
-            start: new Date(2020, 0, 2, 7, 20),
-            end: new Date(2020, 0, 2, 7, 30),
+            id: 0,
+            start: new Date(new Date().getTime() - 20 * 60 * 1000),
+            end: new Date(),
             status: 'completed',
-            experience: '非常好'
+            experience: '非常好',
+            duration: 20
           },
           {
+            id: 1,
             start: new Date(2020, 0, 2, 10, 20),
-            end: new Date(2020, 0, 2, 10, 32),
+            end: new Date(2020, 0, 2, 10, 45),
             status: 'stopped',
             experience: '等待下一次',
-            reason: '临时有事'
-          }
-        ]
-      },
-      {
-        name: '普通2',
-        type: 'common',
-        timeWay: '正向计时',
-        taskNotes: '普通普通普通',
-        loopTimes: {
-          default: 1,
-          custom: ''
-        },
-        restTime: {
-          default: 5,
-          custom: ''
-        },
-        hideAfterComplete: false,
-        create: new Date(2019, 8, 24),
-        focus: [
-          {
-            time: new Date(),
-            duration: 30
-          }
-        ],
-        reminders: [
-          {
-            time: '17:33',
-            day: '每天'
-          }
-        ],
-        stop: [
-          {
-            reason: 'reason2',
-            time: new Date(2019, 11, 12)
-          }
-        ]
-      },
-      {
-        name: '普通3',
-        type: 'common',
-        timeWay: '正向计时',
-        taskNotes: '普通普通普通',
-        loopTimes: {
-          default: 1,
-          custom: ''
-        },
-        restTime: {
-          default: 5,
-          custom: ''
-        },
-        hideAfterComplete: false,
-        create: new Date(2019, 8, 24),
-        focus: [
-          {
-            time: new Date(2019, 8, 24),
-            duration: 30
-          }
-        ],
-        reminders: [
-          {
-            time: '17:33',
-            day: '每天'
-          }
-        ],
-        stop: [
-          {
-            reason: 'reason3',
-            time: new Date(2019, 10, 5)
-          }
-        ]
-      },
-      {
-        name: '普通4',
-        type: 'common',
-        timeWay: '正向计时',
-        taskNotes: '普通普通普通',
-        loopTimes: {
-          default: 1,
-          custom: ''
-        },
-        restTime: {
-          default: 5,
-          custom: ''
-        },
-        hideAfterComplete: false,
-        create: new Date(2019, 8, 24),
-        focus: [
-          {
-            time: new Date(),
-            duration: 30
+            reason: '临时有事',
+            duration: 25
           }
         ],
         reminders: [
@@ -148,7 +46,8 @@ export default {
         ]
       },
       {
-        name: '目标4',
+        id: 1,
+        name: '目标3',
         type: 'goal',
         timeWay: '倒计时',
         timeDuration: 25,
@@ -161,18 +60,31 @@ export default {
         taskNotes: '目标目标目标',
         loopTimes: {
           default: 1,
-          custom: 10
+          custom: ''
         },
         restTime: {
           default: 5,
-          custom: 30
+          custom: ''
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
         focus: [
           {
-            time: new Date(),
+            id: 3,
+            start: new Date(2020, 0, 2, 4, 30),
+            end: new Date(2020, 0, 2, 5, 30),
+            status: 'completed',
+            experience: '心得3',
             duration: 30
+          },
+          {
+            id: 4,
+            start: new Date(2020, 0, 2, 4, 30),
+            end: new Date(2020, 0, 2, 5, 30),
+            status: 'stopped',
+            experience: '心得4',
+            reason: '临时有事',
+            duration: 10
           }
         ],
         reminders: [
@@ -187,30 +99,38 @@ export default {
         }
       },
       {
-        name: '习惯',
-        type: 'habit',
-        timeWay: '倒计时',
-        timeDuration: 25,
-        habit: {
-          frequency: '日',
-          piece: 120,
-          complete: 30
-        },
-        taskNotes: '习惯习惯习惯',
+        id: 2,
+        name: '普通5',
+        type: 'common',
+        timeWay: '正向计时',
+        taskNotes: '普通普通普通',
         loopTimes: {
           default: 1,
-          custom: 5
+          custom: ''
         },
         restTime: {
           default: 5,
-          custom: 20
+          custom: ''
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
         focus: [
           {
-            time: new Date(),
-            duration: 30
+            id: 5,
+            start: new Date(2019, 11, 20, 4, 30),
+            end: new Date(2019, 11, 20, 6, 21),
+            status: 'completed',
+            experience: '心得5',
+            duration: 12
+          },
+          {
+            id: 6,
+            start: new Date(2019, 11, 26, 10, 30),
+            end: new Date(2019, 11, 26, 11, 21),
+            status: 'stopped',
+            experience: '心得6',
+            reason: '临时有事',
+            duration: 23
           }
         ],
         reminders: [
@@ -218,12 +138,51 @@ export default {
             time: '17:33',
             day: '每天'
           }
+        ]
+      },
+      {
+        id: 3,
+        name: '习惯',
+        type: 'habit',
+        timeWay: '倒计时',
+        timeDuration: 25,
+        habit: {
+          frequency: 1,
+          piece: 10,
+          complete: 0
+        },
+        taskNotes: '',
+        loopTimes: {
+          value: 1,
+          custom: ''
+        },
+        restTime: {
+          value: 5,
+          custom: ''
+        },
+        create: new Date(2019, 10, 24),
+        focus: [
+          {
+            id: 7,
+            start: new Date(2019, 11, 28, 16, 30),
+            end: new Date(2019, 11, 20, 17, 21),
+            status: 'completed',
+            experience: '心得7',
+            duration: 68
+          },
+          {
+            id: 8,
+            start: new Date(new Date().getTime() + 20 * 60 * 1000),
+            end: new Date(new Date().getTime() + 50 * 60 * 1000),
+            status: 'stopped',
+            experience: '心得8',
+            reason: '临时有事',
+            duration: 26
+          }
         ],
-        stickDays: {
-          total: 5,
-          continuation: 3
-        }
+        hideAfterComplete: false
       }
+
     ],
     template: {
       todoCommon: {
@@ -293,131 +252,7 @@ export default {
         resetTimeSingle: '',
         resetTimeAll: '',
         continuousExcute: true,
-        todos: [
-          {
-            name: '目标3',
-            type: 'goal',
-            timeWay: '倒计时',
-            timeDuration: 25,
-            goal: {
-              deadline: new Date(2019, 8, 28),
-              total: 360,
-              complete: 100,
-              customUnit: '页'
-            },
-            taskNotes: '目标目标目标',
-            loopTimes: {
-              default: 1,
-              custom: ''
-            },
-            restTime: {
-              default: 5,
-              custom: ''
-            },
-            hideAfterComplete: false,
-            create: new Date(2019, 8, 24),
-            focus: [
-              {
-                time: new Date(),
-                duration: 30
-              }
-            ],
-            reminders: [
-              {
-                time: '17:33',
-                day: '每天'
-              }
-            ],
-            stickDays: {
-              total: 2,
-              continuation: 2
-            }
-          },
-          {
-            name: '普通5',
-            type: 'common',
-            timeWay: '正向计时',
-            taskNotes: '普通普通普通',
-            loopTimes: {
-              default: 1,
-              custom: ''
-            },
-            restTime: {
-              default: 5,
-              custom: ''
-            },
-            hideAfterComplete: false,
-            create: new Date(2019, 8, 24),
-            focus: [
-              {
-                time: new Date(),
-                duration: 30
-              }
-            ],
-            reminders: [
-              {
-                time: '17:33',
-                day: '每天'
-              }
-            ]
-          },
-          {
-            name: '普通6',
-            type: 'common',
-            timeWay: '正向计时',
-            taskNotes: '普通普通普通',
-            loopTimes: {
-              default: 1,
-              custom: ''
-            },
-            restTime: {
-              default: 5,
-              custom: ''
-            },
-            hideAfterComplete: false,
-            create: new Date(2019, 8, 24),
-            focus: [
-              {
-                time: new Date(),
-                duration: 30
-              }
-            ],
-            reminders: [
-              {
-                time: '17:33',
-                day: '每天'
-              }
-            ]
-          },
-          {
-            name: '普通7',
-            type: 'common',
-            timeWay: '正向计时',
-            taskNotes: '普通普通普通',
-            loopTimes: {
-              default: 1,
-              custom: ''
-            },
-            restTime: {
-              default: 5,
-              custom: ''
-            },
-            hideAfterComplete: false,
-            create: new Date(2019, 8, 24),
-            focus: [
-              {
-                time: new Date(),
-                duration: 30
-              }
-            ],
-            reminders: [
-              {
-                time: '17:33',
-                day: '每天'
-              }
-            ]
-          }
-        ]
+        todos: []
       },
       {
         name: '2',
@@ -425,92 +260,7 @@ export default {
         resetTimeSingle: '',
         resetTimeAll: '',
         continuousExcute: true,
-        todos: [
-          {
-            name: '普8',
-            type: 'common',
-            timeWay: '正向计时',
-            taskNotes: '普通普通普通',
-            loopTimes: {
-              default: 1,
-              custom: ''
-            },
-            restTime: {
-              default: 5,
-              custom: ''
-            },
-            hideAfterComplete: false,
-            create: new Date(2019, 8, 24),
-            focus: [
-              {
-                time: new Date(),
-                duration: 30
-              }
-            ],
-            reminders: [
-              {
-                time: '17:33',
-                day: '每天'
-              }
-            ]
-          },
-          {
-            name: '普通9',
-            type: 'common',
-            timeWay: '正向计时',
-            taskNotes: '普通普通普通',
-            loopTimes: {
-              default: 1,
-              custom: ''
-            },
-            restTime: {
-              default: 5,
-              custom: ''
-            },
-            hideAfterComplete: false,
-            create: new Date(2019, 8, 24),
-            focus: [
-              {
-                time: new Date(),
-                duration: 30
-              }
-            ],
-            reminders: [
-              {
-                time: '17:33',
-                day: '每天'
-              }
-            ]
-          },
-          {
-            name: '普通10',
-            type: 'common',
-            timeWay: '正向计时',
-            taskNotes: '普通普通普通',
-            loopTimes: {
-              default: 1,
-              custom: ''
-            },
-            restTime: {
-              default: 5,
-              custom: ''
-            },
-            hideAfterComplete: false,
-            create: new Date(2019, 8, 24),
-            focus: [
-              {
-                time: new Date(),
-                duration: 30
-              }
-            ],
-            reminders: [
-              {
-                time: '17:33',
-                day: '每天'
-              }
-            ]
-          }
-        ]
+        todos: []
       }
     ],
     target: {
@@ -573,6 +323,27 @@ export default {
       for (const [key, value] of Object.entries(obj)) {
         state.target[key] = value
       }
+    },
+    editFocus (state, obj) {
+      state.todos.some(todo => {
+        return todo.focus.some(item => {
+          if (item.id === obj.id) {
+            Object.assign(item, obj)
+            return true
+          }
+        })
+      })
+    },
+    deleteFocus (state, id) {
+      state.todos.some(todo => {
+        return todo.focus.some((item, index) => {
+          if (item.id === id) {
+            todo.focus.splice(index, 1)
+            return true
+          }
+        })
+      })
+      console.log(state.todos)
     }
   },
   actions: {}

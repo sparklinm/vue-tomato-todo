@@ -103,10 +103,6 @@ body {
     .background-color-base;
   }
 
-  .progress-bar__circle-sector {
-    fill: gray;
-  }
-
   .progress-bar__sector {
     fill: @theme-base-color-1;
   }
@@ -178,7 +174,7 @@ ul {
   }
 }
 
-.box-set-settings,.box-set-loop {
+.box-set-settings,.box-set-loop,.box-edit-duration {
   .com-popup__content {
     font-size: 15px;
     padding: 15px 20px 5px;
@@ -228,6 +224,7 @@ ul {
 
   .tip-setting {
     .scale-font(0.7);
+    white-space: nowrap;
   }
 }
 
@@ -235,7 +232,7 @@ ul {
    margin: 0 0 56px;
 }
 
-.text_red {
+.text-red {
   color: rgb(189, 0, 0);
 }
 
@@ -264,6 +261,9 @@ ul {
   animation: fade 0.15s ease-out reverse;
 }
 
+.disabled {
+  opacity: 0.6;
+}
 
 @keyframes slide {
   0% {

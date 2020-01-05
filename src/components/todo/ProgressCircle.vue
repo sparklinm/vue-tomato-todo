@@ -126,4 +126,9 @@ export default {
   dominant-baseline: middle;
   text-anchor: middle;
 }
+
+.progress-bar__circle-sector {
+  fill: rgb(88, 88, 88);
+  opacity: 0.6;
+}
 </style>
