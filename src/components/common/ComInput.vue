@@ -13,8 +13,9 @@
         ref="input"
         v-model="currentValue"
         class="com-input__box"
-        rows="1"
+        :rows="rows"
         :autofocus="autofocus"
+        v-bind="inputAttrs"
         @focus="isFocus=true"
         @blur="isFocus=false"
         @input="handleInput"
@@ -28,6 +29,7 @@
         :max="max"
         :type="type==='number'?type:'text'"
         :autofocus="autofocus"
+        v-bind="inputAttrs"
         @focus="isFocus=true"
         @blur="isFocus=false"
         @input="handleInput"
@@ -80,6 +82,10 @@ export default {
     autofocus: {
       type: Boolean,
       default: false
+    },
+    rows: {
+      type: String,
+      default: '1'
     }
   },
   data () {
@@ -102,6 +108,10 @@ export default {
     //     }
     //   })
     // }
+
+    inputAttrs () {
+      return this.$attrs
+    }
   },
   watch: {
     value (val) {
@@ -154,6 +164,7 @@ export default {
   .flex(@justify-content: space-between; @align-items: center);
   position: relative;
   font-size: 14px;
+  padding: 5px 0;
 }
 
 .com-input__area {
@@ -165,13 +176,15 @@ export default {
 .com-input__placeholder {
   position: absolute;
   transform-origin: left top;
+  left: 0;
+  top: 0;
 }
 
 .com-input__box {
   width: 100%;
   border: none;
   outline: none;
-  padding: 5px 0;
+  padding: 0;
   resize: none;
 }
 

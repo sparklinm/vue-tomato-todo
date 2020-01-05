@@ -17,7 +17,8 @@ module.exports = {
     statistics: '统计数据',
     time_axis: '时间轴',
     oclock: '点',
-    times: '次'
+    times: '次',
+    experience: '心得'
   },
   action: {
     edit: '编辑',
@@ -87,7 +88,14 @@ module.exports = {
     day_average: '日均',
     click_fill_in_experience: '点击填写心得',
     completed: '已完成',
-    abandon_in_half: '中途放弃'
+    abandon_in_half: '中途放弃',
+    edit_duration: '编辑时长',
+    start_time: '开始时间',
+    end_time: '开始结束时间',
+    time_status: '计时状态',
+    focus_time: '专注时间',
+    modify_focus_duration: '修改专注时长（分钟）',
+    please_input_experience: '请输入心得'
   },
   menu: {},
   message: {
@@ -99,10 +107,13 @@ module.exports = {
                  番茄工作法流程`,
     loop_times: '不能大于50次',
     long_rest_time: '休息时长不能超过100分钟',
-    do_todo_duration: '不记录5秒钟以下的todo'
+    do_todo_duration: '不记录5秒钟以下的todo',
+    modify_focus_duration: '仅可修改至比当前时长({0}分钟)短的时长',
+    confirm_delete: '确定删除？'
   },
   tips: {
-    do_todo_duration: '不记录5秒钟以下的todo'
+    do_todo_duration: '不记录5秒钟以下的todo',
+    modify_focus_duration: '注意，您仅可修改比当前时长{0}短的时长，且修改后无法再增加'
   },
   sentence: {
     one: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。'

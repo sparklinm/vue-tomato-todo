@@ -372,8 +372,10 @@ export default {
     this.setBtnAdvancedSettings()
   },
   methods: {
-    ...mapMutations('todo', ['addTodo',
-'toggleBoxAddTodo']),
+    ...mapMutations('todo', [
+      'addTodo',
+      'toggleBoxAddTodo'
+    ]),
     checkNumber ({ value, max }) {
       return util.checkLess({
         value,
@@ -402,8 +404,10 @@ export default {
       }
     },
     setAdvancedSettings () {
-      for (const [key,
-setting] of Object.entries(this.advancedSettings)) {
+      for (const [
+        key,
+        setting
+      ] of Object.entries(this.advancedSettings)) {
         if (this.todo[key]) {
           if (key === 'loopTimes' || key === 'restTime') {
             setting.value = setting.default = this.todo[key].custom
@@ -490,8 +494,10 @@ setting] of Object.entries(this.advancedSettings)) {
       }
 
       if (isChecked) {
-        for (const [key,
-setting] of Object.entries(this.advancedSettings)) {
+        for (const [
+          key,
+          setting
+        ] of Object.entries(this.advancedSettings)) {
           const { value } = setting
           setting.default = value
           if (key === 'loopTimes' || key === 'restTime') {
@@ -516,7 +522,7 @@ setting] of Object.entries(this.advancedSettings)) {
       const { name } = this.todo
       if (name === '') {
         this.$message({
-          title: '提示',
+          title: this.$t('word.tip'),
           content: this.error.todo.name
         })
         return

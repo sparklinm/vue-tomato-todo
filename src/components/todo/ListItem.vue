@@ -7,12 +7,6 @@
       <div class="name">
         {{ name }}
       </div>
-      <div
-        v-if="content"
-        class="content"
-      >
-        {{ content }}
-      </div>
       <div class="card">
         <span class="description">{{ description }}</span>
         <ul class="progress">
