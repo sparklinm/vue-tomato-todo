@@ -1,4 +1,51 @@
 export default {
+  dateFormatter (date, format) {
+    // 时间格式化辅助函数 date:毫秒数 format:'yyyy-MM-dd hh:mm:ss'
+    if (!date || date === '') {
+      return ''
+    }
+
+    let cdate = date
+
+    if (typeof cdate === 'string') {
+      const mts = cdate.match(/(\/Date\((\d+)\)\/)/)
+      if (mts && mts.length >= 3) {
+        cdate = parseInt(mts[2])
+      }
+    }
+
+    cdate = new Date(cdate)
+    if (!cdate || cdate.toUTCString() === 'Invalid Date') {
+      return ''
+    }
+
+    const map = {
+      M: cdate.getMonth() + 1, // 月份
+      d: cdate.getDate(), // 日
+      h: cdate.getHours(), // 小时
+      m: cdate.getMinutes(), // 分
+      s: cdate.getSeconds(), // 秒
+      q: Math.floor((cdate.getMonth() + 3) / 3), // 季度
+      S: cdate.getMilliseconds() // 毫秒
+    }
+
+    const formatTime = format.replace(/([yMdhmsqS])+/g, function (all, t) {
+      let v = map[t]
+      if (v !== undefined) {
+        if (all.length > 1) {
+          v = '0' + v
+          v = v.substr(v.length - 2)
+        }
+        return v
+      }
+      if (t === 'y') {
+        return (cdate.getFullYear() + '').substr(4 - all.length)
+      }
+      return all
+    })
+
+    return formatTime
+  },
   formatTime: function (date, config) {
     if (!(date instanceof Date)) {
       return ''

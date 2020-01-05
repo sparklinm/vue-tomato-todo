@@ -150,7 +150,7 @@
     >
       <ul v-if="isDoing">
         <li
-          class="option text_red"
+          class="option text-red"
           @click="abandonTime"
         >
           <span class="option-text">

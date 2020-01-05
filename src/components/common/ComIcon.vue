@@ -57,8 +57,11 @@ export default {
   .flex(@flex-direction: column; @align-items: center);
 }
 
-.come-icon__inner {
+.come-icon {
   font-size: 20px;
+}
+
+.come-icon__inner {
 }
 
 .come-icon__text {

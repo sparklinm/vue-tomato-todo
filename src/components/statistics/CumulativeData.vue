@@ -169,9 +169,9 @@ export default {
   methods: {
     filterStopData (todo, start, end) {
       let stopData = []
-      if (todo.stop && todo.stop.length) {
-        stopData = todo.stop.filter(item => {
-          return item.time >= start && item.time <= end
+      if (todo.focus && todo.focus.length) {
+        stopData = todo.focus.filter(item => {
+          return item.end >= start && item.end <= end && item.status === 'stopped'
         })
         return stopData
       }
@@ -181,7 +181,7 @@ export default {
       let focusData = []
       if (todo.focus && todo.focus.length) {
         focusData = todo.focus.filter(item => {
-          return item.time >= startDate && item.time <= endDate
+          return item.end >= startDate && item.end <= endDate
         })
         return focusData
       }
@@ -205,14 +205,6 @@ export default {
           currentTodos.push(currentTodo)
         }
       })
-      this.todoSets.forEach(sets => {
-        sets.todos.forEach(todo => {
-          const currentTodo = this.filterTodo(todo, startDate, endDate)
-          if (currentTodo) {
-            currentTodos.push(currentTodo)
-          }
-        })
-      })
       return currentTodos
     },
     getStopData (start = new Date(2000), end = new Date()) {
@@ -220,12 +212,6 @@ export default {
       this.todos.forEach(todo => {
         const data = this.filterStopData(todo, start, end)
         stopData.push(...data)
-      })
-      this.todoSets.forEach(set => {
-        set.todos.forEach(todo => {
-          const data = this.filterStopData(todo, start, end)
-          stopData.push(...data)
-        })
       })
       return stopData
     },
@@ -235,19 +221,13 @@ export default {
         const data = this.filterFocusData(todo, date, endDate)
         focusData.push(...data)
       })
-      this.todoSets.forEach(set => {
-        set.todos.forEach(todo => {
-          const data = this.filterFocusData(todo, date, endDate)
-          focusData.push(...data)
-        })
-      })
       return focusData
     },
     getFocusStatistics (data, unit) {
       const result = {}
       if (unit === 'hour') {
         data.forEach(item => {
-          const { time, duration } = item
+          const { start: time, duration } = item
           const days = util.getMonthDays(time)
           const date = time.getDate()
           const hours = time.getHours()
@@ -269,7 +249,7 @@ export default {
 
       if (unit === 'day') {
         data.forEach(item => {
-          const { time, duration } = item
+          const { start: time, duration } = item
           const days = util.getMonthDays(time)
           const date = time.getDate()
           const hours = time.getHours()
@@ -290,7 +270,7 @@ export default {
 
       if (unit === 'month') {
         data.forEach(item => {
-          const { time, duration } = item
+          const { start: time, duration } = item
           const days = util.getMonthDays(time)
           const month = time.getMonth()
           const date = time.getDate()

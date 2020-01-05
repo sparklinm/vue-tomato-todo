@@ -9,6 +9,15 @@ function creatMessagePlugin (Vue, options) {
     instance.title = message.title
     instance.content = message.content
     instance.show = true
+    instance.showCancel = message.options && message.options.showCancel
+    return new Promise((resolve, reject) => {
+      instance.$on('confirm', () => {
+        resolve()
+      })
+      instance.$on('cancel', () => {
+        reject()
+      })
+    })
   }
 }
 

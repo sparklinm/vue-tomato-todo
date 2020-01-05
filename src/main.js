@@ -20,6 +20,7 @@ import Calendar from './components/plugins/calendar'
 
 ECharts.registerTheme('roma', roma.theme)
 
+
 // 自动化全局注册common目录下的组件
 const requireComponent = require.context('./components/common', true, /\.vue$/)
 
@@ -35,21 +36,22 @@ requireComponent.keys().forEach(fileName => {
   )
 })
 
-
-Vue.use(MyPlugins)
 Vue.use(VueI18n)
-Vue.component('v-chart', ECharts)
-Vue.use(Calendar, {
-  locale: 'zh',
-  baseColor: '#f29543'
-})
-
 const i18n = new VueI18n({
   locale: 'zh', // 语言标识
   messages: {
     'zh': require('./assets/lang/zh')
   }
 })
+
+Vue.use(MyPlugins)
+Vue.component('v-chart', ECharts)
+Vue.use(Calendar, {
+  locale: 'zh',
+  baseColor: '#f29543'
+})
+
+
 
 Vue.config.productionTip = false
 

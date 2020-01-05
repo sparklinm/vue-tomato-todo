@@ -15,7 +15,12 @@
           v-html="content"
         />
         <div class="footer">
-          <span @click="hide">确定</span>
+          <span
+            v-if="showCancel"
+            class="cancel"
+            @click="hide"
+          >取消</span>
+          <span @click="confirm">确定</span>
         </div>
       </div>
     </div>
@@ -28,7 +33,8 @@ export default {
     return {
       title: '',
       content: '',
-      show: false
+      show: false,
+      showCancel: false
     }
   },
   watch: {
@@ -43,6 +49,13 @@ export default {
   methods: {
     hide () {
       this.show = false
+      this.$emit('cancel')
+      return Promise.reject()
+    },
+    confirm () {
+      this.show = false
+      this.$emit('confirm')
+      return Promise.resolve()
     }
   }
 }
@@ -75,6 +88,7 @@ export default {
     font-size: 14px;
     line-height: 1.4;
     text-align: justify;
+
     p {
       margin:10px 0;
     }
@@ -84,8 +98,13 @@ export default {
     font-size: 10px;
     text-align: right;
     color: @theme-base-color-1-20;
+
     span {
       padding: 10px 0;
+    }
+
+    .cancel {
+      margin-right: 15px;
     }
   }
 }
