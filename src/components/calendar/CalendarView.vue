@@ -173,9 +173,8 @@
         ref="inputExperience"
         v-model="experience"
         type="textarea"
-        rows="15"
         :disabled="disableEditExperience"
-        :placeholder="$t('todo.please_input_experience')"
+        :placeholder="inputExperiencePlaceHolder"
         autofocus
       />
     </ComPopup>
@@ -193,25 +192,19 @@ export default {
   data () {
     return {
       options: {
-        baseColor: '#f29543',
-        events: [
-          {
-            date: new Date('2019/12/5 10:25') // Required
-          },
-          {
-            date: new Date('2020/1/2 5:30')
-          }
-        ]
+        color: '#f29543',
+        events: []
       },
       timePattern: 'yyyy-MM-dd hh:mm',
       selectedDay: new Date(),
-      showBoxInfo: true,
+      showBoxInfo: false,
       curTodo: {},
       showBoxDuration: false,
       focusDuration: '',
-      showBoxText: true,
+      showBoxText: false,
       experience: '',
       disableEditExperience: false,
+      inputExperiencePlaceHolder: '',
       error: {
         focusDuration: this.$t('message.modify_focus_duration'),
         delete: this.$t('message.confirm_delete')
@@ -222,19 +215,12 @@ export default {
     ...mapState('todo', {
       todos: state => state.todos
     }),
-    ...mapState('todo', {
-      sets: state => state.todoSets
+    ...mapState('settings', {
+      calendarColor: state => state.currentTheme.darken10
     }),
-    allTodos () {
-      const all = this.todos
-      this.sets.forEach(set => {
-        all.push(...set.todos)
-      })
-      return all
-    },
     completedTodos () {
       const data = []
-      this.allTodos.forEach(todo => {
+      this.todos.forEach(todo => {
         if (todo.focus) {
           todo.focus.forEach(item => {
             if (util.isEqualDateFuzzy(item.start, this.selectedDay, 'hour')) {
@@ -254,7 +240,7 @@ export default {
                 duration: durationTxt,
                 status: item.reason
                   ? this.$t('todo.abandon_in_half')
-                  : this.$t('todo.completed'),
+                  : this.$t('word.completed'),
                 reason: item.reason || '',
                 progress: progress,
                 data: item
@@ -264,20 +250,33 @@ export default {
           })
         }
       })
-      console.log(data)
       return data
+    }
+  },
+  watch: {
+    todos: {
+      handler (todos) {
+        todos.forEach(todo => {
+          if (todo.focus) {
+            todo.focus.forEach(item => {
+              this.options.events.push({
+                date: item.start
+              })
+            })
+          }
+        })
+      },
+      deep: true,
+      immediate: true
     }
   },
   mounted () {
     this.selectDay(new Date())
-    this.edit(0)
-    console.log(this)
-
+    this.options.color = this.calendarColor
   },
   methods: {
     dateFormatter: util.dateFormatter,
     ...mapMutations('todo', ['editFocus', 'deleteFocus']),
-
     getTimeDif (start, end) {
       return Math.floor((end.getTime() - start.getTime()) / (1000 * 60))
     },
@@ -323,8 +322,9 @@ export default {
     },
     editExperience () {
       this.showBoxText = true
-      this.experience = this.curTodo.experience
+      this.experience = this.curTodo.data.experience
       this.disableEditExperience = Boolean(this.experience)
+      this.inputExperiencePlaceHolder = this.experience ? '' : this.$t('todo.please_input_experience')
       this.$nextTick(() => {
         this.$refs.inputExperience.focus()
       })
@@ -427,7 +427,7 @@ export default {
   }
 
   .com-input__box {
-
+    height: 300px;
   }
 }
 </style>

@@ -25,6 +25,7 @@
 <script>
 import util from '../tools.js'
 export default {
+  inject: ['options'],
   props: {
     events: {
       type: Array,
@@ -60,7 +61,7 @@ export default {
       return new Date(date.getFullYear(), date.getMonth(), date.getDate())
     },
     customColor () {
-      return this.$EventCalendar.color
+      return this.options.color
     },
     dayList () {
       const day = this.fullTime.day

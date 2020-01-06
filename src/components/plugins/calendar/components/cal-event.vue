@@ -24,6 +24,7 @@
 import i18n from '../i18n.js'
 import util from '../tools.js'
 export default {
+  inject: ['options'],
   props: {
     event: {
       type: Object,
@@ -32,12 +33,18 @@ export default {
   },
   data () {
     return {
-      i18n,
-      locale: this.$EventCalendar.locale,
-      color: this.$EventCalendar.color
+      i18n
     }
   },
   computed: {
+    locale () {
+      console.log(this.options)
+
+      return this.options.locale
+    },
+    color () {
+      return this.options.color
+    },
     dotStyle () {
       return {
         'background-image': ` radial-gradient(circle,${

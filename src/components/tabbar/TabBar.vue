@@ -45,6 +45,11 @@ export default {
           icon: 'clock-o',
           text: this.$t('word.time_axis'),
           path: 'time_axis'
+        },
+        {
+          icon: 'clock-o',
+          text: this.$t('word.future_plan'),
+          path: 'future_plan'
         }
       ]
     }
