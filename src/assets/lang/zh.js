@@ -18,7 +18,9 @@ module.exports = {
     time_axis: '时间轴',
     oclock: '点',
     times: '次',
-    experience: '心得'
+    experience: '心得',
+    future_plan: '未来计划',
+    completed: '已完成'
   },
   action: {
     edit: '编辑',
@@ -87,7 +89,6 @@ module.exports = {
     total: '总计',
     day_average: '日均',
     click_fill_in_experience: '点击填写心得',
-    completed: '已完成',
     abandon_in_half: '中途放弃',
     edit_duration: '编辑时长',
     start_time: '开始时间',
@@ -96,6 +97,17 @@ module.exports = {
     focus_time: '专注时间',
     modify_focus_duration: '修改专注时长（分钟）',
     please_input_experience: '请输入心得'
+  },
+  plan: {
+    future_plan: '未来计划',
+    add_future_plan: '增加未来计划',
+    plan_name: '计划名称',
+    plan_description: '计划描述',
+    have_passed_days: '已过去{0}天',
+    mark_completed: '标记为完成',
+    mark_incomplete: '标记为未完成',
+    creat_time: '建立时间',
+    goal_deadline: '目标日期'
   },
   menu: {},
   message: {

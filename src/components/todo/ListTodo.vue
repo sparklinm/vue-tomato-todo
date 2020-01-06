@@ -25,21 +25,21 @@
       <template v-slot:header-icon>
         <span class="btn-header">
           <i class="fa fa-clock-o" />
-          <span class="text">{{ $t('todo.timed_reminder') }}</span>
+          <span class="text">{{ $t("todo.timed_reminder") }}</span>
         </span>
         <span class="btn-header">
           <i
             class="fa fa-picture-o"
             aria-hidden="true"
           />
-          <span class="text">{{ $t('todo.change_background') }}</span>
+          <span class="text">{{ $t("todo.change_background") }}</span>
         </span>
         <span class="btn-header">
           <i
             class="fa fa-mobile"
             aria-hidden="true"
           />
-          <span class="text">{{ $t('todo.independent_white_list') }}</span>
+          <span class="text">{{ $t("todo.independent_white_list") }}</span>
         </span>
       </template>
       <div class="cells">
@@ -48,13 +48,15 @@
             <span
               class="btn btn-small"
               @click="editTodo"
-            >{{ $t('action.edit') }}</span>
+            >{{
+              $t("action.edit")
+            }}</span>
 
             <ComToolTip>
               <span
                 ref="btnMove"
                 class="btn btn-small"
-              >{{ $t('action.sort') }}|{{ $t('action.move') }}</span>
+              >{{ $t("action.sort") }}|{{ $t("action.move") }}</span>
               <template v-slot:content>
                 <div
                   ref="moveDrop"
@@ -62,10 +64,10 @@
                 >
                   <ul>
                     <li @click="sort">
-                      {{ $t('todo.sort_up_and_down') }}
+                      {{ $t("todo.sort_up_and_down") }}
                     </li>
                     <li @click="moveToSet">
-                      {{ $t('todo.move_to_set') }}
+                      {{ $t("todo.move_to_set") }}
                     </li>
                   </ul>
                 </div>
@@ -74,34 +76,38 @@
             <span
               class="btn btn-small"
               @click="deleteTodo(todoIndex)"
-            >{{ $t('action.delete') }}</span>
+            >{{
+              $t("action.delete")
+            }}</span>
           </div>
         </div>
         <div class="cell">
           <div class="cell-bd">
-            <span class="btn btn-middle">{{ $t('todo.history_record_time_axis') }}</span>
-            <span class="btn btn-middle">{{ $t('todo.data_analysis') }}</span>
+            <span class="btn btn-middle">{{
+              $t("todo.history_record_time_axis")
+            }}</span>
+            <span class="btn btn-middle">{{ $t("todo.data_analysis") }}</span>
           </div>
         </div>
         <div class="cell btn data">
           <div class="cell-hd">
-            {{ $t('todo.cumulative_data') }}
+            {{ $t("todo.cumulative_data") }}
           </div>
           <div class="cell-bd">
             <div class="column">
-              <span class="text">{{ $t('todo.focus_times') }}</span>
+              <span class="text">{{ $t("todo.focus_times") }}</span>
               <span class="number">{{ todo.focus.number }}</span>
             </div>
             <div class="column">
-              <span class="text">{{ $t('todo.focus_duration') }}</span>
+              <span class="text">{{ $t("todo.focus_duration") }}</span>
               <span class="number">{{ todo.focus.duration }}</span>
-              <span class="unit">{{ $t('word.minute') }}</span>
+              <span class="unit">{{ $t("word.minute") }}</span>
             </div>
           </div>
         </div>
         <div class="cell btn time-reminder">
           <div class="cell-hd">
-            {{ $t('todo.timed_reminder') }}
+            {{ $t("todo.timed_reminder") }}
           </div>
           <div class="cell-bd">
             <div
@@ -119,7 +125,7 @@
               v-else
               class="default"
             >
-              {{ $t('todo.no_timed_reminder') }}
+              {{ $t("todo.no_timed_reminder") }}
             </div>
           </div>
         </div>
@@ -134,7 +140,9 @@
             <div class="column">
               <span class="text">{{ progress.bd.completed }}</span>
               <span class="number">{{ progress.data.complete }}</span>
-              <span class="unit">{{ progress.data.customUnit || $t('word.minute') }}</span>
+              <span class="unit">{{
+                progress.data.customUnit || $t("word.minute")
+              }}</span>
             </div>
             <div class="column">
               <span class="text">{{ progress.bd.progress }}</span>
@@ -149,28 +157,30 @@
               <span class="number">{{
                 progress.data.total || progress.data.piece
               }}</span>
-              <span class="unit">{{ progress.data.customUnit || $t('word.minute') }}</span>
+              <span class="unit">{{
+                progress.data.customUnit || $t("word.minute")
+              }}</span>
             </div>
           </div>
           <div class="cell-footer">
             <div class="row">
               <div class="title">
                 <span>1</span>
-                <span>{{ $t('todo.stick_days_total') }}</span>
+                <span>{{ $t("todo.stick_days_total") }}</span>
               </div>
-              <span>{{ todo.stickDays.total }} {{ $t('word.day') }}</span>
+              <span>{{ todo.stickDays.total }} {{ $t("word.day") }}</span>
             </div>
             <div class="row">
               <div class="title">
                 <span>2</span>
-                <span>{{ $t('todo.stick_days_continue') }}</span>
+                <span>{{ $t("todo.stick_days_continue") }}</span>
               </div>
-              <span>{{ todo.stickDays.continuation }} {{ $t('word.day') }}</span>
+              <span>{{ todo.stickDays.continuation }} {{ $t("word.day") }}</span>
             </div>
             <div class="row">
               <div class="title">
                 <span>3</span>
-                <span>{{ $t('todo.creat_time') }}</span>
+                <span>{{ $t("todo.creat_time") }}</span>
               </div>
               <span>{{ creatTime }}</span>
             </div>
@@ -255,7 +265,6 @@ export default {
         sortTodo: {
           title: this.$t('word.help'),
           content: this.$t('message.sort_todo')
-
         }
       },
       sorter: null
@@ -287,13 +296,11 @@ export default {
           progress += `${todo.goal.complete}/${todo.goal.total} ${todo.goal
             .customUnit || this.$t('word.minute')}`
           progressBar = this.getProgress(todo.goal.complete, todo.goal.total)
-          deadline = this.$t('todo.time_remain_end_plan', [
-            Math.ceil(
-              (todo.goal.deadline - new Date()) / (1000 * 60 * 60 * 24)
-            )
-          ])
+          deadline = this.$t('todo.time_remain_end_plan', [Math.ceil((todo.goal.deadline - new Date()) / (1000 * 60 * 60 * 24))])
         } else if (todo.habit) {
-          progress += `${this.$t('word.today')}:${todo.habit.complete}/${todo.habit.piece} ${todo.habit.customUnit || this.$t('word.minute')}`
+          progress += `${this.$t('word.today')}:${todo.habit.complete}/${
+            todo.habit.piece
+          } ${todo.habit.customUnit || this.$t('word.minute')}`
 
           progressBar = this.getProgress(todo.habit.complete, todo.habit.piece)
         }
@@ -355,7 +362,6 @@ export default {
     console.log(this.datas)
     console.log(this.todos)
     console.log(Sorter)
-
   },
   methods: {
     start () {
@@ -459,27 +465,39 @@ export default {
     &:not(:last-child) {
       margin-bottom: 7px;
     }
+  }
 
-    .cell-hd {
-      font-size: 10px;
-      .scale-font(0.95);
-      padding: 8px 12px;
-      text-align: left;
+  .cell-hd {
+    font-size: 10px;
+    .scale-font(0.95);
+    padding: 8px 12px;
+    text-align: left;
+  }
+
+  .cell-bd {
+    .flex(@justify-content: space-between;);
+    padding-bottom: 6px;
+  }
+
+  .cell-bd:last-child{
+    padding-bottom: 0px;
+  }
+
+  .cell-footer {
+    padding: 8px;
+  }
+
+  .row {
+    width: 100%;
+    .flex(@align-items: center; @justify-content: space-between;);
+
+    &:not(:last-child) {
+      margin-bottom: 8px;
     }
 
-    .cell-bd {
-      .flex(@justify-content: space-between;);
-      padding-bottom: 6px;
-    }
-
-    .row {
-      width: 100%;
-      .flex(@align-items: center; @justify-content: space-between;);
-
-      .title {
-        span:first-child {
-          margin-right: 10px;
-        }
+    .title {
+      span:first-child {
+        margin-right: 10px;
       }
     }
   }

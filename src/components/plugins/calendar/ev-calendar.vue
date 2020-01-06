@@ -21,14 +21,13 @@
 </template>
 <script>
 import util from './tools.js'
-
 import calPanel from './components/cal-panel.vue'
 
 export default {
   name: 'VueEventCalendar',
   provide () {
     return {
-      options: this.options
+      options: this.curOptions
     }
   },
   components: {
@@ -39,7 +38,6 @@ export default {
       type: Object,
       required: true,
       default: () => ({})
-
     }
   },
   data () {
@@ -49,7 +47,8 @@ export default {
       },
       curDate: new Date(),
       nextDate: null,
-      preDate: null
+      preDate: null,
+      curOptions: this.$EventCalendar
     }
   },
   computed: {
@@ -71,6 +70,13 @@ export default {
         date: 'all',
         events: this.events || []
       }
+    },
+    options: {
+      handler (val) {
+        Object.assign(this.curOptions, val)
+      },
+      deep: true,
+      immediate: true
     }
   },
   created () {

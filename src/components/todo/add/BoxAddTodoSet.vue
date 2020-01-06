@@ -77,10 +77,6 @@ export default {
     font-size: 18px
   }
 
-  .com-input__placeholder {
-    color: b
-  }
-
   .colors {
     margin-top: 12px;
 
