@@ -24,6 +24,7 @@
     <BoxAddTodoSet
       :show.sync="showBoxAddTodoSet"
     />
+    <BoxAddFuturePlan :show.sync="showBoxAddPlan" />
   </div>
 </template>
 
@@ -31,15 +32,18 @@
 import { mapMutations } from 'vuex'
 import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
 import BoxAddTodoSet from '@/components/todo/add/BoxAddTodoSet'
+import BoxAddFuturePlan from '@/components/future-plan/BoxAddFuturePlan'
 export default {
   components: {
     BoxAddTodo,
-    BoxAddTodoSet
+    BoxAddTodoSet,
+    BoxAddFuturePlan
   },
   data () {
     return {
       showBoxAddTodo: false,
-      showBoxAddTodoSet: false
+      showBoxAddTodoSet: false,
+      showBoxAddPlan: false
     }
   },
   computed: {
@@ -52,7 +56,8 @@ export default {
         todo: this.$t('word.todo'),
         set: this.$t('word.todo_set'),
         statistics: this.$t('word.statistics'),
-        time_axis: this.$t('todo.history_record_time_axis')
+        time_axis: this.$t('todo.history_record_time_axis'),
+        future_plan: this.$t('plan.future_plan')
       }
 
       const buttons = [
@@ -64,7 +69,8 @@ export default {
             'todo',
             'set',
             'statistics',
-            'time_axis'
+            'time_axis',
+            'future_plan'
           ]
         },
         {
@@ -80,6 +86,12 @@ export default {
           limits: ['set']
         },
         {
+          name: 'addFuturePlan',
+          icon: 'plus',
+          event: this.showBox.bind(this, 'showBoxAddPlan'),
+          limits: ['future_plan']
+        },
+        {
           name: 'more',
           icon: 'ellipsis-v',
           event: () => {},
@@ -87,7 +99,8 @@ export default {
             'todo',
             'set',
             'statistics',
-            'time_axis'
+            'time_axis',
+            'future_plan'
           ]
         },
         {

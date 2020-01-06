@@ -48,7 +48,7 @@ Vue.use(MyPlugins)
 Vue.component('v-chart', ECharts)
 Vue.use(Calendar, {
   locale: 'zh',
-  baseColor: '#f29543'
+  color: '#f29543'
 })
 
 

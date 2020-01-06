@@ -305,7 +305,18 @@ export default {
       abandons: []
     }
   },
-  getters: {},
+  getters: {
+    allFocus (state) {
+      const data = []
+      state.todos.forEach(todo => {
+        if (todo.focus) {
+          todo.focus.forEach(item => {
+            data.push(item)
+          })
+        }
+      })
+    }
+  },
   mutations: {
     addTodo (state, todo) {
       state.todos.push(todo)
@@ -343,7 +354,6 @@ export default {
           }
         })
       })
-      console.log(state.todos)
     }
   },
   actions: {}

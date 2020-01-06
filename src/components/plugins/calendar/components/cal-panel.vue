@@ -1,11 +1,11 @@
 <template>
   <div
     class="ev-calendar"
-    :style="{borderBottom:`1px solid ${customColor}`}"
+    :style="{borderBottom:`1px solid ${options.color}`}"
   >
     <div
       class="ev-calendar__header"
-      :style="{background:customColor}"
+      :style="{background:options.color}"
     >
       <div class="ev-calendar__title">
         {{ curSelectedDayView }}
@@ -44,7 +44,7 @@
     >
       <div
         class="ev-calendar__weeks"
-        :style="{color:customColor}"
+        :style="{color:options.color}"
       >
         <span
           v-for="(dayName, dayIndex) in i18n[$EventCalendar.locale].dayNames"
@@ -95,7 +95,6 @@ import Broadcast from './Broadcast.js'
 import calDates from './cal-dates.vue'
 
 export default {
-  name: 'CalPanel',
   inject: ['options'],
   components: {
     calDates
@@ -139,11 +138,7 @@ export default {
     },
     curSelectedYear () {
       return this.curSelectedDay.getFullYear()
-    },
-    customColor () {
-      return this.$EventCalendar.color
     }
-
   },
   watch: {
     calendar: {
@@ -154,10 +149,16 @@ export default {
         }
         this.curSelectedDay = obj.curDate
       }
+    },
+    options: {
+      handler (val) {
+        console.log(val)
+
+      },
+      deep: true
     }
   },
   mounted () {
-    console.log(this.options)
     this.broadcast = new Broadcast('#main', {
       loop: false,
       timingHeight: true

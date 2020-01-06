@@ -236,6 +236,15 @@ ul {
   color: rgb(189, 0, 0);
 }
 
+input:disabled,textarea:disabled{
+  background-color: white;
+  color: black;
+}
+
+.have-completed {
+  text-decoration: line-through;
+}
+
 
 .popup-enter-active {
   animation: slide 0.3s ease;
@@ -259,10 +268,6 @@ ul {
 
 .fade-leave-active {
   animation: fade 0.15s ease-out reverse;
-}
-
-.disabled {
-  opacity: 0.6;
 }
 
 @keyframes slide {

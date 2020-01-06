@@ -50,12 +50,10 @@ export default {
     hide () {
       this.show = false
       this.$emit('cancel')
-      return Promise.reject()
     },
     confirm () {
       this.show = false
       this.$emit('confirm')
-      return Promise.resolve()
     }
   }
 }
