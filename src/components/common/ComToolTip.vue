@@ -5,57 +5,97 @@ export default {
     content: {
       type: String,
       default: ''
+    },
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
-      showBtnMoveDrop: false
+      showBtnMoveDrop: false,
+      curShow: this.show,
+      container: null,
+      tipContent: null
+    }
+  },
+  watch: {
+    show (val) {
+      this.curShow = val
+    },
+    curShow (val) {
+      if (val) {
+        this.creatContent()
+      } else {
+        this.removeContent()
+      }
+      this.$emit('update:show', val)
     }
   },
   mounted () {
     this.$el.addEventListener('click', () => {
-      this.creatContent()
+      this.curShow = true
     })
   },
   methods: {
     creatContent () {
     // 创建content组件
       const Content = Vue.extend({
-        render: () => this.$slots.content
-      })
-      const content = new Content()
-      // 创建父容器com-tooltip，fixed定位且全屏
-      const container = document.createElement('div')
-      container.className = 'com-tooltip'
-      container.style.zIndex = 5000
-      // content组件挂载元素
-      container.innerHTML = '<div id="com-tooltip-content"></div>'
-      // 点击父容器时，关闭content
-      container.addEventListener('click', e => {
-        if (e.target.className.includes('com-tooltip')) {
-          content.$el.classList.add('com-tooltip__content_ani-out')
-          content.$el.addEventListener('animationend', () => {
-            document.body.removeChild(container)
-          })
+        render: (createElement) => {
+          return createElement(
+            'div',
+            {
+              style: {
+                position: 'absolute'
+              },
+              props: {
+                show: {
+                  type: Object,
+                  default: false
+                }
+              }
+            },
+            this.$slots.content
+          )
         }
       })
-      document.body.appendChild(container)
-      // 挂载
-      content.$mount('#com-tooltip-content')
-      // 动画效果
-      content.$el.classList.add('com-tooltip__content_ani-in')
-      content.$el.addEventListener('animationend', () => {
-        content.$el.classList.remove('com-tooltip__content_ani-in')
+      this.tipContent = new Content()
+      // 创建父容器com-tooltip，fixed定位且全屏
+      this.container = document.createElement('div')
+      this.container.className = 'com-tooltip'
+      this.container.style.zIndex = 5000
+      // content组件挂载元素
+      this.container.innerHTML = '<div id="com-tooltip-content"></div>'
+      // 点击父容器时，关闭content
+      this.container.addEventListener('click', e => {
+        if (e.target.className.includes('com-tooltip')) {
+          this.curShow = false
+        }
       })
-      this.setPosition(content.$el, this.$el)
+      document.body.appendChild(this.container)
+      // 挂载
+      this.tipContent.$mount('#com-tooltip-content')
+      // 动画效果
+      this.tipContent.$el.classList.add('com-tooltip__content_ani-in')
+      this.tipContent.$el.addEventListener('animationend', () => {
+        this.tipContent.$el.classList.remove('com-tooltip__content_ani-in')
+      })
+      this.setPosition(this.tipContent.$el, this.$el)
     },
     setPosition (element, target) {
       const targetRect = target.getBoundingClientRect()
       element.style.left =
           targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
       element.style.top = targetRect.bottom + 'px'
+    },
+    removeContent () {
+      this.tipContent.$el.classList.add('com-tooltip__content_ani-out')
+      this.tipContent.$el.addEventListener('animationend', () => {
+        document.body.removeChild(this.container)
+      })
     }
   },
+
   render () {
     return this.$slots.default[0]
   }

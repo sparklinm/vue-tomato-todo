@@ -41,9 +41,14 @@ export default {
         reminders: [
           {
             time: '17:33',
-            day: '每天'
+            days: [1, 2, 3, 4, 5]
+          },
+          {
+            time: '17:55',
+            days: [1, 2, 3, 4, 5, 6, 7]
           }
-        ]
+        ],
+        background: '/background/back5.jpg'
       },
       {
         id: 1,
@@ -90,13 +95,14 @@ export default {
         reminders: [
           {
             time: '17:33',
-            day: '每天'
+            days: [1, 2, 3, 4, 5]
           }
         ],
         stickDays: {
           total: 2,
           continuation: 2
-        }
+        },
+        background: '/background/back1.jpg'
       },
       {
         id: 2,
@@ -136,9 +142,10 @@ export default {
         reminders: [
           {
             time: '17:33',
-            day: '每天'
+            days: [1, 2, 3, 4, 5, 6, 7]
           }
-        ]
+        ],
+        background: '/background/back6.jpg'
       },
       {
         id: 3,
@@ -180,9 +187,9 @@ export default {
             duration: 26
           }
         ],
-        hideAfterComplete: false
+        hideAfterComplete: false,
+        background: '/background/back8.jpg'
       }
-
     ],
     template: {
       todoCommon: {
@@ -295,7 +302,7 @@ export default {
       reminders: [
         {
           time: '17:33',
-          day: '每天'
+          days: [1, 2, 3]
         }
       ],
       stickDays: {
@@ -333,6 +340,12 @@ export default {
     modifyTarget (state, obj) {
       for (const [key, value] of Object.entries(obj)) {
         state.target[key] = value
+      }
+    },
+    editTodo (state, obj) {
+      const todo = state.todos.find(todo => todo.id === obj.id)
+      if (todo) {
+        _.merge(todo, obj)
       }
     },
     editFocus (state, obj) {

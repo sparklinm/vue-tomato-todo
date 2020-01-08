@@ -3,19 +3,17 @@
     <div class="com-cell__hd">
       <ComIcon :name="icon" />
       <div
-        v-if="title!==''"
+        v-if="title !== ''"
         class="com-cell__hd-inner"
       />
       <span class="com-cell__hd-title">{{ title }}</span>
-      <div
-        class="com-cell__hd-lable"
-      >
+      <div class="com-cell__hd-lable">
         {{ lable }}
       </div>
     </div>
     <div class="com-cell__bd">
       <div
-        v-if="text!==''"
+        v-if="text !== ''"
         class="com-cell__bd-inner"
       >
         <span>{{ text }}</span>
@@ -74,7 +72,7 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style lang="less">
 .com-cell {
   padding: 15px 15px;
   .flex(@justify-content: space-between; @align-items: center);
@@ -88,5 +86,9 @@ export default {
   .scale-font(0.8);
   margin-top: 5px;
   color: @gray;
+}
+
+.com-cell__ft {
+  flex: none;
 }
 </style>
