@@ -5,6 +5,7 @@
       :key="index"
       v-bind="{ ...data }"
       class="list-todo__item"
+      :style="{'background-image':`url(${data.img})`}"
       @start="start(index)"
       @edit="edit(index)"
     >
@@ -21,26 +22,43 @@
       :show.sync="showBoxInfo"
       :title="todo.name"
       class="box-edit"
+      :header-background="todo.background"
+      @closed="resetData"
     >
       <template v-slot:header-icon>
         <span class="btn-header">
           <i class="fa fa-clock-o" />
           <span class="text">{{ $t("todo.timed_reminder") }}</span>
         </span>
-        <span class="btn-header">
-          <i
-            class="fa fa-picture-o"
-            aria-hidden="true"
-          />
-          <span class="text">{{ $t("todo.change_background") }}</span>
-        </span>
-        <span class="btn-header">
+        <ComToolTip
+          :show.sync="showChangeBackground"
+        >
+          <span class="btn-header">
+            <i
+              class="fa fa-picture-o"
+              aria-hidden="true"
+            />
+            <span class="text">{{ $t("todo.change_background") }}</span>
+          </span>
+          <template v-slot:content>
+            <div
+              class="drop-list_simple"
+            >
+              <ul>
+                <li @click="changeBackgroundRandom">
+                  {{ $t("commom.random_one_picture") }}
+                </li>
+              </ul>
+            </div>
+          </template>
+        </ComToolTip>
+        <!-- <span class="btn-header">
           <i
             class="fa fa-mobile"
             aria-hidden="true"
           />
           <span class="text">{{ $t("todo.independent_white_list") }}</span>
-        </span>
+        </span> -->
       </template>
       <div class="cells">
         <div class="cell">
@@ -228,6 +246,69 @@
       </ComList>
     </ComPopup>
 
+    <ComPopup
+      :title="$t('todo.timed_reminder')"
+      class="box-time-reminder"
+      :show.sync="showBoxTimeReminder"
+    >
+      <template v-slot:header-icon>
+        <span class="btn-header">
+          <ComIcon
+            name="question-circle"
+            class="com-popup__header-icon"
+            @click="$message(description.timeReminder)"
+          />
+          <ComIcon
+            name="plus"
+            class="com-popup__header-icon"
+          />
+          <ComIcon
+            name="times"
+            class="com-popup__header-icon"
+          />
+        </span>
+      </template>
+      <div class="reminders">
+        <ComCell
+          v-for="(item,index) in todo.reminders"
+          :key="index"
+          :title="item.time"
+          :lable="getReminderCycle(item.days)"
+        >
+          <template v-slot:right-icon>
+            <ComIcon
+              name="pencil"
+              class="com-cell__icon"
+            />
+            <ComIcon
+              name="trash"
+              class="com-cell__icon"
+            />
+          </template>
+        </ComCell>
+      </div>
+    </ComPopup>
+
+    <ComPopup
+      :title="$t('todo.set_time_reminder')"
+      class="box-add-time-reminder"
+      :show.sync="showBoxAddTimeReminder"
+      z-index="2050"
+      top-btn
+    >
+      <div>{{ $t('todo.click_set_time_reminder') }}</div>
+      <div>
+        <div>{{ $t('todo.set_cycle') }}</div>
+        <div>
+          <ComCheckboxButton
+            v-for="(value,key) in days"
+            :key="key"
+            :content="value"
+          />
+        </div>
+      </div>
+    </ComPopup>
+
     <BoxAddTodo
       v-if="showBoxAddTodo"
       :show.sync="showBoxAddTodo"
@@ -242,6 +323,7 @@ import ProgressCircle from './ProgressCircle'
 import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
 import util from '@/util.js'
 import Sorter from '@/sort.js'
+import { mapMutations } from 'vuex'
 export default {
   components: {
     ListItem,
@@ -256,6 +338,7 @@ export default {
   },
   data () {
     return {
+      curTodos: [],
       showBoxInfo: false,
       todo: this.todos[0],
       todoIndex: 0,
@@ -265,14 +348,30 @@ export default {
         sortTodo: {
           title: this.$t('word.help'),
           content: this.$t('message.sort_todo')
+        },
+        timeReminder: {
+          title: this.$t('word.tip'),
+          content: this.$t('message.todo_time_reminder')
         }
       },
-      sorter: null
+      sorter: null,
+      showChangeBackground: false,
+      showBoxTimeReminder: true,
+      showBoxAddTimeReminder: true,
+      days: {
+        1: this.$t('word.monday'),
+        2: this.$t('word.tuesday'),
+        3: this.$t('word.wednesday'),
+        4: this.$t('word.thursday'),
+        5: this.$t('word.friday'),
+        6: this.$t('word.saturday'),
+        7: this.$t('word.sunday')
+      }
     }
   },
   computed: {
     datas () {
-      return this.todos.map(todo => {
+      return this.curTodos.map(todo => {
         let description = ''
         let progress = ''
         let deadline = ''
@@ -310,7 +409,8 @@ export default {
           description: description,
           progress: progress,
           deadline: deadline,
-          progressBar: progressBar
+          progressBar: progressBar,
+          img: todo.background
         }
       })
     },
@@ -362,8 +462,15 @@ export default {
     console.log(this.datas)
     console.log(this.todos)
     console.log(Sorter)
+    this.resetData()
   },
   methods: {
+    ...mapMutations('todo', {
+      storeEditTodo: 'editTodo'
+    }),
+    resetData () {
+      this.curTodos = _.cloneDeep(this.todos)
+    },
     start () {
       this.$router.push({
         path: '/do'
@@ -373,7 +480,7 @@ export default {
       return Math.ceil((complete / total) * 100)
     },
     edit (index) {
-      this.todo = this.todos[index]
+      this.todo = this.curTodos[index]
       this.todoIndex = index
       this.showBoxInfo = true
     },
@@ -403,6 +510,23 @@ export default {
         this.sorter.destroy()
       }
       this.showBoxSort = false
+    },
+    changeBackgroundRandom () {
+      this.storeEditTodo({
+        id: this.todo.id,
+        background: `/background/back${Math.floor(Math.random() * 8)}.jpg`
+      })
+      this.showChangeBackground = false
+    },
+    getReminderCycle (days) {
+      if (days.length === 7) {
+        return this.$t('word.everyday')
+      }
+      let text = ''
+      days.forEach(day => {
+        text += this.days[day] + ' '
+      })
+      return text
     }
   }
 }
@@ -592,5 +716,46 @@ export default {
 
 .sort-cell {
   transition: all 0.1s ease;
+}
+
+.box-time-reminder {
+  .com-popup__header {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .com-popup__header-icon {
+    margin-left: 25px;
+    font-size: 18px;
+  }
+
+  .com-popup__content {
+    padding: 5px 18px 5px;
+  }
+
+  .reminders {
+    min-height: 200px;
+  }
+
+  .com-cell {
+    padding: 8px 0;
+  }
+
+  .com-cell__hd-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .com-cell__hd-lable {
+    max-width: 120px;
+    line-height: 1.4;
+    margin-top: 0px;
+  }
+
+  .com-cell__icon {
+    margin-left: 20px;
+    font-size: 16px;
+    color: @gray-d;
+  }
 }
 </style>

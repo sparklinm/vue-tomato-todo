@@ -20,7 +20,15 @@ module.exports = {
     times: '次',
     experience: '心得',
     future_plan: '未来计划',
-    completed: '已完成'
+    completed: '已完成',
+    everyday: '每天',
+    monday: '周一',
+    tuesday: '周二',
+    wednesday: '周三',
+    thursday: '周四',
+    friday: '周五',
+    saturday: '周六',
+    sunday: '周日'
   },
   action: {
     edit: '编辑',
@@ -30,6 +38,9 @@ module.exports = {
     confirm: '确定',
     cancel: '取消',
     start: '开始'
+  },
+  commom: {
+    random_one_picture: '随机一张图片'
   },
   todo: {
     common_todo: '普通番茄时钟',
@@ -96,7 +107,10 @@ module.exports = {
     time_status: '计时状态',
     focus_time: '专注时间',
     modify_focus_duration: '修改专注时长（分钟）',
-    please_input_experience: '请输入心得'
+    please_input_experience: '请输入心得',
+    set_time_reminder: '设置定时提醒',
+    click_set_time_reminder: '点击设置定时提醒',
+    set_cycle: '周期设定'
   },
   plan: {
     future_plan: '未来计划',
@@ -121,7 +135,8 @@ module.exports = {
     long_rest_time: '休息时长不能超过100分钟',
     do_todo_duration: '不记录5秒钟以下的todo',
     modify_focus_duration: '仅可修改至比当前时长({0}分钟)短的时长',
-    confirm_delete: '确定删除？'
+    confirm_delete: '确定删除？',
+    todo_time_reminder: '您可以点击+号为这个代办添加提醒。'
   },
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',
