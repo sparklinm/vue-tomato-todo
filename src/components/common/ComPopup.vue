@@ -14,6 +14,7 @@
         <div
           v-if="!noHeader"
           class="com-popup__header"
+          :style="{'background-image':`url(${headerBackground})`}"
         >
           <div class="com-popup__header-text">
             {{ title }}
@@ -73,6 +74,10 @@ export default {
       type: Boolean,
       default: false
     },
+    headerBackground: {
+      type: String,
+      default: ''
+    },
     title: {
       type: String,
       default: ''
@@ -90,7 +95,7 @@ export default {
       default: false
     },
     zIndex: {
-      type: Number,
+      type: [Number, String],
       default: 2001
     },
     destoryOnClose: {
@@ -230,6 +235,9 @@ export default {
   color: white;
   font-size: 16px;
   padding: 15px 15px;
+  transform-origin: 50% 50%;
+  transition: background-image 0.4s ease;
+  background-size: 100% 100%;
   .flex(@align-items: center; @justify-content: space-between);
 }
 

@@ -74,6 +74,7 @@ export default {
 .list-item {
   padding: 8px 0px 8px 20px;
   background-color: rgb(49, 159, 202);
+  background-size: 100% 100%;
   color: white;
   border-radius: 5px;
   box-shadow: 0 0 5px 0px @gray;

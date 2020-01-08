@@ -41,6 +41,10 @@ export default {
     value: {
       type: Boolean,
       default: false
+    },
+    mode: {
+      type: String,
+      default: 'default'
     }
   },
   data () {

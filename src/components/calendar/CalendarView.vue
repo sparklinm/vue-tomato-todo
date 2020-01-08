@@ -11,7 +11,7 @@
           :event="{ date: todo.start }"
         >
           <div
-            class="completed-item"
+            class="completed-item list-item"
             @click="edit(index)"
           >
             <div class="left">
@@ -81,13 +81,17 @@
               <div class="title">
                 <span>{{ $t("todo.start_time") }}</span>
               </div>
-              <span class="time">{{ dateFormatter(curTodo.start,timePattern) }}</span>
+              <span class="time">{{
+                dateFormatter(curTodo.start, timePattern)
+              }}</span>
             </div>
             <div class="row">
               <div class="title">
                 <span>{{ $t("todo.end_time") }}</span>
               </div>
-              <span class="time">{{ dateFormatter(curTodo.end,timePattern) }}</span>
+              <span class="time">{{
+                dateFormatter(curTodo.end, timePattern)
+              }}</span>
             </div>
             <div class="row">
               <div class="title">
@@ -135,20 +139,20 @@
       />
 
       <div class="tip-setting ">
-        {{ this.$t('tips.modify_focus_duration',[curTodo.duration]) }}
+        {{ this.$t("tips.modify_focus_duration", [curTodo.duration]) }}
       </div>
       <template v-slot:footer>
         <button
           class="com-popup__footer-btn"
           @click="submitEditDuration"
         >
-          {{ $t('action.confirm') }}
+          {{ $t("action.confirm") }}
         </button>
         <button
           class="com-popup__footer-btn"
-          @click="showBoxDuration=false"
+          @click="showBoxDuration = false"
         >
-          {{ $t('action.cancel') }}
+          {{ $t("action.cancel") }}
         </button>
       </template>
     </ComPopup>
@@ -224,7 +228,8 @@ export default {
         if (todo.focus) {
           todo.focus.forEach(item => {
             if (util.isEqualDateFuzzy(item.start, this.selectedDay, 'hour')) {
-              const duration = item.duration || this.getTimeDif(item.start, item.end)
+              const duration =
+                item.duration || this.getTimeDif(item.start, item.end)
               let progress = ''
               if (todo.timeDuration) {
                 progress = duration / todo.timeDuration
@@ -324,7 +329,9 @@ export default {
       this.showBoxText = true
       this.experience = this.curTodo.data.experience
       this.disableEditExperience = Boolean(this.experience)
-      this.inputExperiencePlaceHolder = this.experience ? '' : this.$t('todo.please_input_experience')
+      this.inputExperiencePlaceHolder = this.experience
+        ? ''
+        : this.$t('todo.please_input_experience')
       this.$nextTick(() => {
         this.$refs.inputExperience.focus()
       })
@@ -369,6 +376,9 @@ export default {
     .ft {
       margin-top: 10px;
     }
+    .right {
+      flex: none;
+    }
   }
 
   .right {
@@ -399,7 +409,7 @@ export default {
     .row {
       width: auto;
 
-      &:not(:last-child){
+      &:not(:last-child) {
         margin-bottom: 8px;
       }
     }

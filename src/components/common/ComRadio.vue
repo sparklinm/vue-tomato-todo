@@ -10,6 +10,9 @@
     >
     <span class="custom-radio__text">
       <slot />
+      <span v-if="showContent">
+        {{ content||label }}
+      </span>
     </span>
   </label>
 </template>
@@ -36,10 +39,19 @@ export default {
     name: {
       type: String,
       default: 'name'
+    },
+    content: {
+      type: String,
+      default: ''
     }
   },
   data () {
     return {}
+  },
+  computed: {
+    showContent () {
+      return !(this.$slots.default && this.$slots.default.length)
+    }
   },
   watch: {
     '$parent.value' (val) {

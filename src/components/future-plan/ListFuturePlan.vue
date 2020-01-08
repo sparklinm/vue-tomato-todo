@@ -101,6 +101,7 @@
 import { mapState, mapMutations } from 'vuex'
 import util from '../../util'
 import BoxAddFuturePlan from './BoxAddFuturePlan'
+
 export default {
   components: {
     BoxAddFuturePlan
@@ -108,7 +109,7 @@ export default {
   data () {
     return {
       curPlan: {},
-      showBoxInfo: true,
+      showBoxInfo: false,
       timePattern: 'yyyy-MM-dd',
       showBoxEditPlan: false,
       tips: {
@@ -206,6 +207,7 @@ export default {
   .right {
     text-align: right;
     .flex(@justify-content: space-between; @flex-direction: column);
+    flex: none;
 
     .hd {
       line-height: 1;
