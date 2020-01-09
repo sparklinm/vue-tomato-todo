@@ -8,7 +8,7 @@ c
   >
     <div class="filters">
       <div class="filters-inline">
-        <ComRadioGroup
+        <ComGroup
           v-model="filterValue"
           @change="handleFilterChange"
         >
@@ -24,7 +24,7 @@ c
           <ComRadio label="customize">
             {{ this.$t("word.customize") }}
           </ComRadio>
-        </ComRadioGroup>
+        </ComGroup>
       </div>
     </div>
     <CPie

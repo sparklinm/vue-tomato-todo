@@ -2,6 +2,7 @@
   <label class="custom-radio">
     <input
       ref="radio"
+      v-model="curValue"
       type="radio"
       :name="name"
       class="custom-radio__inline"
@@ -24,7 +25,8 @@ export default {
       type: [
         String,
         Number,
-        Object
+        Object,
+        Array
       ],
       default: ''
     },
@@ -32,7 +34,8 @@ export default {
       type: [
         String,
         Number,
-        Object
+        Object,
+        Array
       ],
       default: ''
     },
@@ -46,7 +49,9 @@ export default {
     }
   },
   data () {
-    return {}
+    return {
+      curValue: this.value
+    }
   },
   computed: {
     showContent () {
@@ -54,25 +59,30 @@ export default {
     }
   },
   watch: {
+    value (val) {
+      this.curValue = val
+    },
     '$parent.value' (val) {
-      if (val === this.label) {
-        this.$refs.radio.checked = true
-      }
+      // if (val === this.label) {
+      //   this.$refs.radio.checked = true
+      // }
+      this.curValue = val
     }
   },
   mounted () {
-    if (this.$parent.value === this.label) {
-      this.$refs.radio.checked = true
+    // if (this.$parent.value === this.label) {
+    //   this.$refs.radio.checked = true
+    // }
+    if (typeof this.$parent.value !== 'undefined') {
+      this.curValue = this.$parent.value
     }
   },
   methods: {
     handleChange (e) {
-      if (e.target.checked) {
-        this.$emit('input', this.label)
-        this.$emit('change', this.label)
-        this.$parent.$emit('input', this.label)
-        this.$parent.$emit('change', this.label)
-      }
+      this.$emit('input', this.curValue)
+      this.$emit('change', this.curValue)
+      this.$parent.$emit('input', this.curValue)
+      this.$parent.$emit('change', this.curValue)
     }
   }
 }
