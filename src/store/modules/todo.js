@@ -40,10 +40,12 @@ export default {
         ],
         reminders: [
           {
+            id: 0,
             time: '17:33',
             days: [1, 2, 3, 4, 5]
           },
           {
+            id: 1,
             time: '17:55',
             days: [1, 2, 3, 4, 5, 6, 7]
           }
@@ -94,6 +96,7 @@ export default {
         ],
         reminders: [
           {
+            id: 3,
             time: '17:33',
             days: [1, 2, 3, 4, 5]
           }
@@ -141,6 +144,7 @@ export default {
         ],
         reminders: [
           {
+            id: 4,
             time: '17:33',
             days: [1, 2, 3, 4, 5, 6, 7]
           }
@@ -322,6 +326,9 @@ export default {
           })
         }
       })
+    },
+    getTodoById: (state) => (id) => {
+      return state.todos.find(todo => todo.id === id)
     }
   },
   mutations: {
@@ -363,6 +370,32 @@ export default {
         return todo.focus.some((item, index) => {
           if (item.id === id) {
             todo.focus.splice(index, 1)
+            return true
+          }
+        })
+      })
+    },
+    addReminder (state, data) {
+      const todo = state.todos.find(todo => todo.id === data.tid)
+      delete data.tid
+      data.id = Math.floor(Math.random() * 10000)
+      todo.reminders.push(data)
+    },
+    editReminder (state, data) {
+      state.todos.some(todo => {
+        return todo.reminders.some(item => {
+          if (item.id === data.id) {
+            Object.assign(item, data)
+            return true
+          }
+        })
+      })
+    },
+    deleteReminder (state, id) {
+      state.todos.some(todo => {
+        return todo.reminders.some((item, index) => {
+          if (item.id === id) {
+            todo.reminders.splice(index, 1)
             return true
           }
         })

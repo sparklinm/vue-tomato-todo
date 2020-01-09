@@ -11,7 +11,8 @@ export default {
       type: [
         String,
         Number,
-        Object
+        Object,
+        Array
       ],
       default: ''
     }
@@ -23,10 +24,6 @@ export default {
 
   },
   mounted () {
-    console.log(this.$slots.default)
-    this.$slots.default[0].data.attrs.t = 5
-
-
   },
   methods: {}
 }

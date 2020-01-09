@@ -1,13 +1,14 @@
 <template>
-  <label class="custom-checkbox">
+  <label class="com-checkbox-button">
     <input
       ref="checkbox"
+      v-model="curValue"
       type="checkbox"
-      class="custom-checkbox__inline"
+      class="com-checkbox-button__inline"
       :value="label"
       @change="handleChange"
     >
-    <span class="custom-checkbox">
+    <span class="com-checkbox-button__text">
       <slot />
       <span v-if="showContent">
         {{ content||label }}
@@ -23,7 +24,8 @@ export default {
       type: [
         String,
         Number,
-        Object
+        Object,
+        Array
       ],
       default: ''
     },
@@ -41,7 +43,9 @@ export default {
     }
   },
   data () {
-    return {}
+    return {
+      curValue: this.value
+    }
   },
   computed: {
     showContent () {
@@ -49,43 +53,47 @@ export default {
     }
   },
   watch: {
+    value (val) {
+      this.curValue = val
+    },
     '$parent.value' (val) {
-      if (val === this.label) {
-        this.$refs.radio.checked = true
-      }
+      this.curValue = val
     }
   },
   mounted () {
-    if (this.$parent.value === this.label) {
-      this.$refs.radio.checked = true
+    if (typeof this.$parent.value !== 'undefined') {
+      this.curValue = this.$parent.value
     }
   },
   methods: {
     handleChange (e) {
-      if (e.target.checked) {
-        this.$emit('input', this.label)
-        this.$emit('change', this.label)
-        this.$parent.$emit('input', this.label)
-        this.$parent.$emit('change', this.label)
-      }
+      this.$emit('input', this.curValue)
+      this.$emit('change', this.curValue)
+      this.$parent.$emit('input', this.curValue)
+      this.$parent.$emit('change', this.curValue)
     }
   }
 }
 </script>
 
 <style lang="less">
-.custom-checkbox__text {
+.com-checkbox-button {
   display: inline-block;
-  width: 1.1rem;
-  padding: 0.08rem 0;
-  text-align: center;
 }
 
-.custom-checkbox__inline {
+.com-checkbox-button__text {
+  display: inline-block;
+  padding: 0.08rem;
+  text-align: center;
+  border-radius: 4px 4px;
+  font-size: 12px;
+}
+
+.com-checkbox-button__inline {
   width: 0;
   &:checked + span {
-    background: white;
-    color: black;
+    background: rgb(253, 218, 218);
+    color: rgb(206, 53, 53);
   }
 }
 </style>
