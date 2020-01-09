@@ -26,7 +26,10 @@
       @closed="resetData"
     >
       <template v-slot:header-icon>
-        <span class="btn-header">
+        <span
+          class="btn-header"
+          @click="setReminder"
+        >
           <i class="fa fa-clock-o" />
           <span class="text">{{ $t("todo.timed_reminder") }}</span>
         </span>
@@ -123,7 +126,10 @@
             </div>
           </div>
         </div>
-        <div class="cell btn time-reminder">
+        <div
+          class="cell btn time-reminder"
+          @click="setReminder"
+        >
           <div class="cell-hd">
             {{ $t("todo.timed_reminder") }}
           </div>
@@ -136,7 +142,13 @@
                 v-for="(reminder, index) in todo.reminders"
                 :key="index"
               >
-                {{ reminder.time }} {{ reminder.day }}
+                {{ reminder.time }}
+                <span
+                  v-for="item in reminder.days"
+                  :key="item"
+                >
+                  {{ days[item] }}
+                </span>
               </li>
             </div>
             <div
@@ -261,10 +273,12 @@
           <ComIcon
             name="plus"
             class="com-popup__header-icon"
+            @click="addReminder"
           />
           <ComIcon
             name="times"
             class="com-popup__header-icon"
+            @click="showBoxTimeReminder=false"
           />
         </span>
       </template>
@@ -279,10 +293,12 @@
             <ComIcon
               name="pencil"
               class="com-cell__icon"
+              @click="editReminder(item)"
             />
             <ComIcon
               name="trash"
               class="com-cell__icon"
+              @click="deleteReminder(item.id)"
             />
           </template>
         </ComCell>
@@ -293,18 +309,29 @@
       :title="$t('todo.set_time_reminder')"
       class="box-add-time-reminder"
       :show.sync="showBoxAddTimeReminder"
+      :submit="submitAddReminder"
       z-index="2050"
       top-btn
     >
-      <div>{{ $t('todo.click_set_time_reminder') }}</div>
+      <div class="set-time">
+        {{ $t('todo.click_set_time_reminder') }}
+      </div>
       <div>
-        <div>{{ $t('todo.set_cycle') }}</div>
-        <div>
-          <ComCheckboxButton
-            v-for="(value,key) in days"
-            :key="key"
-            :content="value"
-          />
+        <div class="set-cycle">
+          {{ $t('todo.set_cycle') }}
+        </div>
+        <div class="check-days">
+          <ComGroup
+            v-model="curReminder.days"
+          >
+            <ComCheckboxButton
+              v-for="(value,key) in days"
+              :key="key"
+              :label="key"
+              :content="value"
+              class="check-day"
+            />
+          </ComGroup>
         </div>
       </div>
     </ComPopup>
@@ -314,6 +341,7 @@
       :show.sync="showBoxAddTodo"
       :data="todo"
     />
+    <ComCascader />
   </div>
 </template>
 
@@ -356,8 +384,8 @@ export default {
       },
       sorter: null,
       showChangeBackground: false,
-      showBoxTimeReminder: true,
-      showBoxAddTimeReminder: true,
+      showBoxTimeReminder: false,
+      showBoxAddTimeReminder: false,
       days: {
         1: this.$t('word.monday'),
         2: this.$t('word.tuesday'),
@@ -366,7 +394,9 @@ export default {
         5: this.$t('word.friday'),
         6: this.$t('word.saturday'),
         7: this.$t('word.sunday')
-      }
+      },
+      curReminder: {},
+      isAddReminder: false
     }
   },
   computed: {
@@ -466,10 +496,16 @@ export default {
   },
   methods: {
     ...mapMutations('todo', {
-      storeEditTodo: 'editTodo'
+      storeEditTodo: 'editTodo',
+      storeAddReminder: 'addReminder',
+      storeEditReminder: 'editReminder',
+      storeDeleteReminder: 'deleteReminder'
     }),
     resetData () {
       this.curTodos = _.cloneDeep(this.todos)
+      if (this.todo) {
+        this.todo = this.curTodos.find(item => item.id === this.todo.id)
+      }
     },
     start () {
       this.$router.push({
@@ -527,6 +563,38 @@ export default {
         text += this.days[day] + ' '
       })
       return text
+    },
+    setReminder () {
+      this.showBoxTimeReminder = true
+      this.showBoxInfo = false
+    },
+    editReminder (obj) {
+      this.curReminder = _.cloneDeep(obj)
+      this.showBoxAddTimeReminder = true
+      this.isAddReminder = false
+    },
+    addReminder () {
+      this.curReminder = {
+        days: [1, 2, 3, 4, 5, 6, 7]
+      }
+      this.showBoxAddTimeReminder = true
+      this.isAddReminder = true
+      this.resetData()
+    },
+    submitAddReminder (done) {
+      if (this.isAddReminder) {
+        this.curReminder.tid = this.todo.id
+        this.curReminder.time = util.dateFormatter(new Date(), 'hh:mm'),
+        this.storeAddReminder(this.curReminder)
+      } else {
+        this.storeEditReminder(this.curReminder)
+      }
+      done()
+      this.resetData()
+    },
+    deleteReminder (id) {
+      this.storeDeleteReminder(id)
+      this.resetData()
     }
   }
 }
@@ -756,6 +824,25 @@ export default {
     margin-left: 20px;
     font-size: 16px;
     color: @gray-d;
+  }
+}
+
+.box-add-time-reminder {
+  .set-time {
+    margin-bottom: 20px;
+  }
+
+  .set-cycle {
+    margin-bottom: 8px;
+  }
+
+  .check-days {
+    max-width: 70%;
+  }
+
+  .check-day {
+    margin-right: 4px;
+    margin-bottom: 5px;
   }
 }
 </style>

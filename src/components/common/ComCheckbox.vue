@@ -8,10 +8,11 @@
     </span>
     <span class="com-checkbox__area">
       <input
-        v-model="currentValue"
+        v-model="curValue"
         type="checkbox"
         class="com-checkbox__inner"
-        @input="$emit('input',currentValue)"
+        :value="label"
+        @change="handleChange"
       >
       <ComIcon
         name="check"
@@ -30,34 +31,54 @@
 <script>
 export default {
   props: {
+    value: {
+      type: [
+        String,
+        Number,
+        Object,
+        Array
+      ],
+      default: ''
+    },
+    label: {
+      type: [
+        String,
+        Number,
+        Object
+      ],
+      default: ''
+    },
     content: {
       type: String,
       default: ''
-    },
-    left: {
-      type: Boolean,
-      default: false
-    },
-    value: {
-      type: Boolean,
-      default: false
-    },
-    mode: {
-      type: String,
-      default: 'default'
     }
   },
   data () {
     return {
-      currentValue: this.value
+      curValue: this.value
     }
   },
   watch: {
     value (val) {
-      this.currentValue = val
+      this.curValue = val
+    },
+    '$parent.value' (val) {
+      this.curValue = val
     }
   },
-  methods: {}
+  mounted () {
+    if (typeof this.$parent.value !== 'undefined') {
+      this.curValue = this.$parent.value
+    }
+  },
+  methods: {
+    handleChange (e) {
+      this.$emit('input', this.curValue)
+      this.$emit('change', this.curValue)
+      this.$parent.$emit('input', this.curValue)
+      this.$parent.$emit('change', this.curValue)
+    }
+  }
 }
 </script>
 
