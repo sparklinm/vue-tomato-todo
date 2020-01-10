@@ -31,8 +31,7 @@ import Events from './Events'
 export default class extends Events {
   // 当前轮播的元素索引
   curIndex = 0;
-  // 与当前元素交互的元素索引
-  nextIndex = 0;
+  lastCurIndex = 0;
   // 父元素偏移量（transform:translateX）
   translateX = 0;
   // 元素数量（不包括前后占位元素）
@@ -40,27 +39,26 @@ export default class extends Events {
   // 是否正在动画
   isAnimated = false;
   // 各个轮播元素应该在的位置
-  posAry = [];
+  nodes = [];
 
   el = null;
   parentNode = null;
 
-  constructor (el, options = {}) {
+  constructor (el, options = {}, data) {
     super()
     this.el = el
     // this.parentNode = this.el.parentNode
-    // const defaultOptions = {
-    //   // 是否循环显示
-    //   loop: true,
-    //   // 是否实时根据交互元素高度设置容器高度
-    //   timingHeight: false,
-    //   width: 0
-    // }
-    // const curOptions = Object.assign(defaultOptions, options)
-    // this.loop = curOptions.loop
-    // this.timingHeight = curOptions.timingHeight
-    // this.width = curOptions.width
-
+    const defaultOptions = {
+      // 是否循环显示
+      loop: false,
+      // 是否实时根据交互元素高度设置容器高度
+      timingHeight: false,
+      width: 0,
+      visiableRowCount: 3,
+      selectedIndex: 1
+    }
+    this.options = Object.assign(defaultOptions, options)
+    this.data = data
     this.addlistener()
     // const domResize = new DomResize(this.parentNode)
     // domResize.on('domResize', () => {
@@ -69,19 +67,48 @@ export default class extends Events {
     //   // this.setPos(this.getCorrectPos())
     // })
     this.touch = new Touch(this.el)
-    this.init()
   }
 
   init () {
-    this.children = this.el.children
-    this.setPosAry()
+    this.setNodes()
+    this.style(this.el.parentNode, {
+      height: this.options.visiableRowCount * this.nodes[0].height + 'px',
+      overflow: 'hidden'
+    })
+    this.topPos = this.nodes[0].y
+    this.bottomPos = this.nodes[this.nodes.length - 1].y
+    this.setPos(this.topPos)
+    this.addSelectBox()
+    console.log(this.nodes)
     // this.touch.setMaxSlideDx(this.size.width)
+  }
+
+  reInit (data) {
+    this.data = data
+    this.setNodes()
+    if (this.nodes.length) {
+      this.style(this.el.parentNode, {
+        height: this.options.visiableRowCount * this.nodes[0].height + 'px',
+        overflow: 'hidden'
+      })
+      this.topPos = this.nodes[0].y
+      this.bottomPos = this.nodes[this.nodes.length - 1].y
+      if (this.curIndex > this.nodes.length - 1) {
+        this.curIndex = this.nodes.length - 1
+      }
+      this.setPosDirect(this.nodes[this.curIndex].y)
+      this.emit(
+        'change',
+        this.nodes[this.curIndex].el,
+        this.data[this.curIndex],
+        this.nodes.map(node => node.el)
+      )
+    }
   }
 
   addlistener () {
     this.el.addEventListener('slidestart', this._slidestart)
     this.el.addEventListener('slide', this.throttle(this._slide))
-    // this.el.addEventListener('slide', this._slide)
     this.el.addEventListener('slidend', this._slidend)
   }
 
@@ -107,23 +134,7 @@ export default class extends Events {
   _slide = e => {
     if (!this.isAnimated) {
       const pos = e.detail
-      let d = pos.dy
-      if (!this.loop) {
-        // 非loop模式下的 最大左滑和最大右滑
-        const maxOffset = 200
-        const leftLimit = this.posAry[0] + maxOffset
-        const rightLimit = this.posAry[this.posAry.length - 1] - maxOffset
-        if (this.translateX > leftLimit) {
-          d = 0
-        } else if (this.translateX + pos.d > leftLimit) {
-          d = maxOffset - this.translateX
-        } else if (this.translateX < rightLimit) {
-          d = 0
-        } else if (this.translateX + pos.d < rightLimit) {
-          d = rightLimit - this.translateX
-        }
-      }
-
+      const d = pos.dy
       this.slide(d)
     }
   };
@@ -133,16 +144,7 @@ export default class extends Events {
     this.on(
       'animationend',
       () => {
-        // loop模式下在滑动到首尾后跳转
-        if (this.curIndex === 0 && this.nextIndex === this.length - 1) {
-          this.toLast()
-        } else if (
-          this.curIndex === this.length - 1 &&
-          this.nextIndex === 0
-        ) {
-          this.toFirst()
-        }
-        this.setcurIndex()
+        this.setCurIndex()
         this.emit('slidend')
       },
       true
@@ -197,98 +199,59 @@ export default class extends Events {
       transform: `translateY(${this.translateX}px)`
     })
     // 在滑动过程中实时获得下一个元素索引(待优化，不需要每次执行)
-    this.setNextIndex()
+    this.setCurIndex()
+    this.emit(
+      'slide',
+      this.nodes[this.curIndex].el,
+      this.data[this.curIndex],
+      this.nodes.map(node => node.el)
+    )
+  }
+
+  setPosDirect (translate) {
+    this.translateX = translate
+    this.style(this.el, {
+      transform: `translateY(${translate}px)`
+    })
+    this.setCurIndex()
+    this.emit(
+      'slide',
+      this.nodes[this.curIndex].el,
+      this.data[this.curIndex],
+      this.nodes.map(node => node.el)
+    )
   }
 
   // 滑动到某个元素（待优化）
   toItem (index, animation = true) {
     let cindex = index
-    if (!this.loop) {
-      if (index < 0) {
-        cindex = 0
-      } else if (index > this.length - 1) {
-        cindex = this.length - 1
-      }
-    } else {
-      if (index < 0) {
-        cindex = this.length - 1
-      } else if (index > this.length - 1) {
-        cindex = 0
-      }
+
+    if (index < 0) {
+      cindex = this.nodes.length - 1
+    } else if (index > this.nodes.length - 1) {
+      cindex = 0
     }
 
     if (cindex === this.curIndex) {
       return
     }
 
-    if (this.curIndex === 0 && cindex === this.length - 1 && this.loop) {
-      if (!animation) {
-        this.slide(this.size.width)
-        this.toLast()
-        this.emit('slidend')
-      } else {
-        this.smoothSlide(this.size.width)
-        this.on(
-          'animationend',
-          () => {
-            this.toLast()
-            this.emit('slidend')
-          },
-          true
-        )
-      }
-    } else if (
-      this.curIndex === this.length - 1 &&
-      cindex === 0 &&
-      this.loop
-    ) {
-      if (!animation) {
-        this.slide(-this.size.width)
-        this.toFirst()
-        this.emit('slidend')
-      } else {
-        this.smoothSlide(-this.size.width)
-        this.on(
-          'animationend',
-          () => {
-            this.toFirst()
-            this.emit('slidend')
-          },
-          true
-        )
-      }
+    const distance = (this.curIndex - cindex) * this.size.width
+    if (!animation) {
+      this.slide(distance)
+      this.setCurIndex()
+      this.emit('slidend')
     } else {
-      const distance = (this.curIndex - cindex) * this.size.width
-      if (!animation) {
-        this.slide(distance)
-        this.setcurIndex()
-        this.emit('slidend')
-      } else {
-        this.smoothSlide(distance)
-        this.on(
-          'animationend',
-          () => {
-            this.setcurIndex()
-            this.emit('slidend')
-          },
-          true
-        )
-      }
+      this.smoothSlide(distance)
+      this.on(
+        'animationend',
+        () => {
+          this.setCurIndex()
+          this.emit('slidend')
+        },
+        true
+      )
     }
-  }
-
-  // loop模式下跳转
-  toLast () {
-    const distance = (this.curIndex - this.length) * this.size.width
-    this.slide(distance)
-    this.setcurIndex()
-  }
-
-  // loop模式下跳转
-  toFirst () {
-    const distance = (this.curIndex + 1 - 0) * this.size.width
-    this.slide(distance)
-    this.setcurIndex()
   }
 
   next (animation = true) {
@@ -299,201 +262,115 @@ export default class extends Events {
     this.toItem(this.curIndex - 1, animation)
   }
 
-  initNodesStyle () {
-    this.nodes.forEach(node => {
-      this.style(node.el, {
-        display: 'inline-block',
-        width: this.size.width + 'px'
-      })
-    })
-  }
-
-  addHolder () {
-    if (this.first) {
-      this.el.removeChild(this.first)
-    }
-    if (this.last) {
-      this.el.removeChild(this.last)
-    }
-    const children = this.el.children
-    this.last = children[0].cloneNode(true)
-    this.first = children[children.length - 1].cloneNode(true)
-    this.el.insertBefore(this.first, children[0])
-    this.el.appendChild(this.last)
-  }
-
-  setConSize () {
-    const style = window.getComputedStyle(this.parentNode)
-    this.size = {
-      width: this.width || parseFloat(style.width),
-      height: parseFloat(style.height)
-    }
-  }
-
-  setConWidth () {
-    this.style(this.el, {
-      width: this.size.width * this.nodes.length + 'px'
-    })
-  }
-
+  // 元素初始的宽高、位置信息
   setNodes () {
     const children = this.el.children
     const nodes = []
     for (let i = 0; i < children.length; i++) {
+      const width = children[i].offsetWidth
+      const height = children[i].offsetHeight
+
+      let y = 0
+      if (i === 0) {
+        const offset = this.options.selectedIndex * height
+        y = 0 + offset
+      } else {
+        y = nodes[i - 1].y - nodes[i - 1].height
+      }
       nodes.push({
         el: children[i],
-        index: i
+        index: i,
+        width,
+        height,
+        x: 0,
+        y
       })
     }
     this.nodes = nodes
   }
 
-  setPosAry () {
-    const posAry = [0]
-    for (let i = 1; i < this.children.length; i++) {
-      posAry[i] =
-        parseFloat(window.getComputedStyle(this.children[i - 1]).height) +
-        posAry[i - 1]
-    }
-    this.posAry = posAry
-  }
-
   // 触摸事件结束时，修正元素位置
   getCorrectPos () {
     let correctedx = 0
-    const firstPos = this.posAry[0]
-    const lastPos = this.posAry[this.posAry.length - 1]
+    const firstPos = this.topPos
+    const lastPos = this.bottomPos
     if (this.translateX > firstPos) {
       // 首元素继续右移时
-      if (this.loop) {
-        const d = Math.abs(this.translateX - firstPos)
-        if (d < this.size.width / 2) {
-          correctedx = -d
-        } else {
-          correctedx = Math.abs(this.translateX)
-        }
-      } else {
-        // 非loop模式下 总是回到首元素
-        correctedx = -this.translateX
-      }
+      correctedx = firstPos - this.translateX
     } else if (this.translateX < lastPos) {
       // 尾元素继续左移时
-      if (this.loop) {
-        const d = Math.abs(this.translateX - lastPos)
-        if (d < this.size.width / 2) {
-          correctedx = d
-        } else {
-          correctedx = d - this.size.width
-        }
-      } else {
-        correctedx = lastPos - this.translateX
-      }
+      correctedx = lastPos - this.translateX
     } else {
-      this.posAry.forEach((item, index) => {
-        if (
-          this.translateX < item &&
-          this.translateX > this.posAry[index + 1]
-        ) {
-          const d = Math.abs(this.translateX - item)
-          if (d < this.size.width / 2) {
-            correctedx = d
-          } else {
-            correctedx = this.posAry[index + 1] - this.translateX
-          }
-        }
-      })
+      const index = this.getIndexByPos(this.translateX)
+      correctedx = this.nodes[index].y - this.translateX
     }
     return correctedx
   }
 
   // 获得这个位置的元素索引
   getIndexByPos (offsetx) {
-    const index = -offsetx / this.size.width
-    this.posAry.some((item, index) => {
-      if (offsetx < item && offsetx > this.posAry[index + 1]) {
-        const d = item - offsetx
+    let tindex = 0
+    this.nodes.some((item, index) => {
+      const nextItme = this.nodes[index + 1]
+      if (offsetx > this.topPos) {
+        tindex = 0
+        return true
+      }
+      if (offsetx < this.bottomPos) {
+        tindex = this.nodes.length - 1
+        return true
+      }
+
+      if (offsetx === item.y) {
+        tindex = index
+        return true
+      }
+
+      if (offsetx < item.y && offsetx > nextItme.y) {
+        const d = item.y - offsetx
+        if (d > nextItme.height / 2) {
+          tindex = index + 1
+        } else {
+          tindex = index
+        }
+        return true
       }
     })
-    return this.correctIndex(index)
+    return tindex
   }
 
-  // 修正两种模式下的元素索引
-  correctIndex (index) {
-    let cindex = index
-    if (!this.loop) {
-      if (index < 0) {
-        cindex = 0
-      } else if (index > this.length - 1) {
-        cindex = this.length - 1
-      }
-    } else {
-      cindex--
-      if (index < 0) {
-        cindex = this.length - 1
-      } else if (index > this.length - 1) {
-        cindex = 0
-      }
-    }
-    return cindex
-  }
-
-  // 获得这个元素索引的位置
-  getPosByIndex (index) {
-    const pos = -index * this.size.width
-    if (!this.loop) {
-      return pos
-    }
-    return pos - this.size.width
-  }
-
-  // 实时设置容器高度（如果元素之间的高度不同）
-  setConHeightTiming () {
-    const curHeight = window.getComputedStyle(this.nodes[this.curIndex].el)
-      .height
-    const nextHeight = window.getComputedStyle(this.nodes[this.nextIndex].el)
-      .height
-    const conHeight =
-      Math.max(parseFloat(curHeight), parseFloat(nextHeight)) + 'px'
-    this.style(this.el, {
-      height: conHeight
-    })
-  }
-
-  setcurIndex () {
+  setCurIndex () {
     this.curIndex = this.getIndexByPos(this.translateX)
-    if (this.curIndex === 0) {
-      this.emit('onFirstItem')
-    } else if (this.curIndex === this.length - 1) {
-      this.emit('onLastItem')
-    }
-
-    // curIndex变化时，设置容器高度
-    if (this.timingHeight) {
-      this.setConHeightTiming()
+    if (this.lastCurIndex !== this.curIndex) {
+      this.emit(
+        'change',
+        this.nodes[this.curIndex].el,
+        this.data[this.curIndex],
+        this.nodes.map(node => node.el)
+      )
+      this.lastCurIndex = this.curIndex
     }
   }
 
-  setNextIndex () {
-    this.nextIndex = this.getIndexByPos(this.translateX)
-    const curItemPos = this.posAry(this.curIndex)
-    if (this.translateX < curItemPos) {
-
-    }
-    if (this.nextIndex > 0 && this.nextIndex < this.length - 1) {
-      if (this.nextIndex > this.curIndex) {
-        this.nextIndex = Math.ceil(this.nextIndex)
-      } else {
-        this.nextIndex = Math.floor(this.nextIndex)
-      }
-    }
-
-    // nextIndex变化时，设置容器高度
-    // if (this.timingHeight) {
-    //   this.setConHeightTiming()
-    // }
+  addSelectBox () {
+    const selectBox = document.createElement('div')
+    this.el.parentNode.style.position = 'relative'
+    const height = this.nodes[0].height
+    this.style(selectBox, {
+      width: this.el.parentNode.offsetWidth + 'px',
+      height: height + 'px',
+      position: 'absolute',
+      left: 0,
+      top: this.options.selectedIndex * height + 'px',
+      borderTop: '1px solid rgb(3, 136, 189)',
+      borderBottom: '1px solid rgb(3, 136, 189)',
+      zIndex: -1
+    })
+    this.el.parentNode.appendChild(selectBox)
   }
 
   style (el, obj) {
     Object.assign(el.style, obj)
   }
 }
+

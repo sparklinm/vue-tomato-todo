@@ -15,10 +15,10 @@ export default class {
     })
   }
 
-  emit (name, params) {
+  emit (name, arg1, arg2, arg3) {
     this.onEvents = this.onEvents.filter(event => {
       if (event.name === name) {
-        event.callback(params)
+        event.callback(arg1, arg2, arg3)
       }
       return !event.once
     })
