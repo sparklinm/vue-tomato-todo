@@ -275,6 +275,15 @@ export default {
       thirdValue: ''
     }
   },
+  watch: {
+    // firstValue () {
+    //   this.setSecondData()
+
+    // },
+    // secondValue () {
+    //   this.setThirdData()
+    // }
+  },
   created () {
     this.firstValue = this.firstData[0]
     this.setSecondData()
@@ -283,10 +292,49 @@ export default {
     this.thirdValue = this.thirdData[0]
   },
   mounted () {
-    const nodes = document.querySelectorAll('.com-cascader__list-inner')
-    for (let i = 0; i < nodes.length; i++) {
-      new Slide(nodes[i])
-    }
+    const lists = document.querySelectorAll('.com-cascader__list-inner')
+    const firstSlide = new Slide(lists[0], {}, this.firstData)
+    firstSlide.on('change', (el, value, nodes) => {
+      nodes.forEach(node => {
+        node.classList.remove('com-cascader__list-item_checked')
+      })
+      el.classList.add('com-cascader__list-item_checked')
+      this.firstValue = value
+      this.secondData = this.firstValue.children
+
+      this.$nextTick(() => {
+        if (secondSlide) {
+          secondSlide.reInit(this.secondData)
+        }
+      })
+    })
+    firstSlide.init()
+
+    const secondSlide = new Slide(lists[1], {}, this.secondData)
+    secondSlide.on('change', (el, value, nodes) => {
+      nodes.forEach(node => {
+        node.classList.remove('com-cascader__list-item_checked')
+      })
+      el.classList.add('com-cascader__list-item_checked')
+      this.secondValue = value
+      this.thirdData = this.secondValue.children
+      this.$nextTick(() => {
+        if (thirdSlide) {
+          thirdSlide.reInit(this.thirdData)
+        }
+      })
+    })
+    secondSlide.init()
+
+    const thirdSlide = new Slide(lists[2], {}, this.thirdData)
+    thirdSlide.on('change', (el, value, nodes) => {
+      nodes.forEach(node => {
+        node.classList.remove('com-cascader__list-item_checked')
+      })
+      el.classList.add('com-cascader__list-item_checked')
+      this.thirdValue = value
+    })
+    thirdSlide.init()
   },
   methods: {
     setSecondData () {
@@ -294,6 +342,16 @@ export default {
     },
     setThirdData () {
       this.thirdData = this.secondValue.children
+    },
+    setData () {
+      for (let i = 0; ;i++) {
+        if (this.value[i].children && this.value[i].children.length) {
+          this.data[i + 1] = this.value[i].children
+        }
+      }
+    },
+    setNextLevelData (lastValue) {
+      // this.
     }
   }
 }
@@ -313,10 +371,10 @@ export default {
 
 .com-cascader__list-item {
   padding: 6px 0;
+  white-space: nowrap;
 }
 
 .com-cascader__list-item_checked {
-  transform: scale(1.5);
   color: rgb(3, 136, 189);
 }
 
