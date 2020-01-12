@@ -40,7 +40,9 @@ module.exports = {
     start: '开始'
   },
   commom: {
-    random_one_picture: '随机一张图片'
+    random_one_picture: '随机一张图片',
+    choose_time: '选择时间',
+    choose_date: '选择日期'
   },
   todo: {
     common_todo: '普通番茄时钟',
@@ -103,14 +105,15 @@ module.exports = {
     abandon_in_half: '中途放弃',
     edit_duration: '编辑时长',
     start_time: '开始时间',
-    end_time: '开始结束时间',
+    end_time: '结束时间',
     time_status: '计时状态',
     focus_time: '专注时间',
     modify_focus_duration: '修改专注时长（分钟）',
     please_input_experience: '请输入心得',
     set_time_reminder: '设置定时提醒',
     click_set_time_reminder: '点击设置定时提醒',
-    set_cycle: '周期设定'
+    set_cycle: '周期设定',
+    no_reminder_and_add: '没有定时提醒，点击 + 号添加'
   },
   plan: {
     future_plan: '未来计划',
@@ -140,7 +143,8 @@ module.exports = {
   },
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',
-    modify_focus_duration: '注意，您仅可修改比当前时长{0}短的时长，且修改后无法再增加'
+    modify_focus_duration: '注意，您仅可修改比当前时长{0}短的时长，且修改后无法再增加',
+    set_reminder_time: '尚未设置提醒时间'
   },
   sentence: {
     one: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。'
