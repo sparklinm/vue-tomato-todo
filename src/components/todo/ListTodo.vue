@@ -73,7 +73,7 @@
               $t("action.edit")
             }}</span>
 
-            <ComToolTip>
+            <ComToolTip :show.sync="showSortMove">
               <span
                 ref="btnMove"
                 class="btn btn-small"
@@ -224,8 +224,9 @@
       class="box-sort"
       :show.sync="showBoxSort"
       :z-index="2050"
-      top-option-btn
+      top-btn
       :submit="submitSort"
+      @opened="initSort"
     >
       <template v-slot:header-icon>
         <span class="btn-header">
@@ -236,7 +237,7 @@
           />
         </span>
       </template>
-      <ComList :id="'container' + _uid">
+      <ComList ref="sortContainer">
         <ComCell
           v-for="(item, index) in todos"
           :id="'item' + index"
@@ -251,11 +252,39 @@
               class="fa fa-trash delete-icon"
               aria-hidden="true"
               draggable="true"
-              @click="deleteTodo(index)"
+              @click="deleteTodo(item.id)"
             />
           </template>
         </ComCell>
       </ComList>
+    </ComPopup>
+
+
+    <ComPopup
+      class="box-move-todo"
+      :show.sync="showBoxMove"
+      z-index="2050"
+      no-header
+    >
+      <div class="title">
+        {{ $t('todo.move_to_set') }}
+      </div>
+      <ul>
+        <li
+          v-for="(set,index) in sets"
+          :key="set.name"
+          class="set-item"
+          @click="submitMoveToSet(set.id)"
+        >
+          <input
+            type="radio"
+            class="radio"
+          >
+          <span class="set-name">
+            {{ set.name }}
+          </span>
+        </li>
+      </ul>
     </ComPopup>
 
     <ComPopup
@@ -283,6 +312,12 @@
         </span>
       </template>
       <div class="reminders">
+        <div
+          v-show="!todo.reminders.length"
+          class="reminders-title"
+        >
+          {{ this.$t('todo.no_reminder_and_add') }}
+        </div>
         <ComCell
           v-for="(item,index) in todo.reminders"
           :key="index"
@@ -313,8 +348,11 @@
       z-index="2050"
       top-btn
     >
-      <div class="set-time">
-        {{ $t('todo.click_set_time_reminder') }}
+      <div
+        class="set-time"
+        @click="setReminderTime"
+      >
+        {{ curReminder.time || $t('todo.click_set_time_reminder') }}
       </div>
       <div>
         <div class="set-cycle">
@@ -341,7 +379,12 @@
       :show.sync="showBoxAddTodo"
       :data="todo"
     />
-    <ComCascader />
+    <DatePicker
+      v-model="reminderTime"
+      :show.sync="showBoxSetReminderTime"
+      :submit="submitSetReminderTime"
+      z-index="2100"
+    />
   </div>
 </template>
 
@@ -349,14 +392,16 @@
 import ListItem from './ListItem'
 import ProgressCircle from './ProgressCircle'
 import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
+import DatePicker from '../DatePicker'
 import util from '@/util.js'
 import Sorter from '@/sort.js'
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   components: {
     ListItem,
     ProgressCircle,
-    BoxAddTodo
+    BoxAddTodo,
+    DatePicker
   },
   props: {
     todos: {
@@ -372,6 +417,7 @@ export default {
       todoIndex: 0,
       showBoxAddTodo: false,
       showBoxSort: false,
+      showBoxMove: false,
       description: {
         sortTodo: {
           title: this.$t('word.help'),
@@ -383,9 +429,11 @@ export default {
         }
       },
       sorter: null,
+      showSortMove: false,
       showChangeBackground: false,
       showBoxTimeReminder: false,
       showBoxAddTimeReminder: false,
+      showBoxSetReminderTime: false,
       days: {
         1: this.$t('word.monday'),
         2: this.$t('word.tuesday'),
@@ -395,11 +443,17 @@ export default {
         6: this.$t('word.saturday'),
         7: this.$t('word.sunday')
       },
-      curReminder: {},
+      curReminder: {
+        time: []
+      },
+      reminderTime: [9, 5],
       isAddReminder: false
     }
   },
   computed: {
+    ...mapState('todo', {
+      sets: state => state.todoSets
+    }),
     datas () {
       return this.curTodos.map(todo => {
         let description = ''
@@ -487,7 +541,14 @@ export default {
       }
     }
   },
-  watch: {},
+  watch: {
+    curReminder: {
+      handler (val) {
+        console.log(val.time.toString())
+      },
+      deep: true
+    }
+  },
   mounted () {
     console.log(this.datas)
     console.log(this.todos)
@@ -497,14 +558,16 @@ export default {
   methods: {
     ...mapMutations('todo', {
       storeEditTodo: 'editTodo',
+      storeDeleteTodo: 'deleteTodo',
       storeAddReminder: 'addReminder',
       storeEditReminder: 'editReminder',
-      storeDeleteReminder: 'deleteReminder'
+      storeDeleteReminder: 'deleteReminder',
+      storeAddTodoToSet: 'addTodoToSet'
     }),
     resetData () {
       this.curTodos = _.cloneDeep(this.todos)
       if (this.todo) {
-        this.todo = this.curTodos.find(item => item.id === this.todo.id)
+        this.todo = this.curTodos.find(item => item.id === this.todo.id) || this.curTodos[0]
       }
     },
     start () {
@@ -526,19 +589,32 @@ export default {
     },
     sort () {
       this.showBoxSort = true
-      this.showBtnMoveDrop = false
+      this.showSortMove = false
       this.showBoxInfo = false
-      this.sorter = new Sorter(`#container${this._uid}`, this.todos)
-      setTimeout(() => {
-        this.sorter.init()
-      }, 300)
+    },
+    initSort () {
+      if (this.sorter) {
+        this.sorter.destroy()
+      }
+
+      this.sorter = new Sorter(this.$refs.sortContainer.$el, this.todos)
+      this.sorter.init()
     },
     moveToSet () {
-      this.showMoveBox = true
-      this.showBtnMoveDrop = false
+      this.showBoxMove = true
+      this.showSortMove = false
     },
-    deleteTodo (index) {
-      this.todos.splice(index, 1)
+    submitMoveToSet (sid) {
+      this.storeAddTodoToSet({
+        sid: sid,
+        tid: this.todo.id
+      })
+      this.resetData()
+      this.showBoxMove = false
+    },
+    deleteTodo (id) {
+      this.storeDeleteTodo(id)
+      this.showBoxInfo = false
     },
     submitSort () {
       if (this.sorter) {
@@ -546,6 +622,9 @@ export default {
         this.sorter.destroy()
       }
       this.showBoxSort = false
+      setTimeout(() => {
+        this.resetData()
+      }, 4)
     },
     changeBackgroundRandom () {
       this.storeEditTodo({
@@ -564,6 +643,13 @@ export default {
       })
       return text
     },
+    getReminderTime (time) {
+      const date = new Date('2020-1-5 ' + time)
+      return {
+        hour: date.getHours(),
+        minute: date.getMinutes()
+      }
+    },
     setReminder () {
       this.showBoxTimeReminder = true
       this.showBoxInfo = false
@@ -575,7 +661,8 @@ export default {
     },
     addReminder () {
       this.curReminder = {
-        days: [1, 2, 3, 4, 5, 6, 7]
+        days: [1, 2, 3, 4, 5, 6, 7],
+        time: 0
       }
       this.showBoxAddTimeReminder = true
       this.isAddReminder = true
@@ -583,14 +670,32 @@ export default {
     },
     submitAddReminder (done) {
       if (this.isAddReminder) {
+        if (!this.curReminder.time) {
+          this.$tips(this.$t('tips.set_reminder_time'))
+          return
+        }
         this.curReminder.tid = this.todo.id
-        this.curReminder.time = util.dateFormatter(new Date(), 'hh:mm'),
         this.storeAddReminder(this.curReminder)
       } else {
         this.storeEditReminder(this.curReminder)
       }
       done()
       this.resetData()
+    },
+    setReminderTime () {
+      this.showBoxSetReminderTime = true
+      const time = this.getReminderTime(this.curReminder.time)
+      this.reminderTime = [
+        time.hour,
+        time.minute
+      ]
+    },
+    submitSetReminderTime (done) {
+      const time = this.reminderTime.map(item => {
+        return util.addZero(item, 10)
+      })
+      this.curReminder.time = time.join(':')
+      done()
     },
     deleteReminder (id) {
       this.storeDeleteReminder(id)
@@ -786,6 +891,30 @@ export default {
   transition: all 0.1s ease;
 }
 
+.box-move-todo {
+  .title {
+    margin-bottom: 12px;
+  }
+
+  .set-item {
+    padding: 10px 0;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .radio {
+    width: 16px;
+    height: 16px;
+    background: white;
+    vertical-align: middle;
+  }
+
+  .set-name {
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+}
+
 .box-time-reminder {
   .com-popup__header {
     padding: 12px;
@@ -799,10 +928,18 @@ export default {
 
   .com-popup__content {
     padding: 5px 18px 5px;
+    height: 200px;
+    overflow: scroll;
   }
 
   .reminders {
     min-height: 200px;
+  }
+
+  .reminders-title {
+    font-size: 12px;
+    line-height:200px;
+    text-align:center;
   }
 
   .com-cell {
@@ -828,6 +965,10 @@ export default {
 }
 
 .box-add-time-reminder {
+  .com-popup__content{
+    padding: 20px 15px 12px;
+  }
+
   .set-time {
     margin-bottom: 20px;
   }

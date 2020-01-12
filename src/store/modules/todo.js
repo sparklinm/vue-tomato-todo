@@ -258,14 +258,17 @@ export default {
     },
     todoSets: [
       {
+        id: 0,
         name: '1',
         background: '#0000FF',
         resetTimeSingle: '',
         resetTimeAll: '',
         continuousExcute: true,
-        todos: []
+        sid: 0,
+        todos: [0]
       },
       {
+        id: 1,
         name: '2',
         background: '#CCFFFF',
         resetTimeSingle: '',
@@ -329,6 +332,14 @@ export default {
     },
     getTodoById: (state) => (id) => {
       return state.todos.find(todo => todo.id === id)
+    },
+    getTodosNormal (state) {
+      const data = []
+      state.todos.forEach(todo => {
+        if (!todo.sid) {
+          data.push(todo)
+        }
+      })
     }
   },
   mutations: {
@@ -340,6 +351,16 @@ export default {
     },
     addTodoSet (state, set) {
       state.todoSets.push(set)
+    },
+    addTodoToSet (state, obj) {
+      state.todoSets.some(set => {
+        if (set.id === obj.sid) {
+          set.todos.push(obj.tid)
+          return true
+        }
+      })
+      console.log(state.todoSets)
+
     },
     modifyTodoSet (state, { set, index }) {
       state.todoSets[index] = set
@@ -354,6 +375,14 @@ export default {
       if (todo) {
         _.merge(todo, obj)
       }
+    },
+    deleteTodo (state, id) {
+      state.todos.some((todo, index) => {
+        if (todo.id === id) {
+          state.todos.splice(index, 1)
+          return true
+        }
+      })
     },
     editFocus (state, obj) {
       state.todos.some(todo => {
