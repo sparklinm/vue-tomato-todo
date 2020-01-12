@@ -2,6 +2,7 @@
   <transition
     name="popup"
     @after-leave="afterLeave"
+    @after-enter="afterEnter"
   >
     <div
       v-show="showBox"
@@ -178,6 +179,9 @@ export default {
     }
   },
   methods: {
+    afterEnter () {
+      this.$emit('opened')
+    },
     afterLeave () {
       this.$emit('closed')
     },

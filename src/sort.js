@@ -19,13 +19,12 @@ export default class Sorter {
     up: 'touchend'
   };
 
-  constructor (id, data) {
-    this.id = id
+  constructor (el, data) {
+    this.container = el
     this.data = _.cloneDeep(data)
   }
 
   init () {
-    this.container = document.querySelector(this.id)
     this.items = [...this.container.querySelectorAll('.sort-cell')].map(
       (node, index) => ({
         el: node,
@@ -141,6 +140,10 @@ export default class Sorter {
     const index = this.items.findIndex(item => {
       return item.el === node
     })
+
+    if (index === -1) {
+      return
+    }
 
     this.nodeInitPos = {
       centreX: this.items[index].position.centreX,
