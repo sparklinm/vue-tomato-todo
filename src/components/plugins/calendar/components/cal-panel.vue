@@ -8,6 +8,7 @@
       :style="{background:options.color}"
     >
       <div class="ev-calendar__title">
+        <slot name="headerLeftBtn" />
         {{ curSelectedDayView }}
         <span class="ev-calendar_title-year">
           {{ curSelectedYear }}

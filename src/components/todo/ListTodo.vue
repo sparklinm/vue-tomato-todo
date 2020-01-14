@@ -1,5 +1,8 @@
 <template>
-  <div class="list-todo">
+  <div
+    v-if="todos.length"
+    class="list-todo"
+  >
     <ListItem
       v-for="(data, index) in datas"
       :key="index"
@@ -106,7 +109,10 @@
             >
               {{ $t("todo.history_record_time_axis") }}
             </span>
-            <span class="btn btn-middle">{{ $t("todo.data_analysis") }}</span>
+            <span
+              class="btn btn-middle"
+              @click="toStatistics"
+            >{{ $t("todo.data_analysis") }}</span>
           </div>
         </div>
         <div class="cell btn data">
@@ -197,14 +203,14 @@
                 <span>1</span>
                 <span>{{ $t("todo.stick_days_total") }}</span>
               </div>
-              <span>{{ todo.stickDays.total }} {{ $t("word.day") }}</span>
+              <span>{{ stickDays.total }} {{ $t("word.day") }}</span>
             </div>
             <div class="row">
               <div class="title">
                 <span>2</span>
                 <span>{{ $t("todo.stick_days_continue") }}</span>
               </div>
-              <span>{{ todo.stickDays.continuation }} {{ $t("word.day") }}</span>
+              <span>{{ stickDays.continuation }} {{ $t("word.day") }}</span>
             </div>
             <div class="row">
               <div class="title">
@@ -443,14 +449,21 @@ export default {
         time: []
       },
       reminderTime: [9, 5],
-      isAddReminder: false
+      isAddReminder: false,
+      showTimeAxis: false
     }
   },
+
   computed: {
     ...mapState('todo', {
-      sets: state => state.todoSets
+      sets: state => state.todoSets,
+      isGetTodos: 'isGetTodos'
     }),
     datas () {
+      if (!this.curTodos.length) {
+        return {}
+      }
+
       return this.curTodos.map(todo => {
         let description = ''
         let progress = ''
@@ -505,6 +518,14 @@ export default {
     showProgress () {
       return this.todo.goal || this.todo.habit
     },
+    stickDays () {
+      const focusData = this.getFocusDays()
+      const days = Object.keys(focusData)
+      return {
+        total: days.length,
+        continuation: util.getMaxDuplicateCount(days)
+      }
+    },
     progress () {
       let hd = ''
       const bd = {}
@@ -538,11 +559,11 @@ export default {
     }
   },
   watch: {
-    curReminder: {
-      handler (val) {
-        console.log(val.time.toString())
-      },
-      deep: true
+    isGetTodos (val) {
+      if (val) {
+        this.resetData()
+        this.StoreSetIsGetTodos(false)
+      }
     }
   },
   mounted () {
@@ -558,7 +579,11 @@ export default {
       storeAddReminder: 'addReminder',
       storeEditReminder: 'editReminder',
       storeDeleteReminder: 'deleteReminder',
-      storeAddTodoToSet: 'addTodoToSet'
+      storeAddTodoToSet: 'addTodoToSet',
+      storeSetShowTimeAxis: 'setShowTimeAxis',
+      storeSetShowStatistics: 'setShowStatistics',
+      storeSetTarget: 'setTarget',
+      StoreSetIsGetTodos: 'setIsGetTodos'
     }),
     resetData () {
       this.curTodos = _.cloneDeep(this.todos)
@@ -575,6 +600,26 @@ export default {
     },
     getProgress (complete, total) {
       return Math.ceil((complete / total) * 100)
+    },
+    getFocusDays () {
+      const result = {}
+      this.todo.focus.forEach(item => {
+        const { start: time, duration } = item
+        const date = time.getDate()
+        const hours = time.getHours()
+        const thisDate = new Date(time.getFullYear(), time.getMonth(), time.getDate())
+        const thisTime = thisDate.getTime()
+        result[thisTime] = result[thisTime] || 0
+        if (hours + duration / 60 > 24) {
+          const cduraion = (24 - hours) * 60
+          result[thisTime] += (24 - hours) * 60
+          const nextDate = thisDate.setDate(date + 1)
+          result[nextDate.getTime()] = duration - cduraion
+        } else {
+          result[thisTime] += duration
+        }
+      })
+      return result
     },
     edit (index) {
       this.todo = this.curTodos[index]
@@ -698,13 +743,14 @@ export default {
       this.resetData()
     },
     toTimeAxis () {
-      this.showBoxInfo = false
-      setTimeout(() => {
-        this.$router.push({
-          path: '/time_axis'
-        })
-      }, 300)
-
+      this.$router.push({
+        path: `/time_axis/${this.todo.id}`
+      })
+    },
+    toStatistics () {
+      this.$router.push({
+        path: `/statistics/${this.todo.id}`
+      })
     }
   }
 }

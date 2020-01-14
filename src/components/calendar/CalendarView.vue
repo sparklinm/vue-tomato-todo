@@ -4,6 +4,14 @@
       :options="options"
       @select-day="selectDay"
     >
+      <template #headerLeftBtn>
+        <ComIcon
+          v-if="showReturn"
+          class="calendar-return-btn"
+          name="arrow-left"
+          @click="$emit('return')"
+        />
+      </template>
       <template #events="scope">
         <ev-event
           v-for="(todo, index) in completedTodos"
@@ -58,7 +66,9 @@
     <ComPopup
       class="box-edit box-edit-completed"
       :title="curTodo.name"
+      append-to-body
       :show.sync="showBoxInfo"
+      :z-index="3050"
     >
       <div class="cells">
         <div class="cell">
@@ -128,8 +138,9 @@
     <ComPopup
       class="box-edit-duration"
       :show.sync="showBoxDuration"
-      :z-index="2050"
+      :z-index="3100"
       no-header
+      append-to-body
     >
       <ComInput
         v-model="focusDuration"
@@ -160,8 +171,9 @@
     <ComPopup
       class="box-edit-text"
       :show.sync="showBoxText"
-      :z-index="2050"
+      :z-index="3100"
       :title="$t('word.experience')"
+      append-to-body
     >
       <template v-slot:header-icon>
         <ComIcon
@@ -193,6 +205,16 @@ export default {
   components: {
     ProgressCircle
   },
+  props: {
+    showReturn: {
+      type: Boolean,
+      default: false
+    },
+    todos: {
+      type: Array,
+      default: () => {[]}
+    }
+  },
   data () {
     return {
       options: {
@@ -216,14 +238,14 @@ export default {
     }
   },
   computed: {
-    ...mapState('todo', {
-      todos: state => state.todos
-    }),
     ...mapState('settings', {
       calendarColor: state => state.currentTheme.darken10
     }),
     completedTodos () {
       const data = []
+      if (!this.todos.length) {
+        return
+      }
       this.todos.forEach(todo => {
         if (todo.focus) {
           todo.focus.forEach(item => {
@@ -261,15 +283,18 @@ export default {
   watch: {
     todos: {
       handler (todos) {
+        if (!todos.length) return
+        const events = []
         todos.forEach(todo => {
           if (todo.focus) {
             todo.focus.forEach(item => {
-              this.options.events.push({
+              events.push({
                 date: item.start
               })
             })
           }
         })
+        this.options.events = events
       },
       deep: true,
       immediate: true
@@ -439,5 +464,9 @@ export default {
   .com-input__box {
     height: 300px;
   }
+}
+
+.calendar-return-btn {
+  margin-right: 10px;
 }
 </style>

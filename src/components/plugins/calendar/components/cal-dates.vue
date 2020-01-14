@@ -66,7 +66,6 @@ export default {
     dayList () {
       const day = this.fullTime.day
       const result = []
-
       // 上一个月
       const preMonth = util.getPreMonth(this.date)
       const preMonthDays = util.getMonthDays(preMonth)
@@ -92,6 +91,8 @@ export default {
           status: 'cur',
           customClass: []
         }
+
+
 
         this.events.forEach(event => {
           if (util.isEqualDateFuzzy(obj.date, event.date, 'hour')) {
