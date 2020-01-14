@@ -8,7 +8,13 @@
       @pre-month="preMonth"
       @next-month="nextMonth"
       @to-month="toMonth"
-    />
+    >
+      <template #headerLeftBtn>
+        <slot
+          name="headerLeftBtn"
+        />
+      </template>
+    </cal-panel>
     <div class="ev-events">
       <div class="ev-events__inner">
         <slot

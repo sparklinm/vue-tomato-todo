@@ -2,7 +2,7 @@
   <div class="box-add-todo">
     <ComPopup
       :title="this.$t('todo.add_todo')"
-      top-option-btn
+      top-btn
       :show="show"
       :submit="submitAddTodo"
       :before-open="beforeBoxAddTodoOpen"
@@ -147,7 +147,7 @@
     </ComPopup>
     <ComPopup
       title="高级设置"
-      top-option-btn
+      top-btn
       class="box-advanced-setting fade"
       :show.sync="showBoxAdvancedSettings"
       :z-index="2050"
@@ -543,15 +543,8 @@ export default {
         this.todo.type = '习惯'
       }
 
-      this.todo.focus = {
-        number: 0,
-        duration: 0
-      }
+      this.todo.focus = []
       this.todo.reminders = []
-      this.todo.stickDays = {
-        total: 0,
-        continuation: 0
-      }
       this.todo.creat = new Date()
 
       // this.addTodo(this.todo)

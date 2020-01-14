@@ -59,7 +59,7 @@
       </ComCell>
       <ListTodo
         v-show="showTodos[index]"
-        :todos="item.todos"
+        :todos="getTodosBySet(item.id)"
         class="list-set-todo"
       />
     </div>
@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import ListTodo from './ListTodo'
 import BoxAddTodo from './add/BoxAddTodo'
 export default {
@@ -135,6 +135,9 @@ export default {
   computed: {
     ...mapState('todo', {
       sets: state => state.todoSets
+    }),
+    ...mapGetters('todo', {
+      getTodosBySet: 'getTodosBySet'
     })
   },
   methods: {

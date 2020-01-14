@@ -36,7 +36,8 @@ export default {
         String,
         Number,
         Object,
-        Array
+        Array,
+        Boolean
       ],
       default: ''
     },
@@ -47,6 +48,10 @@ export default {
         Object
       ],
       default: ''
+    },
+    left: {
+      type: Boolean,
+      default: false
     },
     content: {
       type: String,

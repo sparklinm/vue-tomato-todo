@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import axios from 'axios'
 import App from './App.vue'
 import router from './router'
 import store from './store/index'
@@ -51,7 +52,20 @@ Vue.use(Calendar, {
   color: '#f29543'
 })
 
+Vue.mixin({
+  beforeRouteLeave (to, from, next) {
+    if (from.meta.parent && to.meta.child || from.meta.child && to.meta.parent) {
+      this.$root.keepAlive = ['Todo']
+    } else {
+      this.$root.keepAlive = ['None']
+    }
+    setTimeout(() => {
+      next()
+    })
+  }
+})
 
+Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 
@@ -60,5 +74,8 @@ new Vue({
   router,
   store,
   i18n,
+  data: {
+    keepAlive: []
+  },
   render: h => h(App)
 }).$mount('#app')

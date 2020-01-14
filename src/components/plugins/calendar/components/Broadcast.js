@@ -64,6 +64,7 @@ export default class extends Events {
     this.addlistener()
     const domResize = new DomResize(this.parentNode)
     domResize.on('domResize', () => {
+
       this.init()
       // 在滑动过程中改变dom大小时，不能直接修正到正常位置
       // this.setPos(this.getCorrectPos())

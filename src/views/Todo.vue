@@ -1,18 +1,18 @@
 <template>
-  <div>
+  <div class="muti-page">
     <ListTodo
       :todos="todos"
+      class="main-page"
       @update-todos="setTodos($event)"
     />
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import ListTodo from '../components/todo/ListTodo'
-
-
 export default {
+  name: 'Todo',
   components: {
     ListTodo
   },
@@ -21,15 +21,14 @@ export default {
   },
   computed: {
     ...mapGetters('todo', {
-      // 把 `this.doneCount` 映射为 `this.$store.getters.doneTodosCount`
       todos: 'getTodosNormal'
     })
   },
-  mounted () {
-
-  },
+  watch: {},
   methods: {
-    ...mapMutations('todo', ['setTodos'])
+    ...mapMutations('todo', {
+      setTodos: 'setTodos'
+    })
   }
 }
 </script>

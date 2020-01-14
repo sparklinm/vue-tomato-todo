@@ -1,10 +1,11 @@
 <template>
   <div class="page-statistics main">
-    <CumulativeData />
+    <CumulativeData :todos="todos" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import CumulativeData from '../components/statistics/CumulativeData'
 export default {
   components: {
@@ -13,17 +14,15 @@ export default {
   data () {
     return {}
   },
-  computed: {},
+  computed: {
+    ...mapGetters('todo', {
+      todos: 'getAllTodos'
+    })
+  },
   methods: {}
 }
 </script>
 
 <style lang="less">
-.page-statistics {
-  padding: 0.2rem;
 
-  .data-panel {
-    margin-bottom: 0.2rem;
-  }
-}
 </style>
