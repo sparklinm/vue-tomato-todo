@@ -4,6 +4,7 @@ export default {
     todos: [
       {
         id: 0,
+        sid: 0,
         name: '普通',
         type: 'common',
         timeWay: '倒计时',
@@ -329,6 +330,7 @@ export default {
           })
         }
       })
+      return data
     },
     getTodoById: (state) => (id) => {
       return state.todos.find(todo => todo.id === id)
@@ -336,10 +338,25 @@ export default {
     getTodosNormal (state) {
       const data = []
       state.todos.forEach(todo => {
-        if (!todo.sid) {
+        if (!(todo.sid >= 0)) {
           data.push(todo)
         }
       })
+      return data
+    },
+    getTodosBySet: (state) => (sid) => {
+      const data = []
+      state.todoSets.some((set) => {
+        if (set.id === sid) {
+          state.todos.forEach(todo => {
+            if (todo.sid === set.id) {
+              data.push(todo)
+            }
+          })
+          return true
+        }
+      })
+      return data
     }
   },
   mutations: {
@@ -359,8 +376,13 @@ export default {
           return true
         }
       })
-      console.log(state.todoSets)
-
+      state.todos.some(todo => {
+        if (todo.id === obj.tid) {
+          todo.sid = obj.sid
+          return true
+        }
+      })
+      state.todos = Object.assign([], state.todos)
     },
     modifyTodoSet (state, { set, index }) {
       state.todoSets[index] = set

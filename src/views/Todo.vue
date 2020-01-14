@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import ListTodo from '../components/todo/ListTodo'
 
 
@@ -20,8 +20,9 @@ export default {
     return {}
   },
   computed: {
-    ...mapState('todo', {
-      todos: state => state.todos
+    ...mapGetters('todo', {
+      // 把 `this.doneCount` 映射为 `this.$store.getters.doneTodosCount`
+      todos: 'getTodosNormal'
     })
   },
   mounted () {
