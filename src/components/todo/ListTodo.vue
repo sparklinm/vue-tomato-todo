@@ -5,7 +5,7 @@
       :key="index"
       v-bind="{ ...data }"
       class="list-todo__item"
-      :style="{'background-image':`url(${data.img})`}"
+      :style="{ 'background-image': `url(${data.img})` }"
       @start="start(index)"
       @edit="edit(index)"
     >
@@ -33,9 +33,7 @@
           <i class="fa fa-clock-o" />
           <span class="text">{{ $t("todo.timed_reminder") }}</span>
         </span>
-        <ComToolTip
-          :show.sync="showChangeBackground"
-        >
+        <ComToolTip :show.sync="showChangeBackground">
           <span class="btn-header">
             <i
               class="fa fa-picture-o"
@@ -44,9 +42,7 @@
             <span class="text">{{ $t("todo.change_background") }}</span>
           </span>
           <template v-slot:content>
-            <div
-              class="drop-list_simple"
-            >
+            <div class="drop-list_simple">
               <ul>
                 <li @click="changeBackgroundRandom">
                   {{ $t("commom.random_one_picture") }}
@@ -104,9 +100,12 @@
         </div>
         <div class="cell">
           <div class="cell-bd">
-            <span class="btn btn-middle">{{
-              $t("todo.history_record_time_axis")
-            }}</span>
+            <span
+              class="btn btn-middle"
+              @click="toTimeAxis"
+            >
+              {{ $t("todo.history_record_time_axis") }}
+            </span>
             <span class="btn btn-middle">{{ $t("todo.data_analysis") }}</span>
           </div>
         </div>
@@ -259,7 +258,6 @@
       </ComList>
     </ComPopup>
 
-
     <ComPopup
       class="box-move-todo"
       :show.sync="showBoxMove"
@@ -267,14 +265,14 @@
       no-header
     >
       <div class="title">
-        {{ $t('todo.move_to_set') }}
+        {{ $t("todo.move_to_set") }}
       </div>
       <ul>
         <li
-          v-for="(set,index) in sets"
+          v-for="(set, index) in sets"
           :key="set.name"
           class="set-item"
-          @click="submitMoveToSet(set.id)"
+          @click="submitMoveToSet(set)"
         >
           <input
             type="radio"
@@ -307,7 +305,7 @@
           <ComIcon
             name="times"
             class="com-popup__header-icon"
-            @click="showBoxTimeReminder=false"
+            @click="showBoxTimeReminder = false"
           />
         </span>
       </template>
@@ -316,10 +314,10 @@
           v-show="!todo.reminders.length"
           class="reminders-title"
         >
-          {{ this.$t('todo.no_reminder_and_add') }}
+          {{ this.$t("todo.no_reminder_and_add") }}
         </div>
         <ComCell
-          v-for="(item,index) in todo.reminders"
+          v-for="(item, index) in todo.reminders"
           :key="index"
           :title="item.time"
           :lable="getReminderCycle(item.days)"
@@ -352,18 +350,16 @@
         class="set-time"
         @click="setReminderTime"
       >
-        {{ curReminder.time || $t('todo.click_set_time_reminder') }}
+        {{ curReminder.time || $t("todo.click_set_time_reminder") }}
       </div>
       <div>
         <div class="set-cycle">
-          {{ $t('todo.set_cycle') }}
+          {{ $t("todo.set_cycle") }}
         </div>
         <div class="check-days">
-          <ComGroup
-            v-model="curReminder.days"
-          >
+          <ComGroup v-model="curReminder.days">
             <ComCheckboxButton
-              v-for="(value,key) in days"
+              v-for="(value, key) in days"
               :key="key"
               :label="key"
               :content="value"
@@ -567,7 +563,9 @@ export default {
     resetData () {
       this.curTodos = _.cloneDeep(this.todos)
       if (this.todo) {
-        this.todo = this.curTodos.find(item => item.id === this.todo.id) || this.curTodos[0]
+        this.todo =
+          this.curTodos.find(item => item.id === this.todo.id) ||
+          this.curTodos[0]
       }
     },
     start () {
@@ -604,13 +602,14 @@ export default {
       this.showBoxMove = true
       this.showSortMove = false
     },
-    submitMoveToSet (sid) {
+    submitMoveToSet (set) {
       this.storeAddTodoToSet({
-        sid: sid,
+        sid: set.id,
         tid: this.todo.id
       })
-      this.resetData()
       this.showBoxMove = false
+      this.showBoxInfo = false
+      this.$tips(this.$t('tips.already_move_to_set', [set.name]))
     },
     deleteTodo (id) {
       this.storeDeleteTodo(id)
@@ -685,10 +684,7 @@ export default {
     setReminderTime () {
       this.showBoxSetReminderTime = true
       const time = this.getReminderTime(this.curReminder.time)
-      this.reminderTime = [
-        time.hour,
-        time.minute
-      ]
+      this.reminderTime = [time.hour, time.minute]
     },
     submitSetReminderTime (done) {
       const time = this.reminderTime.map(item => {
@@ -700,6 +696,15 @@ export default {
     deleteReminder (id) {
       this.storeDeleteReminder(id)
       this.resetData()
+    },
+    toTimeAxis () {
+      this.showBoxInfo = false
+      setTimeout(() => {
+        this.$router.push({
+          path: '/time_axis'
+        })
+      }, 300)
+
     }
   }
 }
@@ -776,7 +781,7 @@ export default {
     padding-bottom: 6px;
   }
 
-  .cell-bd:last-child{
+  .cell-bd:last-child {
     padding-bottom: 0px;
   }
 
@@ -938,8 +943,8 @@ export default {
 
   .reminders-title {
     font-size: 12px;
-    line-height:200px;
-    text-align:center;
+    line-height: 200px;
+    text-align: center;
   }
 
   .com-cell {
@@ -965,7 +970,7 @@ export default {
 }
 
 .box-add-time-reminder {
-  .com-popup__content{
+  .com-popup__content {
     padding: 20px 15px 12px;
   }
 

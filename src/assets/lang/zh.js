@@ -144,7 +144,9 @@ module.exports = {
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',
     modify_focus_duration: '注意，您仅可修改比当前时长{0}短的时长，且修改后无法再增加',
-    set_reminder_time: '尚未设置提醒时间'
+    set_reminder_time: '尚未设置提醒时间',
+    already_move_to_set: '已移动到待办集{0}'
+
   },
   sentence: {
     one: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。'
