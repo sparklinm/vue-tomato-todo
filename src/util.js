@@ -171,5 +171,26 @@ export default {
         this.assginLeafNode(target[key], value)
       }
     }
+  },
+  getMaxDuplicateCount (array) {
+    if (!array.length) {
+      return 0
+    }
+    const sortedAry = array.sort((a, b) => {
+      return a - b
+    })
+    let count = 1
+    let curCount = 1
+    for (let i = 1; i < sortedAry.length; i++) {
+      if (sortedAry[i - 1] === sortedAry[i]) {
+        curCount++
+      } else {
+        curCount = 1
+        if (curCount > count) {
+          count = curCount
+        }
+      }
+    }
+    return count
   }
 }

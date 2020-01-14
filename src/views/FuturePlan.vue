@@ -19,11 +19,5 @@ export default {
 </script>
 
 <style lang="less">
-.page-statistics {
-  padding: 0.2rem;
 
-  .data-panel {
-    margin-bottom: 0.2rem;
-  }
-}
 </style>

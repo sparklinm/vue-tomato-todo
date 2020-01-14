@@ -178,6 +178,11 @@ export default {
       document.body.appendChild(this.$el)
     }
   },
+  destroyed () {
+    if (this.appendToBody) {
+      document.body.removeChild(this.$el)
+    }
+  },
   methods: {
     afterEnter () {
       this.$emit('opened')

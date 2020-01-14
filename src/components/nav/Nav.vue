@@ -19,7 +19,7 @@
     <BoxAddTodo
       v-if="showBoxAddTodo"
       :show.sync="showBoxAddTodo"
-      @submit="addTodo($event)"
+      @submit="submintAddTodo"
     />
     <BoxAddTodoSet
       :show.sync="showBoxAddTodoSet"
@@ -148,9 +148,13 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('todo', ['addTodo']),
+    ...mapMutations('todo', ['addTodo', 'setIsGetTodos']),
     showBox (key) {
       this[key] = true
+    },
+    submintAddTodo (data) {
+      this.addTodo(data)
+      this.setIsGetTodos(true)
     }
   }
 }

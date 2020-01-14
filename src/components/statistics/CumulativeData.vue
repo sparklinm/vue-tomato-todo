@@ -1,84 +1,103 @@
 <template>
-  <div class="statistical-data">
-    <DataPanel
-      :title="$t('todo.cumulative_data')"
-      class="focus-data"
-      :top-btn="false"
+  <div class="statistical">
+    <div
+      v-if="showHeader"
+      class="statistical-hd-con"
     >
-      <div class="column">
-        <span class="text">{{ $t('todo.focus_times') }}</span>
-        <span class="number">{{ allFocusData.times }}</span>
+      <div
+        class="statistical-hd"
+      >
+        <div class="statistical-hd__left">
+          <ComIcon
+            class="calendar-return-btn"
+            name="arrow-left"
+            @click="$emit('return')"
+          />
+          <span>{{ name }}</span>
+        </div>
       </div>
-      <div class="column">
-        <span class="text">{{ $t('todo.focus_duration') }}</span>
-        <span class="focus-data-inlne">
-          <span class="number">{{ allFocusData.duration }}</span>
-          <span class="unit">{{ $t('word.minute') }}</span>
-        </span>
-      </div>
-      <div class="column">
-        <span class="text">{{ $t('todo.everyday_focus') }}</span>
-        <span class="focus-data-inlne">
-          <span class="number">{{ allFocusData.average }}</span>
-          <span class="unit">{{ $t('word.minute') }}</span>
-        </span>
-      </div>
-    </DataPanel>
+    </div>
+    <div class="statistical-data">
+      <DataPanel
+        :title="$t('todo.cumulative_data')"
+        class="focus-data"
+        :top-btn="false"
+      >
+        <div class="column">
+          <span class="text">{{ $t('todo.focus_times') }}</span>
+          <span class="number">{{ allFocusData.times }}</span>
+        </div>
+        <div class="column">
+          <span class="text">{{ $t('todo.focus_duration') }}</span>
+          <span class="focus-data-inlne">
+            <span class="number">{{ allFocusData.duration }}</span>
+            <span class="unit">{{ $t('word.minute') }}</span>
+          </span>
+        </div>
+        <div class="column">
+          <span class="text">{{ $t('todo.everyday_focus') }}</span>
+          <span class="focus-data-inlne">
+            <span class="number">{{ allFocusData.average }}</span>
+            <span class="unit">{{ $t('word.minute') }}</span>
+          </span>
+        </div>
+      </DataPanel>
 
-    <DataPanel
-      :title="$t('todo.cumulative_data')"
-      class="focus-data"
-      :top-btn="false"
-    >
-      <div class="column">
-        <span class="text">{{ $t('todo.focus_times') }}</span>
-        <span class="number">{{ todayFocusData.times }}</span>
-      </div>
-      <div class="column">
-        <span class="text">{{ $t('todo.focus_duration') }}</span>
-        <span class="focus-data-inlne">
-          <span class="number">{{ todayFocusData.duration }}</span>
-          <span class="unit">{{ $t('word.minute') }}</span>
-        </span>
-      </div>
-    </DataPanel>
-    <FocusChart
-      :data="focusChart.data"
-      :period="focusChart.period"
-      @change="initFocusChart"
-      @previous="changeChart(focusChart,'minus')"
-      @next="changeChart(focusChart,'add')"
-    />
-    <WorkTimeChart
-      :data="workTimeChart.data"
-      :period="workTimeChart.period"
-      @previous="changeChart(workTimeChart,'minus')"
-      @next="changeChart(workTimeChart,'add')"
-    />
-    <MonthlyChart
-      :data="monthlyChart.data"
-      :period="monthlyChart.period"
-      @previous="changeChart(monthlyChart,'minus')"
-      @next="changeChart(monthlyChart,'add')"
-    />
-    <ClockChart
-      :data="clockChart.data"
-      :period="clockChart.period"
-      @previous="changeChart(clockChart,'minus')"
-      @next="changeChart(clockChart,'add')"
-    />
-    <StopChart
-      :data="stopChart.data"
-      :period="stopChart.period"
-      @previous="changeChart(stopChart,'minus')"
-      @next="changeChart(stopChart,'add')"
-    />
-    <YearlyChart
-      :data="yearlyChart.data"
-      :period="yearlyChart.period"
-      @previous="changeChart(yearlyChart,'minus')"
-      @next="changeChart(yearlyChart,'add')"
-    />
+      <DataPanel
+        :title="$t('todo.cumulative_data')"
+        class="focus-data"
+        :top-btn="false"
+      >
+        <div class="column">
+          <span class="text">{{ $t('todo.focus_times') }}</span>
+          <span class="number">{{ todayFocusData.times }}</span>
+        </div>
+        <div class="column">
+          <span class="text">{{ $t('todo.focus_duration') }}</span>
+          <span class="focus-data-inlne">
+            <span class="number">{{ todayFocusData.duration }}</span>
+            <span class="unit">{{ $t('word.minute') }}</span>
+          </span>
+        </div>
+      </DataPanel>
+      <FocusChart
+        :data="focusChart.data"
+        :period="focusChart.period"
+        @change="initFocusChart"
+        @previous="changeChart(focusChart,'minus')"
+        @next="changeChart(focusChart,'add')"
+      />
+      <WorkTimeChart
+        :data="workTimeChart.data"
+        :period="workTimeChart.period"
+        @previous="changeChart(workTimeChart,'minus')"
+        @next="changeChart(workTimeChart,'add')"
+      />
+      <MonthlyChart
+        :data="monthlyChart.data"
+        :period="monthlyChart.period"
+        @previous="changeChart(monthlyChart,'minus')"
+        @next="changeChart(monthlyChart,'add')"
+      />
+      <ClockChart
+        :data="clockChart.data"
+        :period="clockChart.period"
+        @previous="changeChart(clockChart,'minus')"
+        @next="changeChart(clockChart,'add')"
+      />
+      <StopChart
+        :data="stopChart.data"
+        :period="stopChart.period"
+        @previous="changeChart(stopChart,'minus')"
+        @next="changeChart(stopChart,'add')"
+      />
+      <YearlyChart
+        :data="yearlyChart.data"
+        :period="yearlyChart.period"
+        @previous="changeChart(yearlyChart,'minus')"
+        @next="changeChart(yearlyChart,'add')"
+      />
+    </div>
   </div>
 </template>
 
@@ -101,6 +120,20 @@ export default {
     ClockChart,
     StopChart,
     YearlyChart
+  },
+  props: {
+    name: {
+      type: String,
+      default: ''
+    },
+    showHeader: {
+      type: Boolean,
+      default: false
+    },
+    todos: {
+      type: Array,
+      default: () => {[]}
+    }
   },
   data () {
     return {
@@ -146,27 +179,30 @@ export default {
     }
   },
   computed: {
-    ...mapState('todo', {
-      todos: state => state.todos,
-      todoSets: state => state.todoSets
-    }),
     ...mapState('user', {
       clocks: state => state.clocks
     })
-
+  },
+  watch: {
+    todos () {
+      this.init()
+    }
   },
   mounted () {
-    this.setAllFocusData()
-    this.setTodayFocusData()
-    this.initFocusChart('day')
-    this.initWorkTimeChart()
-    this.initMonthlyChart()
-    this.initClockChart()
-    this.initStopChart()
-    this.initYearlyChart()
-    this.initStopChart()
+    this.init()
   },
   methods: {
+    init () {
+      this.setAllFocusData()
+      this.setTodayFocusData()
+      this.initFocusChart('day')
+      this.initWorkTimeChart()
+      this.initMonthlyChart()
+      this.initClockChart()
+      this.initStopChart()
+      this.initYearlyChart()
+      this.initStopChart()
+    },
     filterStopData (todo, start, end) {
       let stopData = []
       if (todo.focus && todo.focus.length) {
@@ -461,6 +497,32 @@ export default {
 </script>
 
 <style lang="less">
+.statistical-data {
+  height: 100%;
+  padding: 0.2rem;
+
+  .data-panel {
+    margin-bottom: 0.2rem;
+  }
+}
+
+.statistical-hd-con {
+  height: 50px;
+}
+
+.statistical-hd {
+  .flex(@justify-content: space-between; @align-items: center;);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 20px;
+  color: white;
+  font-size: 18px;
+  z-index: 10;
+}
+
 .focus-data {
   color: white;
   text-align: left;

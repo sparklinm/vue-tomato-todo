@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ListTodoSet />
+    <ListTodoSet class="main-page" />
   </div>
 </template>
 
@@ -13,6 +13,8 @@ export default {
   data () {
     return {}
   },
+  computed: {},
+
   mounted () {
 
   },

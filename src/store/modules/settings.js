@@ -14,9 +14,14 @@ export default {
       darken10: '#5caf92',
       darken20: '#4c947b',
       lighter10: '#76ecc3'
-    }
+    },
+    keepAlive: []
   },
   getters: {},
-  mutations: {},
+  mutations: {
+    setKeepAlive (state, array) {
+      state.keepAlive = array
+    }
+  },
   actions: {}
 }
