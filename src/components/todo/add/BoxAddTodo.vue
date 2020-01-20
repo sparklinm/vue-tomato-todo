@@ -8,7 +8,7 @@
       :before-open="beforeBoxAddTodoOpen"
       :z-index="2010"
       :class="customClass"
-      @closed="$emit('update:show',false)"
+      @closed="$emit('update:show', false)"
     >
       <ComInput
         ref="input-name"
@@ -23,7 +23,7 @@
         <div class="type">
           <ul>
             <li
-              v-for="(item,index) in todoType"
+              v-for="(item, index) in todoType"
               :key="index"
             >
               <label>
@@ -37,53 +37,81 @@
             </li>
           </ul>
         </div>
-        <div class="config-extra">
+        <div
+          v-show="showConfigGoal || showConfigHabit"
+          class="config-extra"
+        >
           <div
             v-show="showConfigGoal"
             class="config-goal"
           >
-            我想在
-            <input type="text">
-            之前一共完成
-            <input type="text">
-            <select
-              id
-              name
-            >
-              <option value="小时">
-                小时
-              </option>
-            </select>
+            <div class="row">
+              我想在
+              <span class="goal-key">
+                设定目标日期
+              </span>
+              之前
+            </div>
+            <div class="row">
+              一共完成
+              <input
+                type="text"
+                class="key-input goal-key goal-input"
+                placeholder="填写完成量"
+              >
+              <select>
+                <option value="小时">
+                  小时
+                </option>
+                <option value="小时">
+                  分钟
+                </option>
+                <option value="小时">
+                  次
+                </option>
+              </select>
+            </div>
           </div>
           <div
             v-show="showConfigHabit"
             class="config-habit"
           >
-            我想
-            <select
-              id
-              name
-            >
-              <option value="每天">
-                每天
-              </option>
-            </select>
-            完成
-            <input type="text">
-            <select
-              id
-              name
-            >
-              <option value="小时">
-                小时
-              </option>
-            </select>
+            <div class="row">
+              我想
+              <select
+                id
+                name
+              >
+                <option value="每天">
+                  每天
+                </option>
+              </select>
+            </div>
+            <div class="row">
+              完成
+              <input
+                type="text"
+                class="key-input habit-key habit-input"
+                placeholder="填写完成量"
+              >
+              <select
+                id
+                name
+              >
+                <option value="小时">
+                  小时
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            最后一步设置单个番茄钟的时间：
           </div>
         </div>
         <div class="time-way">
           <ul>
             <li
-              v-for="(item,index) in todoTimeWay"
+              v-for="(item, index) in todoTimeWay"
               :key="index"
             >
               <label>
@@ -92,7 +120,7 @@
                   type="radio"
                   name="way"
                 >
-                <span @click="onTimeWayClick(item)">{{ item.value }}</span>
+                <span @click="onTimeWayClick(item)">{{ item.text }}</span>
               </label>
             </li>
           </ul>
@@ -103,7 +131,7 @@
         >
           <ul>
             <li
-              v-for="(item,index) in todoTimeDuration"
+              v-for="(item, index) in todoTimeDuration"
               :key="index"
             >
               <label>
@@ -122,7 +150,9 @@
           {{ tipTimeDuration }}
         </div>
         <div class="advanced-setting">
-          <span @click="onAdvancedSettingsClick">{{ btnAdvancedSettings }}</span>
+          <span @click="onAdvancedSettingsClick">{{
+            btnAdvancedSettings
+          }}</span>
         </div>
       </div>
     </ComPopup>
@@ -139,7 +169,7 @@
       <ComInput
         ref="input-time-duration"
         v-model="customTimeDuration.value"
-        :placeholder="todo.timeDuration+'分钟'"
+        :placeholder="todo.timeDuration + '分钟'"
         :min="customTimeDuration.min"
         :max="customTimeDuration.max"
         type="positiveInteger"
@@ -188,7 +218,7 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
-import util from '@/util.js'
+import util from '@/js/util.js'
 export default {
   props: {
     data: {
@@ -209,7 +239,7 @@ export default {
       todo: {
         name: '',
         type: 'common',
-        timeWay: '倒计时',
+        timeWay: 'down',
         timeDuration: 25
       },
       todoCommon: {},
@@ -234,17 +264,20 @@ export default {
       ],
       todoTimeWay: [
         {
-          value: '倒计时',
+          text: '倒计时',
+          value: 'down',
           description: '*倒计时25分钟即标准番茄钟时间',
           checked: true
         },
         {
-          value: '正向计时',
+          text: '正向计时',
+          value: 'up',
           description: '*适合碎片时间记录，随用随计',
           checked: false
         },
         {
-          value: '不计时',
+          text: '不计时',
+          value: 'none',
           description: '*适合不需要计时的待办，比如：取快递，喝水 等',
           checked: false
         }
@@ -326,7 +359,7 @@ export default {
   },
   computed: {
     showTimeDuration () {
-      return this.todo.timeWay === '倒计时'
+      return this.todo.timeWay === 'down'
     },
     showConfigGoal () {
       return this.todo.type === this.todoGoal.type
@@ -335,20 +368,16 @@ export default {
       return this.todo.type === this.todoHabit.type
     },
     showInputLoopTimes () {
-      return this.todo.timeWay === '倒计时'
+      return this.todo.timeWay === 'down'
     },
     showInputRestTime () {
-      return this.todo.timeWay !== '不计时'
+      return this.todo.timeWay !== 'none'
     },
     tipTimeDuration () {
       return this.todoTimeWay.find(item => {
         return item.value === this.todo.timeWay
       }).description
-    },
-    ...mapState('todo', {
-      showBoxAddTodo: state => state.showBoxAddTodo,
-      template: state => state.template
-    })
+    }
   },
   watch: {
     showBoxAdvancedSettings (val) {
@@ -361,10 +390,75 @@ export default {
     }
   },
   mounted () {
-    this.todoCommon = this.template.todoCommon
-    this.todoGoal = this.template.todoGoal
-    this.todoHabit = this.template.todoHabit
+    const template = {
+      todoCommon: {
+        name: '',
+        type: 'common',
+        timeWay: 'down',
+        timeDuration: 25,
+        taskNotes: '',
+        loopTimes: {
+          value: 1,
+          custom: ''
+        },
+        restTime: {
+          value: 5,
+          custom: ''
+        },
+        hideAfterComplete: false
+      },
+      todoGoal: {
+        name: '',
+        type: 'goal',
+        timeWay: 'down',
+        timeDuration: 25,
+        goal: {
+          deadline: new Date(2019, 9, 2),
+          total: 10,
+          complete: 0
+        },
+        taskNotes: '',
+        loopTimes: {
+          value: 1,
+          custom: ''
+        },
+        restTime: {
+          value: 5,
+          custom: ''
+        },
+        hideAfterComplete: false
+      },
+      todoHabit: {
+        name: '',
+        type: 'habit',
+        timeWay: 'down',
+        timeDuration: 25,
+        habit: {
+          frequency: 1,
+          piece: 10,
+          complete: 0
+        },
+        taskNotes: '',
+        loopTimes: {
+          value: 1,
+          custom: ''
+        },
+        restTime: {
+          value: 5,
+          custom: ''
+        },
+        hideAfterComplete: false
+      }
+    }
+    this.todoCommon = template.todoCommon
+    this.todoGoal = template.todoGoal
+    this.todoHabit = template.todoHabit
     this.todo = this.data || this.todoCommon
+    if (this.todo.timeDuration !== 25 && this.todo.timeDuration !== 35) {
+      this.todoTimeDuration[2].text = this.todo.timeDuration + '分钟'
+      this.todoTimeDuration[2].value = this.todo.timeDuration
+      this.customTimeDuration.value = this.todo.timeDuration
+    }
     this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
     this.setChecked(this.todoTimeWay, this.todo.timeWay)
     this.setChecked(this.todoType, this.todo.type)
@@ -372,10 +466,7 @@ export default {
     this.setBtnAdvancedSettings()
   },
   methods: {
-    ...mapMutations('todo', [
-      'addTodo',
-      'toggleBoxAddTodo'
-    ]),
+    ...mapMutations('todo', ['addTodo', 'toggleBoxAddTodo']),
     checkNumber ({ value, max }) {
       return util.checkLess({
         value,
@@ -404,10 +495,7 @@ export default {
       }
     },
     setAdvancedSettings () {
-      for (const [
-        key,
-        setting
-      ] of Object.entries(this.advancedSettings)) {
+      for (const [key, setting] of Object.entries(this.advancedSettings)) {
         if (this.todo[key]) {
           if (key === 'loopTimes' || key === 'restTime') {
             setting.value = setting.default = this.todo[key].custom
@@ -454,7 +542,7 @@ export default {
       this.todo.timeWay = obj.value
     },
     onTimeDurationClick (obj) {
-      if (obj.value === -1) {
+      if (obj.value !== 25 && obj.value !== 35) {
         this.showBoxCustomTime = true
         this.$nextTick(() => {
           this.$refs['input-time-duration'].focus()
@@ -494,10 +582,7 @@ export default {
       }
 
       if (isChecked) {
-        for (const [
-          key,
-          setting
-        ] of Object.entries(this.advancedSettings)) {
+        for (const [key, setting] of Object.entries(this.advancedSettings)) {
           const { value } = setting
           setting.default = value
           if (key === 'loopTimes' || key === 'restTime') {
@@ -528,26 +613,17 @@ export default {
         return
       }
 
-      if (this.todo.timeWay === '正向计时') {
+      if (this.todo.timeWay === 'down') {
         delete this.todo.loopTimes
         delete this.todo.timeDuration
-      } else if (this.todo.timeWay === '不计时') {
+      } else if (this.todo.timeWay === 'none') {
         delete this.todo.loopTimes
         delete this.todo.restTime
         delete this.todo.timeDuration
       }
-
-      if (this.todo.type === '定目标') {
-        this.todo.type = '目标'
-      } else if (this.todo.type === '养习惯') {
-        this.todo.type = '习惯'
+      if (!this.data) {
+        this.todo.creat = new Date()
       }
-
-      this.todo.creat = new Date()
-      console.log(this.todo)
-
-
-      // this.addTodo(this.todo)
       this.$emit('submit', this.todo)
       done()
     }
@@ -627,6 +703,88 @@ export default {
         }
       }
     }
+
+    .config-extra {
+      font-size: 12px;
+      text-align: left;
+
+      .goal-key {
+        background: rgb(253, 224, 212);
+        color: rgb(202, 75, 25);
+        display: inline-block;
+        border-radius: 5px;
+        padding: 5px;
+        margin: 0 4px;
+      }
+
+      .habit-key {
+        background: rgb(243, 212, 255);
+        color: #000;
+        display: inline-block;
+        border-radius: 5px;
+        padding: 5px;
+        margin: 0 4px;
+      }
+
+      .key-input {
+        border: none;
+        outline: none;
+        width: 60px;
+        text-align: center;
+      }
+
+      .goal-input {
+        &::-webkit-input-placeholder {
+          color: rgb(202, 75, 25);
+        }
+
+        &:-moz-placeholder {
+          color: rgb(202, 75, 25);
+        }
+
+        &::-moz-placeholder {
+          color: rgb(202, 75, 25);
+        }
+
+        &:-ms-input-placeholder {
+          color: rgb(202, 75, 25);
+        }
+      }
+
+      .habit-input {
+        &::-webkit-input-placeholder {
+          color: #272727;
+        }
+
+        &:-moz-placeholder {
+          color: #272727;
+        }
+
+        &::-moz-placeholder {
+          color: #272727;
+        }
+
+        &:-ms-input-placeholder {
+          color: #272727;
+        }
+      }
+
+      select {
+        border: none;
+        background: white;
+        padding: 0 20px 0 5px;
+        vertical-align: middle;
+        outline: none;
+        color: #272727;
+        //      appearance: none;
+        //       -moz-appearance:none;
+        // -webkit-appearance:none;
+      }
+
+      .row {
+        padding: 4px 15px;
+      }
+    }
   }
 
   .custom-time {
@@ -643,13 +801,11 @@ export default {
     letter-spacing: 1px;
     font-size: 14px;
 
-
     .setting-list {
       padding-right: 20px;
     }
 
-
-    .com-popup__header  {
+    .com-popup__header {
       font-size: 14px;
     }
 

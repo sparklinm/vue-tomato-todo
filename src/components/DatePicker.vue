@@ -1,7 +1,7 @@
 <template>
   <div class="date-picker">
     <ComPopup
-      :title="$t('commom.choose_time')"
+      :title="$t('common.choose_time')"
       class="box-date-picker"
       :show.sync="curShow"
       top-btn
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import util from '@/util.js'
+import util from '@/js/util.js'
 export default {
   props: {
     show: {

@@ -146,13 +146,25 @@ export default {
   },
   methods: {
     handleInput () {
+      this.check()
       this.$emit('input', this.currentValue)
+    },
+    check () {
+      if (typeof this.min !== 'undefined') {
+        this.currentValue = this.currentValue < this.min ? this.min : this.currentValue
+      }
+      if (typeof this.max !== 'undefined') {
+        this.currentValue = this.currentValue > this.max ? this.max : this.currentValue
+      }
+      if (this.type === 'number') {
+        this.currentValue = Number(this.currentValue)
+      }
     },
     focus () {
       this.$refs.input.focus()
     },
     toPositiveInteger (val) {
-      return String(val).match(/^[0-9]*/)[0]
+      return parseInt(String(val).match(/^[0-9]*/)[0]) || ''
     }
   }
 }
@@ -168,6 +180,7 @@ export default {
 
 .com-input__area {
   position: relative;
+  padding: 2px 0;
   flex: 1;
   .flex(@align-items: center);
 }

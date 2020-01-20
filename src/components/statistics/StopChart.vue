@@ -1,8 +1,8 @@
-c
 <template>
   <DataPanel
     :title="panelTitle"
     class="stop-chart"
+    :top-btn="topBtn"
     @previous="$emit('previous')"
     @next="$emit('next')"
   >
@@ -16,7 +16,7 @@ c
 </template>
 
 <script>
-import util from '@/util.js'
+import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import CPie from './chart/CPie'
 export default {
@@ -31,7 +31,11 @@ export default {
     },
     period: {
       type: Array,
-      default: null
+      default: () => ([])
+    },
+    topBtn: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -57,6 +61,9 @@ export default {
   watch: {
     data: {
       handler (data) {
+        if (!data.length) {
+          return
+        }
         const legend = []
         const seriesData = []
         const reasonStats = {}
