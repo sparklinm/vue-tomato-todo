@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Main from './views/Main.vue'
 import Todo from './views/Todo.vue'
 import TodoSet from './views/TodoSet.vue'
 import DoTodo from './views/DoTodo.vue'
@@ -14,22 +15,44 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      component: Todo,
+      component: Main,
+      children: [
+        {
+          path: '',
+          component: Todo,
+          meta: {
+            parent: true
+          }
+        },
+        {
+          path: '/set',
+          component: TodoSet,
+          meta: {
+            parent: true
+          }
+        },
+        {
+          path: '/statistics',
+          component: Statistics
+        },
+        {
+          path: '/time_axis',
+          component: TimeAxis
+        },
+        {
+          path: '/future_plan',
+          component: FuturePlan
+        }
+      ]
+
+    },
+    {
+      name: 'do',
+      path: '/do/:id',
+      component: DoTodo,
       meta: {
-        parent: true
+        child: true
       }
-    },
-    {
-      path: '/set',
-      component: TodoSet
-    },
-    {
-      path: '/do',
-      component: DoTodo
-    },
-    {
-      path: '/statistics',
-      component: Statistics
     },
     {
       path: '/statistics/:id',
@@ -39,19 +62,11 @@ const router = new Router({
       }
     },
     {
-      path: '/time_axis',
-      component: TimeAxis
-    },
-    {
       path: '/time_axis/:id',
       component: TimeAxisOne,
       meta: {
         child: true
       }
-    },
-    {
-      path: '/future_plan',
-      component: FuturePlan
     }
   ]
 })

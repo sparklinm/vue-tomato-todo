@@ -49,6 +49,8 @@ export default {
   computed: {
     pathName () {
       const path = this.$route.path.slice(1)
+      console.log(path)
+
       return path || 'todo'
     },
     page () {

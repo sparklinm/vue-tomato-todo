@@ -26,7 +26,7 @@
       :title="todo.name"
       class="box-edit"
       :header-background="background"
-      @closed="resetData"
+      @closed="handleBoxInfoClosed"
     >
       <template v-slot:header-icon>
         <span
@@ -48,7 +48,7 @@
             <div class="drop-list_simple">
               <ul>
                 <li @click="changeBackgroundRandom">
-                  {{ $t("commom.random_one_picture") }}
+                  {{ $t("common.random_one_picture") }}
                 </li>
               </ul>
             </div>
@@ -382,6 +382,7 @@
       v-if="showBoxAddTodo"
       :show.sync="showBoxAddTodo"
       :data="todo"
+      @submit="submitEditTodo"
     />
     <DatePicker
       v-model="reminderTime"
@@ -397,7 +398,7 @@ import ListItem from './ListItem'
 import ProgressCircle from './ProgressCircle'
 import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
 import DatePicker from '../DatePicker'
-import util from '@/util.js'
+import util from '@/js/util.js'
 import Sorter from '@/sort.js'
 import { mapState, mapMutations } from 'vuex'
 export default {
@@ -475,13 +476,16 @@ export default {
         const type2text = {
           common: this.$t('todo.common_todo'),
           goal: this.$t('word.goal'),
-          habit: this.$t('word.habit')
+          habit: this.$t('word.habit'),
+          up: this.$t('todo.time_up'),
+          down: this.$t('todo.time_down'),
+          none: this.$t('todo.time_none')
         }
 
         if (todo.timeDuration) {
           description += `${todo.timeDuration} ${this.$t('word.minute')}`
         } else {
-          description += todo.timeWay
+          description += type2text[todo.timeWay]
         }
         if (todo.type !== 'common') {
           description += `-${type2text[todo.type]}`
@@ -569,8 +573,8 @@ export default {
   watch: {
     isGetTodos (val) {
       if (val) {
-        this.resetData()
-        this.StoreSetIsGetTodos(false)
+        this.getData()
+        this.storeSetIsGetTodos(false)
       }
     }
   },
@@ -578,7 +582,7 @@ export default {
     console.log(this.datas)
     console.log(this.todos)
     console.log(Sorter)
-    this.resetData()
+    this.getData()
   },
   methods: {
     ...mapMutations('todo', {
@@ -591,22 +595,25 @@ export default {
       storeSetShowTimeAxis: 'setShowTimeAxis',
       storeSetShowStatistics: 'setShowStatistics',
       storeSetTarget: 'setTarget',
-      StoreSetIsGetTodos: 'setIsGetTodos'
+      storeSetIsGetTodos: 'setIsGetTodos'
     }),
-    resetData () {
-      setTimeout(() => {
-        this.curTodos = _.cloneDeep(this.todos)
-        if (this.todo) {
-          this.todo =
-            this.curTodos.find(item => item.id === this.todo.id) ||
-            this.curTodos[0]
-          this.background = this.todo.background
-        }
+    getData () {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          this.curTodos = _.cloneDeep(this.todos)
+          if (this.todo) {
+            this.todo =
+              this.curTodos.find(item => item.id === this.todo.id) ||
+              this.curTodos[0]
+            this.background = this.todo.background
+            resolve()
+          }
+        })
       })
     },
     start () {
       this.$router.push({
-        path: '/do'
+        path: `/do/${this.todo.id}`
       })
     },
     getProgress (complete, total) {
@@ -646,6 +653,15 @@ export default {
       this.showBoxAddTodo = true
       this.showBoxInfo = false
     },
+    submitEditTodo (todo) {
+      this.storeEditTodo(todo)
+      this.getData()
+    },
+    handleBoxInfoClosed () {
+      if (!this.showBoxSort) {
+        this.getData()
+      }
+    },
     sort () {
       this.showBoxSort = true
       this.showSortMove = false
@@ -682,7 +698,7 @@ export default {
         this.sorter.destroy()
       }
       this.showBoxSort = false
-      this.resetData()
+      this.getData()
     },
     changeBackgroundRandom () {
       const randomBackground = `/background/back${Math.floor(
@@ -728,7 +744,7 @@ export default {
       }
       this.showBoxAddTimeReminder = true
       this.isAddReminder = true
-      this.resetData()
+      this.getData()
     },
     submitAddReminder (done) {
       if (this.isAddReminder) {
@@ -742,7 +758,7 @@ export default {
         this.storeEditReminder(this.curReminder)
       }
       done()
-      this.resetData()
+      this.getData()
     },
     setReminderTime () {
       this.showBoxSetReminderTime = true
@@ -758,7 +774,7 @@ export default {
     },
     deleteReminder (id) {
       this.storeDeleteReminder(id)
-      this.resetData()
+      this.getData()
     },
     toTimeAxis () {
       this.$router.push({

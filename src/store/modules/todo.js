@@ -8,7 +8,7 @@ export default {
         sid: 0,
         name: '普通',
         type: 'common',
-        timeWay: '倒计时',
+        timeWay: 'down',
         taskNotes: '普通普通普通',
         timeDuration: 25,
         loopTimes: {
@@ -27,7 +27,7 @@ export default {
         id: 1,
         name: '目标3',
         type: 'goal',
-        timeWay: '倒计时',
+        timeWay: 'down',
         timeDuration: 25,
         goal: {
           deadline: new Date(2019, 8, 28),
@@ -52,7 +52,7 @@ export default {
         id: 2,
         name: '普通5',
         type: 'common',
-        timeWay: '正向计时',
+        timeWay: 'up',
         taskNotes: '普通普通普通',
         loopTimes: {
           default: 1,
@@ -70,7 +70,7 @@ export default {
         id: 3,
         name: '习惯',
         type: 'habit',
-        timeWay: '倒计时',
+        timeWay: 'down',
         timeDuration: 25,
         habit: {
           frequency: 1,
@@ -205,7 +205,7 @@ export default {
       todoCommon: {
         name: '',
         type: 'common',
-        timeWay: '倒计时',
+        timeWay: 'down',
         timeDuration: 25,
         taskNotes: '',
         loopTimes: {
@@ -221,7 +221,7 @@ export default {
       todoGoal: {
         name: '',
         type: 'goal',
-        timeWay: '倒计时',
+        timeWay: 'down',
         timeDuration: 25,
         goal: {
           deadline: new Date(2019, 9, 2),
@@ -242,7 +242,7 @@ export default {
       todoHabit: {
         name: '',
         type: 'habit',
-        timeWay: '倒计时',
+        timeWay: 'down',
         timeDuration: 25,
         habit: {
           frequency: 1,
@@ -288,7 +288,7 @@ export default {
       sid: 0,
       name: '普通',
       type: 'common',
-      timeWay: '倒计时',
+      timeWay: 'down',
       taskNotes: '普通普通普通',
       timeDuration: 25,
       loopTimes: {
@@ -359,7 +359,7 @@ export default {
       })
     },
     getTodoById: (state, getters) => (id) => {
-      return getters.getAllTodos.find(todo => todo.id === id)
+      return getters.getAllTodos.find(todo => todo.id === id) || {}
     },
     getTodosNormal (state, getters) {
       const data = []
@@ -439,6 +439,12 @@ export default {
           state.todos.splice(index, 1)
           return true
         }
+      })
+    },
+    addFocus (state, obj) {
+      state.focus.push({
+        id: state.focus[state.focus.length - 1].id + 1,
+        ...obj
       })
     },
     editFocus (state, obj) {

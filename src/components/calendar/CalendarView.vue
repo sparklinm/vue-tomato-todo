@@ -168,7 +168,7 @@
       </template>
     </ComPopup>
 
-    <ComPopup
+    <!-- <ComPopup
       class="box-edit-text"
       :show.sync="showBoxText"
       :z-index="3100"
@@ -193,17 +193,27 @@
         :placeholder="inputExperiencePlaceHolder"
         autofocus
       />
-    </ComPopup>
+    </ComPopup> -->
+    <BoxEditText
+      v-model="experience"
+      :show.sync="showBoxText"
+      :z-index="3100"
+      :title="$t('word.experience')"
+      append-to-body
+      @submit="submitEditExperience"
+    />
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex'
 import ProgressCircle from '@/components/todo/ProgressCircle'
-import util from '@/util.js'
+import BoxEditText from '../todo/BoxEditText'
+import util from '@/js/util.js'
 export default {
   components: {
-    ProgressCircle
+    ProgressCircle,
+    BoxEditText
   },
   props: {
     showReturn: {
@@ -229,8 +239,6 @@ export default {
       focusDuration: '',
       showBoxText: false,
       experience: '',
-      disableEditExperience: false,
-      inputExperiencePlaceHolder: '',
       error: {
         focusDuration: this.$t('message.modify_focus_duration'),
         delete: this.$t('message.confirm_delete')
@@ -353,26 +361,11 @@ export default {
     editExperience () {
       this.showBoxText = true
       this.experience = this.curTodo.data.experience
-      this.disableEditExperience = Boolean(this.experience)
-      this.inputExperiencePlaceHolder = this.experience
-        ? ''
-        : this.$t('todo.please_input_experience')
-      this.$nextTick(() => {
-        this.$refs.inputExperience.focus()
-      })
     },
     submitEditExperience () {
       this.editFocus({
         id: this.curTodo.data.id,
         experience: this.experience
-      })
-      this.showBoxText = false
-      this.showBoxInfo = false
-    },
-    changeCanEdit () {
-      this.disableEditExperience = false
-      this.$nextTick(() => {
-        this.$refs.inputExperience.focus()
       })
     }
   }

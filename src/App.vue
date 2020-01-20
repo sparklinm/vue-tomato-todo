@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <Nav />
     <transition
       :name="transitionName"
       :css="css"
@@ -9,18 +8,11 @@
         <router-view />
       </keep-alive>
     </transition>
-    <TabBar />
   </div>
 </template>
 
 <script>
-import Nav from './components/nav/Nav.vue'
-import TabBar from './components/tabbar/TabBar.vue'
 export default {
-  components: {
-    Nav,
-    TabBar
-  },
   data () {
     return {
       transitionName: 'none',
@@ -71,6 +63,10 @@ export default {
   transition: transform 0.3s ease;
   position: fixed;
   width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   box-sizing: border-box;
 }
 
@@ -87,10 +83,35 @@ export default {
   transition: transform 0.3s ease;
   position: fixed;
   width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   box-sizing: border-box;
 }
 
 .slide-left-leave-to {
   transform: translate(-100%, 0);
+}
+
+.zoom-in-enter {
+  transform: scale(0,0)
+}
+
+.zoom-in-enter-active,
+.zoom-in-leave-active {
+  transition: transform 0.8s ease;
+  transform-origin: 50% 50%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.zoom-in-leave-to {
+  transform: scale(1,1);
 }
 </style>
