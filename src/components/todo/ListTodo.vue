@@ -25,7 +25,7 @@
       :show.sync="showBoxInfo"
       :title="todo.name"
       class="box-edit"
-      :header-background="todo.background"
+      :header-background="background"
       @closed="resetData"
     >
       <template v-slot:header-icon>
@@ -112,7 +112,9 @@
             <span
               class="btn btn-middle"
               @click="toStatistics"
-            >{{ $t("todo.data_analysis") }}</span>
+            >{{
+              $t("todo.data_analysis")
+            }}</span>
           </div>
         </div>
         <div class="cell btn data">
@@ -122,11 +124,11 @@
           <div class="cell-bd">
             <div class="column">
               <span class="text">{{ $t("todo.focus_times") }}</span>
-              <span class="number">{{ todo.focus.number }}</span>
+              <span class="number">{{ todo.focus.length }}</span>
             </div>
             <div class="column">
               <span class="text">{{ $t("todo.focus_duration") }}</span>
-              <span class="number">{{ todo.focus.duration }}</span>
+              <span class="number">{{ focusDuration }}</span>
               <span class="unit">{{ $t("word.minute") }}</span>
             </div>
           </div>
@@ -417,6 +419,7 @@ export default {
       showBoxInfo: false,
       todo: this.todos[0],
       todoIndex: 0,
+      background: '',
       showBoxAddTodo: false,
       showBoxSort: false,
       showBoxMove: false,
@@ -518,6 +521,11 @@ export default {
     showProgress () {
       return this.todo.goal || this.todo.habit
     },
+    focusDuration () {
+      return this.todo.focus.reduce((total, item) => {
+        return total + item.duration
+      }, 0)
+    },
     stickDays () {
       const focusData = this.getFocusDays()
       const days = Object.keys(focusData)
@@ -586,12 +594,15 @@ export default {
       StoreSetIsGetTodos: 'setIsGetTodos'
     }),
     resetData () {
-      this.curTodos = _.cloneDeep(this.todos)
-      if (this.todo) {
-        this.todo =
-          this.curTodos.find(item => item.id === this.todo.id) ||
-          this.curTodos[0]
-      }
+      setTimeout(() => {
+        this.curTodos = _.cloneDeep(this.todos)
+        if (this.todo) {
+          this.todo =
+            this.curTodos.find(item => item.id === this.todo.id) ||
+            this.curTodos[0]
+          this.background = this.todo.background
+        }
+      })
     },
     start () {
       this.$router.push({
@@ -607,7 +618,11 @@ export default {
         const { start: time, duration } = item
         const date = time.getDate()
         const hours = time.getHours()
-        const thisDate = new Date(time.getFullYear(), time.getMonth(), time.getDate())
+        const thisDate = new Date(
+          time.getFullYear(),
+          time.getMonth(),
+          time.getDate()
+        )
         const thisTime = thisDate.getTime()
         result[thisTime] = result[thisTime] || 0
         if (hours + duration / 60 > 24) {
@@ -623,6 +638,7 @@ export default {
     },
     edit (index) {
       this.todo = this.curTodos[index]
+      this.background = this.todo.background
       this.todoIndex = index
       this.showBoxInfo = true
     },
@@ -666,15 +682,17 @@ export default {
         this.sorter.destroy()
       }
       this.showBoxSort = false
-      setTimeout(() => {
-        this.resetData()
-      }, 4)
+      this.resetData()
     },
     changeBackgroundRandom () {
+      const randomBackground = `/background/back${Math.floor(
+        Math.random() * 8
+      )}.jpg`
       this.storeEditTodo({
         id: this.todo.id,
-        background: `/background/back${Math.floor(Math.random() * 8)}.jpg`
+        background: randomBackground
       })
+      this.background = randomBackground
       this.showChangeBackground = false
     },
     getReminderCycle (days) {
