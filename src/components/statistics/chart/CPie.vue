@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 <template>
   <div
     ref="chartContainer"
@@ -24,7 +23,7 @@ export default {
     },
     options: {
       type: Object,
-      default: null
+      default: () => ({})
     }
   },
   data () {
@@ -163,6 +162,9 @@ export default {
       } = legend
       if (height) {
         return height
+      }
+      if (!data || !data.length) {
+        return 0
       }
 
       let leftWidth = legend.width || chartWidth

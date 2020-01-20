@@ -35,7 +35,7 @@ c
 </template>
 
 <script>
-import util from '@/util.js'
+import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import CPie from './chart/CPie'
 export default {

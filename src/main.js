@@ -3,6 +3,8 @@ import axios from 'axios'
 import App from './App.vue'
 import router from './router'
 import store from './store/index'
+import moment from 'moment'
+import 'dayjs'
 
 import 'normalize.css'
 import 'font-awesome/css/font-awesome.css'
@@ -55,7 +57,7 @@ Vue.use(Calendar, {
 Vue.mixin({
   beforeRouteLeave (to, from, next) {
     if (from.meta.parent && to.meta.child || from.meta.child && to.meta.parent) {
-      this.$root.keepAlive = ['Todo']
+      this.$root.keepAlive = ['Main']
     } else {
       this.$root.keepAlive = ['None']
     }

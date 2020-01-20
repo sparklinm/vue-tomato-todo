@@ -154,6 +154,33 @@ export default {
     }
     return this.isEqualDate(cur, tag)
   },
+  getPeriod (unit, cdate = new Date()) {
+    const year = cdate.getFullYear()
+    const month = cdate.getMonth()
+    const date = cdate.getDate()
+    const day = cdate.getDay() || 7
+    const oneDay = 24 * 60 * 60 * 1000
+    const today = new Date(year, month, date)
+    if (unit === 'day') {
+      return [today, new Date(today.getTime() + oneDay)]
+    }
+    if (unit === 'week') {
+      return [new Date(today.getTime() - (day - 1) * oneDay), new Date(today.getTime() + (8 - day) * oneDay)]
+    }
+    if (unit === 'month') {
+      const startDate = 1
+      let nextMonth = ''
+      if (month === 11) {
+        nextMonth = new Date(year + 1, 0, 1)
+      } else {
+        nextMonth = new Date(year, month + 1, 1)
+      }
+      return [new Date(year, month, startDate), nextMonth]
+    }
+    if (unit === 'year') {
+      return [new Date(year, 0, 1), new Date(year + 1, 0, 1)]
+    }
+  },
   getTimeDif (time1, time2, unit) {
     // let
   },

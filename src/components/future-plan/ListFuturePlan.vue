@@ -99,7 +99,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-import util from '../../util'
+import util from '../../js/util.js'
 import BoxAddFuturePlan from './BoxAddFuturePlan'
 
 export default {

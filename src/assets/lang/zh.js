@@ -39,10 +39,12 @@ module.exports = {
     cancel: '取消',
     start: '开始'
   },
-  commom: {
+  common: {
     random_one_picture: '随机一张图片',
     choose_time: '选择时间',
-    choose_date: '选择日期'
+    choose_date: '选择日期',
+    fill_reason: '填写原因',
+    confirm_abandon: '确定放弃'
   },
   todo: {
     common_todo: '普通番茄时钟',
@@ -113,7 +115,10 @@ module.exports = {
     set_time_reminder: '设置定时提醒',
     click_set_time_reminder: '点击设置定时提醒',
     set_cycle: '周期设定',
-    no_reminder_and_add: '没有定时提醒，点击 + 号添加'
+    no_reminder_and_add: '没有定时提醒，点击 + 号添加',
+    time_down: '倒计时',
+    time_up: '正向计时',
+    time_none: '不计时'
   },
   plan: {
     future_plan: '未来计划',

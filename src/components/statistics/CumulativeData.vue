@@ -103,7 +103,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import util from '@/util.js'
+import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import FocusChart from './FocusChart'
 import WorkTimeChart from './WorkTimeChart'
@@ -201,13 +201,12 @@ export default {
       this.initClockChart()
       this.initStopChart()
       this.initYearlyChart()
-      this.initStopChart()
     },
     filterStopData (todo, start, end) {
       let stopData = []
       if (todo.focus && todo.focus.length) {
         stopData = todo.focus.filter(item => {
-          return item.end >= start && item.end <= end && item.status === 'stopped'
+          return item.start >= start && item.start <= end && item.status === 'stopped'
         })
         return stopData
       }
@@ -217,7 +216,7 @@ export default {
       let focusData = []
       if (todo.focus && todo.focus.length) {
         focusData = todo.focus.filter(item => {
-          return item.end >= startDate && item.end <= endDate
+          return item.start >= startDate && item.start <= endDate && item.duration > 0
         })
         return focusData
       }
@@ -256,6 +255,18 @@ export default {
       this.todos.forEach(todo => {
         const data = this.filterFocusData(todo, date, endDate)
         focusData.push(...data)
+      })
+      return focusData
+    },
+    getAllFocus (start = new Date(2000), end = new Date()) {
+      let focusData = []
+      this.todos.forEach(todo => {
+        if (todo.focus && todo.focus.length) {
+          focusData = todo.focus.filter(item => {
+            return item.start >= start && item.start <= end
+          })
+          return focusData
+        }
       })
       return focusData
     },
@@ -363,7 +374,7 @@ export default {
       return this.clocks.filter(item => item >= start && item <= end)
     },
     setAllFocusData () {
-      const focusData = this.getFocusDataByFocusTime()
+      const focusData = this.getAllFocus()
       const times = focusData.length
       const duration = focusData.reduce((total, data) => {
         return total + data.duration
@@ -381,7 +392,7 @@ export default {
       const month = date.getMonth()
       const day = date.getDate()
       const today = new Date(year, month, day)
-      const focusData = this.getFocusDataByFocusTime(today)
+      const focusData = this.getAllFocus(today)
       const times = focusData.length
       const duration = focusData.reduce((total, data) => {
         return total + data.duration

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import util from '@/util.js'
+import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import CBar from './chart/CBar'
 export default {
