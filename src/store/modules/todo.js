@@ -353,8 +353,8 @@ export default {
       return todos.map(todo => {
         return {
           ...todo,
-          focus: focusObj[todo.id],
-          reminders: remindersObj[todo.id]
+          focus: focusObj[todo.id] || [],
+          reminders: remindersObj[todo.id] || []
         }
       })
     },

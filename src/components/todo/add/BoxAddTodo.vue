@@ -543,9 +543,9 @@ export default {
         this.todo.type = '习惯'
       }
 
-      this.todo.focus = []
-      this.todo.reminders = []
       this.todo.creat = new Date()
+      console.log(this.todo)
+
 
       // this.addTodo(this.todo)
       this.$emit('submit', this.todo)
