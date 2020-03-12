@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 
 
 
@@ -19,7 +20,25 @@ module.exports = {
         _: 'lodash'
       }),
       // 忽略 moment.js的所有本地文件
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new BrowserSyncPlugin(
+        // BrowserSync options
+        {
+          // browse to http://localhost:3000/ during development
+          host: 'localhost',
+          port: 8088,
+          // proxy the Webpack Dev Server endpoint
+          // (which should be serving on http://localhost:3100/)
+          // through BrowserSync
+          proxy: 'http://localhost:8080/'
+        },
+        // plugin options
+        {
+          // prevent BrowserSync from reloading the page
+          // and let Webpack Dev Server take care of this
+          reload: false
+        }
+      )
     ]
   }
 

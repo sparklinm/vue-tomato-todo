@@ -163,7 +163,13 @@ module.exports = {
         }
       }
     ],
-    'space-in-parens': ['error', 'never']
+    'space-in-parens': ['error', 'never'],
+    'padding-line-between-statements': [
+      'error',
+      { 'blankLine': 'always', 'next': '*', 'prev': ['const', 'let', 'var'] },
+      { 'blankLine': 'any', 'next': ['const', 'let', 'var'], 'prev': ['const', 'let', 'var'] },
+      { 'blankLine': 'always', 'next': 'export', 'prev': '*' }
+    ],
   },
   'plugins': ['html'],
   'settings': {

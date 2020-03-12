@@ -3,12 +3,12 @@
     <div
       v-for="(pitem, pindex) in curData"
       :key="pindex"
+      ref="container"
       class="com-cascader__list"
-      :style="{width:Math.floor(100/curData.length)+'%'}"
+      :style="{ width: Math.floor(100 / curData.length) + '%' }"
     >
       <ul
-        ref="container"
-        class="com-cascader__list-inner"
+        class="com-cascader__list-inner slide-list"
       >
         <li
           v-for="(citem, cindex) in pitem"
@@ -18,17 +18,22 @@
           {{ citem.label || citem.value }}
         </li>
       </ul>
+      <div
+        style="background:red"
+        class="slide-select-box"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import Slide from '../../js/SlideSelect'
+
 export default {
   props: {
     data: {
       type: Array,
-      default: () => ([])
+      default: () => []
     },
     columnCount: {
       type: Number,
@@ -36,7 +41,7 @@ export default {
     },
     value: {
       type: Array,
-      default: () => ([])
+      default: () => []
     }
   },
   data () {
@@ -68,11 +73,13 @@ export default {
       this.$nextTick(() => {
         const lists = this.$refs.container
         const slides = []
+
         this.slides.forEach(slide => {
           if (slide.destroy) {
             slide.destroy()
           }
         })
+
         lists.forEach((list, i) => {
           const slide = new Slide(list)
           const renderSlide = (el, value, children) => {
@@ -85,7 +92,6 @@ export default {
             }
 
             this.curValues.splice(i, 1, value)
-
             // 最后一级value变化，没有下一级变化,同时整个联动变化完毕，分发组件的input事件
             if (i === lists.length - 1) {
               this.$emit('input', this.getValue())
@@ -97,12 +103,16 @@ export default {
             // dom渲染完毕后，因为dom改变重新初始化
             this.$nextTick(() => {
               if (slides[i + 1]) {
-                slides[i + 1].init({
-                  startIndex: -1
-                }, this.curData[i + 1])
+                slides[i + 1].init(
+                  {
+                    startIndex: -1
+                  },
+                  this.curData[i + 1]
+                )
               }
             })
           }
+
           // 滑动时，触发change事件，重新渲染下级选择器
           slide.on('change', (el, value, children) => {
             renderSlide(el, value, children)
@@ -122,7 +132,7 @@ export default {
       return this.curValues.map(item => item.value)
     },
     findValue (data, value) {
-      return data.find((item) => item.value === value) || data[0]
+      return data.find(item => item.value === value) || data[0]
     },
     setData () {
       const data = [this.data]
@@ -161,6 +171,11 @@ export default {
   font-size: 14px;
 }
 
+.slide-select-box {
+  height: 50px;
+  opacity: 0.3;
+}
+
 .com-cascader__list {
   display: inline-block;
   vertical-align: top;
@@ -169,7 +184,7 @@ export default {
   box-sizing: border-box;
 }
 
-.com-cascader__list:not(:last-child){
+.com-cascader__list:not(:last-child) {
   border-right: 1px solid rgb(243, 243, 243);
 }
 
