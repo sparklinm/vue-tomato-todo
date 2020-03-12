@@ -401,6 +401,7 @@ import DatePicker from '../DatePicker'
 import util from '@/js/util.js'
 import Sorter from '@/sort.js'
 import { mapState, mapMutations } from 'vuex'
+
 export default {
   components: {
     ListItem,
@@ -533,6 +534,7 @@ export default {
     stickDays () {
       const focusData = this.getFocusDays()
       const days = Object.keys(focusData)
+
       return {
         total: days.length,
         continuation: util.getMaxDuplicateCount(days)
@@ -543,6 +545,7 @@ export default {
       const bd = {}
       let data = {}
       const { goal, habit } = this.todo
+
       bd.completed = this.$t('todo.plan_already_complete')
       bd.total = this.$t('todo.plan_total')
 
@@ -612,6 +615,7 @@ export default {
       })
     },
     start () {
+      document.documentElement.requestFullscreen()
       this.$router.push({
         path: `/do/${this.todo.id}`
       })
@@ -621,6 +625,7 @@ export default {
     },
     getFocusDays () {
       const result = {}
+
       this.todo.focus.forEach(item => {
         const { start: time, duration } = item
         const date = time.getDate()
@@ -631,11 +636,14 @@ export default {
           time.getDate()
         )
         const thisTime = thisDate.getTime()
+
         result[thisTime] = result[thisTime] || 0
         if (hours + duration / 60 > 24) {
           const cduraion = (24 - hours) * 60
+
           result[thisTime] += (24 - hours) * 60
           const nextDate = thisDate.setDate(date + 1)
+
           result[nextDate.getTime()] = duration - cduraion
         } else {
           result[thisTime] += duration
@@ -704,6 +712,7 @@ export default {
       const randomBackground = `/background/back${Math.floor(
         Math.random() * 8
       )}.jpg`
+
       this.storeEditTodo({
         id: this.todo.id,
         background: randomBackground
@@ -716,6 +725,7 @@ export default {
         return this.$t('word.everyday')
       }
       let text = ''
+
       days.forEach(day => {
         text += this.days[day] + ' '
       })
@@ -723,6 +733,7 @@ export default {
     },
     getReminderTime (time) {
       const date = new Date('2020-1-5 ' + time)
+
       return {
         hour: date.getHours(),
         minute: date.getMinutes()
@@ -763,12 +774,14 @@ export default {
     setReminderTime () {
       this.showBoxSetReminderTime = true
       const time = this.getReminderTime(this.curReminder.time)
+
       this.reminderTime = [time.hour, time.minute]
     },
     submitSetReminderTime (done) {
       const time = this.reminderTime.map(item => {
         return util.addZero(item, 10)
       })
+
       this.curReminder.time = time.join(':')
       done()
     },
