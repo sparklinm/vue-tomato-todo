@@ -30,6 +30,8 @@
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-service": "^3.11.0",
     "babel-eslint": "^10.0.1",
+    "browser-sync": "^2.26.7",
+    "browser-sync-webpack-plugin": "^2.2.2",
     "eslint": "^6.3.0",
     "eslint-plugin-html": "^6.0.0",
     "eslint-plugin-vue": "^5.2.3",

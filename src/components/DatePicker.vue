@@ -38,6 +38,7 @@
 
 <script>
 import util from '@/js/util.js'
+
 export default {
   props: {
     show: {
@@ -116,12 +117,14 @@ export default {
     },
     getHourMinute () {
       const data = []
+
       for (let hour = 0; hour < 24; hour++) {
         const item = {
           value: hour,
           label: util.addZero(hour, 10) + '点',
           children: []
         }
+
         for (let minute = 0; minute < 60; minute++) {
           item.children.push({
             value: minute,
@@ -134,24 +137,28 @@ export default {
     },
     getYearMonthDay () {
       const data = []
+
       for (let year = 2000; year <= 2050; year++) {
         const item = {
           value: year,
           label: year + '年',
           children: []
         }
+
         for (let month = 1; month <= 12; month++) {
           const secondChildren = {
             value: month,
             label: util.addZero(month, 10) + '月',
             children: []
           }
+
           item.children.push(secondChildren)
           for (let day = 1; day <= util.getMonthDays(new Date(year, month - 1)); day++) {
             const thirdChildren = {
               value: day,
               label: util.addZero(day, 10) + '日'
             }
+
             secondChildren.children.push(thirdChildren)
           }
         }
