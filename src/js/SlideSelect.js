@@ -44,23 +44,24 @@ export default class extends Events {
     height: 30,
     total: 0
   };
+  nodes = [];
   el = null;
 
   constructor (el) {
     super()
     this.el = el
-    this.addlistener()
-    // const domResize = new DomResize(this.parentNode)
-    // domResize.on('domResize', () => {
-    //   this.init()
-    //   // 在滑动过程中改变dom大小时，不能直接修正到正常位置
-    //   // this.setPos(this.getCorrectPos())
-    // })
+    this.addListener()
+    this.domResize = new DomResize(this.el)
+
+    this.domResize.on('domResize', () => {
+      this.init()
+    })
     this.touch = new Touch(this.el)
   }
 
-  init (options = {}, data, value) {
+  init (options = {}) {
     const defaultOptions = {
+      // 可见行数
       visiableRowCount: 5,
       // 初始位置索引
       startIndex: 0,
@@ -68,15 +69,13 @@ export default class extends Events {
       keepIndex: true,
       // 选择框
       selectBox: {
-      // 选择框所在位置
+        // 选择框所在位置
         position: 2,
         style: {}
       }
     }
 
-    this.options = Object.assign(defaultOptions, options)
-    this.data = data
-    this.value = value
+    this.options = Object.assign(defaultOptions, this.options, options)
     this.setNodes()
     if (!this.nodeInfo.total) {
       this.emit('finsh', null, '', [])
@@ -86,10 +85,8 @@ export default class extends Events {
       height: this.options.visiableRowCount * this.nodeInfo.height + 'px',
       overflow: 'hidden'
     })
-    // 开始位置的优先级 value > startIndex > keepIndex > 默认第一个
-    if (this.value) {
-      this.curIndex = this.getValueIndex()
-    } else if (this.options.startIndex >= 0) {
+    // 开始位置的优先级 startIndex > keepIndex > 默认第一个
+    if (this.options.startIndex >= 0) {
       this.curIndex = this.options.startIndex
     } else if (this.options.keepIndex) {
       if (this.curIndex > this.nodeInfo.total - 1) {
@@ -102,21 +99,20 @@ export default class extends Events {
     this.addSelectBox()
     this.emit(
       'finsh',
-      this.list.children[this.curIndex],
-      this.data[this.curIndex],
-      [...this.list.children]
+      this.nodes[this.curIndex],
+      this.curIndex,
+      this.nodes
     )
-    // this.touch.setMaxSlideDx(this.size.width)
   }
 
-  getValueIndex () {
-    return this.data.findIndex(item => item.value === this.value) || 0
-  }
-
-  addlistener () {
+  addListener () {
     this.el.addEventListener('slidestart', this._slidestart)
     this.el.addEventListener('slidemove', this._slide)
     this.el.addEventListener('slideend', this._slidend)
+  }
+
+  static connect () {
+
   }
 
   throttle (fn) {
@@ -196,6 +192,7 @@ export default class extends Events {
       this.emit('animationend')
       // 不在动画状态
       this.isAnimated = false
+      return
     }
     this.setPos(dy)
     setTimeout(() => {
@@ -212,13 +209,13 @@ export default class extends Events {
     this.style(this.list, {
       transform: `translateY(${this.translateY}px)`
     })
-    // 在滑动过程中实时获得下一个元素索引(待优化，不需要每次执行)
+    // 在滑动过程中实时获得下一个元素索引
     this.setCurIndex()
     this.emit(
       'slide',
-      this.list.children[this.curIndex],
-      this.data[this.curIndex],
-      [...this.list.children]
+      this.nodes[this.curIndex],
+      this.curIndex,
+      this.nodes
     )
   }
 
@@ -227,13 +224,6 @@ export default class extends Events {
     this.style(this.list, {
       transform: `translateY(${y}px)`
     })
-    this.setCurIndex()
-    this.emit(
-      'slide',
-      this.list.children[this.curIndex],
-      this.data[this.curIndex],
-      [...this.list.children]
-    )
   }
 
   // 滑动到某个元素（待优化）
@@ -290,9 +280,10 @@ export default class extends Events {
       total: list.children.length
     }
     this.list = list
+    this.nodes = [...this.list.children]
   }
 
-  // 触摸事件结束时，修正元素位置
+  // 获取正确的元素位置
   getCorrectPos () {
     const correctIndex = this.getTopIndex(this.translateY)
     const correctTranslateY = -correctIndex * this.nodeInfo.height
@@ -300,12 +291,13 @@ export default class extends Events {
     return correctTranslateY
   }
 
-  // 获得这个位置的元素索引
+  // 根据translateY获得顶部元素索引
   getTopIndex (y) {
     let topIndex = -Math.round(y / this.nodeInfo.height)
     // 顶端元素在选择框内时，无法再下滑动
     const minTopIndex = 0 - this.options.selectBox.position
-    const maxTopIndex = this.nodeInfo.total - 1 - this.options.selectBox.position
+    const maxTopIndex =
+      this.nodeInfo.total - 1 - this.options.selectBox.position
 
     if (topIndex < minTopIndex) {
       topIndex = minTopIndex
@@ -315,10 +307,12 @@ export default class extends Events {
     return topIndex
   }
 
+  // 获取所选元素索引
   getSelectedIndex (y) {
     return this.getTopIndex(y) + this.options.selectBox.position
   }
 
+  // 获取所选元素位置
   getSelectedPos (index) {
     return (-index + this.options.selectBox.position) * this.nodeInfo.height
   }
@@ -327,57 +321,58 @@ export default class extends Events {
     this.curIndex = this.getSelectedIndex(this.translateY)
 
     if (this.lastIndex !== this.curIndex) {
+      this.addSelectedClass()
       this.emit(
         'change',
-        this.list.children[this.curIndex],
-        this.data[this.curIndex],
-        [...this.list.children]
+        this.nodes[this.curIndex],
+        this.curIndex,
+        this.nodes
       )
       this.lastIndex = this.curIndex
     }
   }
 
   addSelectedClass () {
-    const curItem = this.list.children[this.curIndex]
-    const lastItem = this.list.children[this.lastIndex]
+    const curItem = this.nodes[this.curIndex]
+    const lastItem = this.nodes[this.lastIndex]
 
-    curItem.classList.add('checked')
-    lastItem.classList.remove('checked')
+    curItem.classList.add('slide-item-checked')
+    lastItem.classList.remove('slide-item-checked')
   }
 
   addSelectBox () {
-
     // 添加前，如果存在先remove掉
     if (this.selectBox) {
       this.el.removeChild(this.selectBox)
     }
 
-    const customSelectBox = this.el.querySelector('.slide-select-box')
     const height = this.nodeInfo.height
+    const customSelectBox = this.el.querySelector('.slide-select-box')
 
     // 相对于父元素定位
     this.el.style.position = 'relative'
     if (customSelectBox) {
+      customSelectBox.style.display = ''
+      // 不改变原dom
       const copy = customSelectBox.cloneNode(true)
 
       this.el.appendChild(copy)
-      // customSelectBox.style.display = 'none'
+      // 隐藏原dom
+      customSelectBox.style.display = 'none'
       const computedStyle = window.getComputedStyle(copy)
 
-      this.style(
-        copy, {
-          left: 0,
-          top: this.options.selectBox.position * height + 'px',
-          position: 'absolute',
-          width: computedStyle.width,
-          height: computedStyle.height
-        }
-      )
+      this.style(copy, {
+        left: 0,
+        top: this.options.selectBox.position * height + 'px',
+        position: 'absolute',
+        width: computedStyle.width,
+        height: computedStyle.height
+      })
       this.selectBox = copy
-
       return
     }
 
+    // 默认选择框
     const selectBox = document.createElement('div')
 
     this.style(selectBox, {
@@ -401,6 +396,7 @@ export default class extends Events {
       this.el.removeChild(this.selectBox)
     }
     this.touch.destroy()
+    this.domResize.destroy()
     this.el.removeEventListener('slidestart', this._slidestart)
     this.el.removeEventListener('slidemove', this._slide)
     this.el.removeEventListener('slideend', this._slidend)
@@ -410,6 +406,3 @@ export default class extends Events {
     Object.assign(el.style, obj)
   }
 }
-
-// 重新初始化，位置
-// 1. value > startIndex > keepIndex > 默认顶部

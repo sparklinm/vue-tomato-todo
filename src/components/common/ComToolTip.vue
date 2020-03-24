@@ -1,5 +1,6 @@
 <script>
 import Vue from 'vue'
+
 export default {
   props: {
     content: {
@@ -36,6 +37,9 @@ export default {
     this.$el.addEventListener('click', () => {
       this.curShow = true
     })
+    if (this.curShow) {
+      this.creatContent()
+    }
   },
   methods: {
     creatContent () {
@@ -59,6 +63,7 @@ export default {
           )
         }
       })
+
       this.tipContent = new Content()
       // 创建父容器com-tooltip，fixed定位且全屏
       this.container = document.createElement('div')
@@ -84,6 +89,7 @@ export default {
     },
     setPosition (element, target) {
       const targetRect = target.getBoundingClientRect()
+
       element.style.left =
           targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
       element.style.top = targetRect.bottom + 'px'
@@ -97,7 +103,7 @@ export default {
   },
 
   render () {
-    return this.$slots.default[0]
+    return this.$slots.default && this.$slots.default[0] || this.$el
   }
 }
 </script>

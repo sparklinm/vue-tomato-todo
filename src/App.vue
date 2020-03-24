@@ -12,6 +12,10 @@
         <router-view />
       </keep-alive>
     </transition>
+    <!--
+    <button @click="toImage">
+      sss
+    </button> -->
 
     <!-- <div
       class="container"
@@ -38,6 +42,8 @@
 </template>
 
 <script>
+import screenshot from '@/js/screenshot'
+
 export default {
   data () {
     return {
@@ -63,9 +69,11 @@ export default {
   created () {
     window.addEventListener('resize', () => {
       const rootFont = (document.documentElement.clientWidth / 414) * 50 + 'px'
+
       document.documentElement.style.fontSize = rootFont
     })
-    document.documentElement.style.fontSize = (document.documentElement.clientWidth / 414) * 50 + 'px'
+    document.documentElement.style.fontSize =
+      (document.documentElement.clientWidth / 414) * 50 + 'px'
     document.body.className = 'theme-1'
 
     // document.documentElement.addEventListener('transitionend', () => {
@@ -73,7 +81,11 @@ export default {
     // })
 
     document.addEventListener('fullscreenchange', () => {
-      document.documentElement.classList.add('full-screen', 'full-screen-enter', 'full-screen-enter-active')
+      document.documentElement.classList.add(
+        'full-screen',
+        'full-screen-enter',
+        'full-screen-enter-active'
+      )
       setTimeout(() => {
         if (!document.fullscreenElement) {
           Object.assign(document.documentElement.style, {
@@ -88,6 +100,7 @@ export default {
           let rootWidth = 0
           let rootHeight = 0
           let rotate = 0
+
           if (window.screen.width > window.screen.height) {
             rootWidth = window.screen.height
             rootHeight = window.screen.width
@@ -105,7 +118,10 @@ export default {
         document.documentElement.classList.remove('full-screen-enter')
 
         setTimeout(() => {
-          document.documentElement.classList.remove('full-screen', 'full-screen-active')
+          document.documentElement.classList.remove(
+            'full-screen',
+            'full-screen-active'
+          )
         }, 200)
 
         document.querySelector('.test').innerHTML = `
@@ -125,13 +141,15 @@ export default {
     fullScreen () {
       this.$refs.img.requestFullscreen()
       // document.documentElement.requestFullscreen()
+    },
+    toImage () {
+      screenshot.downloadImage(document.body, 'test.png')
     }
   }
 }
 </script>
 
 <style lang="less">
-
 // #app div:not(:last-child) {
 //   display: none;
 // }

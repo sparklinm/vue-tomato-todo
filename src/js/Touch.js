@@ -54,6 +54,7 @@ export default class {
   _start = e => {
     const startx = e.targetTouches[0].pageX
     const starty = e.targetTouches[0].pageY
+
     // 初始化data
     Object.assign(this.customData, {
       startx,
@@ -111,6 +112,7 @@ export default class {
   _end = e => {
     const endx = e.changedTouches[0].pageX
     const endy = e.changedTouches[0].pageY
+
     Object.assign(this.customData, {
       endx,
       endy
