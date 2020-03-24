@@ -194,6 +194,8 @@ module.exports = {
     'accounting': true,
     'LIOUtil': true,
     'module': true,
-    'Velocity': true
+    'Velocity': true,
+    'html2canvas': true,
+    'StackBlur': true
   }
 }
