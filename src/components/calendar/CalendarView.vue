@@ -210,6 +210,7 @@ import { mapState, mapMutations } from 'vuex'
 import ProgressCircle from '@/components/todo/ProgressCircle'
 import BoxEditText from '../todo/BoxEditText'
 import util from '@/js/util.js'
+
 export default {
   components: {
     ProgressCircle,
@@ -251,6 +252,7 @@ export default {
     }),
     completedTodos () {
       const data = []
+
       if (!this.todos.length) {
         return
       }
@@ -261,6 +263,7 @@ export default {
               const duration =
                 item.duration || this.getTimeDif(item.start, item.end)
               let progress = ''
+
               if (todo.timeDuration) {
                 progress = duration / todo.timeDuration
               }
@@ -280,6 +283,7 @@ export default {
                 progress: progress,
                 data: item
               }
+
               data.push(obj)
             }
           })
@@ -293,6 +297,7 @@ export default {
       handler (todos) {
         if (!todos.length) return
         const events = []
+
         todos.forEach(todo => {
           if (todo.focus) {
             todo.focus.forEach(item => {

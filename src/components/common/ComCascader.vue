@@ -18,10 +18,10 @@
           {{ citem.label || citem.value }}
         </li>
       </ul>
-      <div
+      <!-- <div
         style="background:red"
         class="slide-select-box"
-      />
+      /> -->
     </div>
   </div>
 </template>
@@ -64,6 +64,13 @@ export default {
   mounted () {
     this.init()
   },
+  destroyed () {
+    this.slides.forEach(slide => {
+      if (slide.destroy) {
+        slide.destroy()
+      }
+    })
+  },
   methods: {
     init () {
       if (!this.data.length) {
@@ -105,7 +112,7 @@ export default {
               if (slides[i + 1]) {
                 slides[i + 1].init(
                   {
-                    startIndex: -1
+                    startIndex: this.getValueIndex(this.curData[i + 1], this.curValues[i + 1].value)
                   },
                   this.curData[i + 1]
                 )
@@ -114,19 +121,26 @@ export default {
           }
 
           // 滑动时，触发change事件，重新渲染下级选择器
-          slide.on('change', (el, value, children) => {
-            renderSlide(el, value, children)
+          slide.on('change', (el, index, children) => {
+            console.log('m1')
+            renderSlide(el, this.curData[i][index], children)
           })
 
           // init后触发finsh事件，重新渲染下级选择器
-          slide.on('finsh', (el, value, children) => {
-            renderSlide(el, value, children)
+          slide.on('finsh', (el, index, children) => {
+            console.log('m2')
+            renderSlide(el, this.curData[i][index], children)
           })
-          slide.init({}, this.curData[i], this.curValues[i].value)
+          slide.init({
+            startIndex: this.getValueIndex(this.curData[i], this.curValues[i].value)
+          })
           slides.push(slide)
           this.slides = slides
         })
       })
+    },
+    getValueIndex (data, value) {
+      return data.findIndex(item => item.value === value) || 0
     },
     getValue () {
       return this.curValues.map(item => item.value)

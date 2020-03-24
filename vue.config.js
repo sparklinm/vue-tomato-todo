@@ -19,6 +19,13 @@ module.exports = {
       new webpack.ProvidePlugin({
         _: 'lodash'
       }),
+      new webpack.ProvidePlugin({
+        html2canvas: 'html2canvas'
+      }),
+      new webpack.ProvidePlugin({
+        StackBlur: 'stackblur-canvas'
+      }),
+
       // 忽略 moment.js的所有本地文件
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new BrowserSyncPlugin(

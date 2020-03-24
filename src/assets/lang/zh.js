@@ -131,7 +131,12 @@ module.exports = {
     creat_time: '建立时间',
     goal_deadline: '目标日期'
   },
-  menu: {},
+  menu: {
+    get_up_clock: '早起打卡',
+    focus_duration_clock_today: '今日专注时长打卡',
+    sleep_clock: '睡眠打卡',
+    clock_and_save: '打卡 | 保存'
+  },
   message: {
     sort_todo: `<p>排序->长按并拖动</p>
                 <p>删除->点击删除按钮</p>
@@ -151,7 +156,6 @@ module.exports = {
     modify_focus_duration: '注意，您仅可修改比当前时长{0}短的时长，且修改后无法再增加',
     set_reminder_time: '尚未设置提醒时间',
     already_move_to_set: '已移动到待办集{0}'
-
   },
   sentence: {
     one: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。'

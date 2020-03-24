@@ -32,6 +32,7 @@ requireComponent.keys().forEach(fileName => {
   const componentConfig = requireComponent(fileName)
   // 剥路径`/xx`和文件类型`.xx`
   const componentName = fileName.split('/').pop().replace(/\.\w+$/, '')
+
   // 全局注册组件
   Vue.component(
     componentName,
