@@ -16,6 +16,7 @@ module.exports = {
     todo_set: '待办集',
     statistics: '统计数据',
     time_axis: '时间轴',
+    distribution: '分布图',
     oclock: '点',
     times: '次',
     experience: '心得',
@@ -44,7 +45,12 @@ module.exports = {
     choose_time: '选择时间',
     choose_date: '选择日期',
     fill_reason: '填写原因',
-    confirm_abandon: '确定放弃'
+    confirm_abandon: '确定放弃',
+    copyright: '习惯养成 学霸必备-番茄ToDo'
+  },
+  time: {
+    format_unit: 'yyyy年MM月dd日',
+    format_unit_month_day: 'MM月dd日'
   },
   todo: {
     common_todo: '普通番茄时钟',
@@ -118,7 +124,11 @@ module.exports = {
     no_reminder_and_add: '没有定时提醒，点击 + 号添加',
     time_down: '倒计时',
     time_up: '正向计时',
-    time_none: '不计时'
+    time_none: '不计时',
+    total_focus_0_days: '共专注{0}天',
+    continue_focus_0_days: '连续专注{0}天',
+    today_focus: '当日专注',
+    tomato_time_axis: '番茄时间轴'
   },
   plan: {
     future_plan: '未来计划',
@@ -131,11 +141,16 @@ module.exports = {
     creat_time: '建立时间',
     goal_deadline: '目标日期'
   },
+  user: {
+    continue_get_up_early_days: '连续早起{0}天'
+  },
   menu: {
     get_up_clock: '早起打卡',
     focus_duration_clock_today: '今日专注时长打卡',
     sleep_clock: '睡眠打卡',
-    clock_and_save: '打卡 | 保存'
+    clock_and_save: '打卡 | 保存',
+    get_up_early: '早起',
+    get_up_late: '晚起'
   },
   message: {
     sort_todo: `<p>排序->长按并拖动</p>
