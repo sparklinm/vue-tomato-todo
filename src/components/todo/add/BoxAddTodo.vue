@@ -219,6 +219,7 @@
 <script>
 import { mapMutations, mapState } from 'vuex'
 import util from '@/js/util.js'
+
 export default {
   props: {
     data: {
@@ -450,6 +451,7 @@ export default {
         hideAfterComplete: false
       }
     }
+
     this.todoCommon = template.todoCommon
     this.todoGoal = template.todoGoal
     this.todoHabit = template.todoHabit
@@ -484,6 +486,7 @@ export default {
     },
     setChecked (configs, value) {
       let checked = false
+
       configs.forEach(item => {
         item.checked = item.value === value
         if (item.checked) {
@@ -507,6 +510,7 @@ export default {
     },
     submitCustomTimeDuration (done) {
       const { value } = this.customTimeDuration
+
       if (this.value === '') {
         return
       }
@@ -530,6 +534,7 @@ export default {
       const type =
         this.todoType[index].value.slice(0, 1).toUpperCase() +
         this.todoType[index].value.slice(1)
+
       this.todo = this['todo' + type]
 
       this.setChecked(this.todoTimeWay, this.todo.timeWay)
@@ -571,6 +576,7 @@ export default {
 
       for (const key of Object.keys(this.advancedSettings)) {
         const { max = 'NO_VALUE' } = this.advancedSettings[key]
+
         if (
           max !== 'NO_VALUE' &&
           !this.checkNumber(this.advancedSettings[key])
@@ -584,6 +590,7 @@ export default {
       if (isChecked) {
         for (const [key, setting] of Object.entries(this.advancedSettings)) {
           const { value } = setting
+
           setting.default = value
           if (key === 'loopTimes' || key === 'restTime') {
             this.todo[key].custom = value
@@ -605,6 +612,7 @@ export default {
     },
     submitAddTodo (done) {
       const { name } = this.todo
+
       if (name === '') {
         this.$message({
           title: this.$t('word.tip'),

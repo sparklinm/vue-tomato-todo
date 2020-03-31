@@ -96,6 +96,7 @@ export default {
       const style = window.getComputedStyle(this.$refs.chartContainer)
       const initWidth = parseFloat(style.width)
       const radius = initWidth * this.radius
+
       this.chartOptions.series[0].radius = radius
       this.setHeight()
     },
@@ -109,6 +110,7 @@ export default {
             parseInt(window.getComputedStyle(chart).width)
           ) / rootFontSize
         const container = this.$refs.chartContainer
+
         this.chartInitHeight =
           this.chartInitHeight ||
           parseInt(window.getComputedStyle(container).height) / rootFontSize
@@ -118,6 +120,7 @@ export default {
     getTextWidth (text, fontStyle) {
       const canvas = document.createElement('canvas')
       const context = canvas.getContext('2d')
+
       document.body.appendChild(canvas)
       context.font = fontStyle
       document.body.removeChild(canvas)
@@ -150,6 +153,7 @@ export default {
       )}${getSize(textStyle.fontSize, textStyle.lineHeight)}${getFamily(
         textStyle.fontFamily
       )}`
+
       return font
     },
     getLegendHeight (legend, chartWidth) {
@@ -160,6 +164,7 @@ export default {
         itemGap,
         height
       } = legend
+
       if (height) {
         return height
       }
@@ -170,6 +175,7 @@ export default {
       let leftWidth = legend.width || chartWidth
       let rowCount = 1
       const textStyle = _.cloneDeep(legend.textStyle)
+
       textStyle.fontSize = textStyle.fontSize < 12 ? 12 : textStyle.fontSize
       data.forEach(item => {
         const name = typeof item === 'object' ? item.name : item
@@ -177,6 +183,7 @@ export default {
         const textWidth = this.getTextWidth(text, textStyle)
         const iconGap = 5
         const totalWidth = iconWidth + textWidth + iconGap
+
         if (totalWidth > leftWidth) {
           rowCount++
           leftWidth = legend.width || chartWidth
@@ -187,12 +194,14 @@ export default {
       const itemHeight = textHeight > iconHeight ? textHeight : iconHeight
       const lineHeight = legend.textStyle.lineHeight || 1.2
       let rowHeight = itemHeight
+
       if (lineHeight === 1.2) {
         rowHeight *= 1.2
       } else if (lineHeight > itemHeight) {
         rowHeight = lineHeight
       }
       const legendHeight = rowCount * (rowHeight + itemGap) - itemGap
+
       return legendHeight
     }
   }

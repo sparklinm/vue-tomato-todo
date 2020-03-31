@@ -399,6 +399,7 @@ import ProgressCircle from './ProgressCircle'
 import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
 import DatePicker from '../DatePicker'
 import util from '@/js/util.js'
+import todo from '@/js/todo.js'
 import Sorter from '@/sort.js'
 import { mapState, mapMutations } from 'vuex'
 
@@ -537,7 +538,7 @@ export default {
 
       return {
         total: days.length,
-        continuation: util.getMaxDuplicateCount(days)
+        continuation: util.getContinueDays(days.map(day => parseInt(day)))
       }
     },
     progress () {
@@ -624,32 +625,7 @@ export default {
       return Math.ceil((complete / total) * 100)
     },
     getFocusDays () {
-      const result = {}
-
-      this.todo.focus.forEach(item => {
-        const { start: time, duration } = item
-        const date = time.getDate()
-        const hours = time.getHours()
-        const thisDate = new Date(
-          time.getFullYear(),
-          time.getMonth(),
-          time.getDate()
-        )
-        const thisTime = thisDate.getTime()
-
-        result[thisTime] = result[thisTime] || 0
-        if (hours + duration / 60 > 24) {
-          const cduraion = (24 - hours) * 60
-
-          result[thisTime] += (24 - hours) * 60
-          const nextDate = thisDate.setDate(date + 1)
-
-          result[nextDate.getTime()] = duration - cduraion
-        } else {
-          result[thisTime] += duration
-        }
-      })
-      return result
+      return todo.formatFocus(this.todo.focus)
     },
     edit (index) {
       this.todo = this.curTodos[index]

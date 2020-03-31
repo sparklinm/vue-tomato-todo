@@ -29,7 +29,7 @@ export default {
     }
 
     const a = document.createElement('a')
-    const url = URL.createObjectURL(blob)
+    const url = this.creatURL(blob)
 
     a.download = imgName
     a.href = url
@@ -39,6 +39,11 @@ export default {
     URL.revokeObjectURL(url)
   },
 
+  creatURL (blob) {
+    return URL.createObjectURL(blob)
+  },
+
+  // 屏幕像素比和canvas存储的像素比比值，决定canvas时在绘制时需要放大的倍数以适应retina屏幕
   getPixelRatio () {
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
@@ -64,6 +69,17 @@ export default {
       arr[i] = data.charCodeAt(i)
     }
     return new Blob([arr])
+  },
+
+  readBlobAsDataURL (blob) {
+    return new Promise((resolve) => {
+      const a = new FileReader()
+
+      a.onload = function (e) {
+        resolve(e.target.result)
+      }
+      a.readAsDataURL(blob)
+    })
   },
 
   isMobile () {

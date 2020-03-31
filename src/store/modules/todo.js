@@ -342,6 +342,7 @@ export default {
       const reminders = state.reminders
       const focusObj = {}
       const remindersObj = {}
+
       focus.forEach(item => {
         focusObj[item.tid] = focusObj[item.tid] || []
         focusObj[item.tid].push(item)
@@ -363,6 +364,7 @@ export default {
     },
     getTodosNormal (state, getters) {
       const data = []
+
       getters.getAllTodos.forEach(todo => {
         if (!(todo.sid >= 0)) {
           data.push(todo)
@@ -372,6 +374,7 @@ export default {
     },
     getTodosBySet: (state, getters) => (sid) => {
       const data = []
+
       state.todoSets.some((set) => {
         if (set.id === sid) {
           getters.getAllTodos.forEach(todo => {
@@ -429,6 +432,7 @@ export default {
     },
     editTodo (state, obj) {
       const todo = state.todos.find(todo => todo.id === obj.id)
+
       if (todo) {
         _.merge(todo, obj)
       }

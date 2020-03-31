@@ -8,21 +8,19 @@
       v-show="showBox"
       ref="box"
       class="box-wrap"
-      :style="{zIndex:zIndex}"
+      :style="{ zIndex: zIndex }"
       @click.self="handleCloseOnClickMask"
     >
       <div class="com-popup">
         <div
           v-if="!noHeader"
           class="com-popup__header"
-          :style="{'background-image':`url(${headerBackground})`}"
+          :style="{ 'background-image': `url(${headerBackground})` }"
         >
           <div class="com-popup__header-text">
             {{ title }}
           </div>
-          <div
-            class="com-popup__header-btn-area"
-          >
+          <div class="com-popup__header-btn-area">
             <slot name="header-icon" />
 
             <span
@@ -130,6 +128,10 @@ export default {
     closeOnClickMask: {
       type: Boolean,
       default: true
+    },
+    removeNode: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -139,7 +141,10 @@ export default {
   },
   computed: {
     showFooter () {
-      return this.bottomConfirmBtn || (this.$slots.footer && this.$slots.footer.length)
+      return (
+        this.bottomConfirmBtn ||
+        (this.$slots.footer && this.$slots.footer.length)
+      )
     }
   },
   watch: {
@@ -226,18 +231,28 @@ export default {
         }
       }
     }
-
   }
 }
 </script>
 
-<style lang='less'>
+<style lang="less">
 .com-popup {
   display: inline-block;
   width: 6.5rem;
   vertical-align: middle;
   background-color: white;
   text-align: left;
+  border-radius: 8px;
+}
+
+.com-popup > div:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.com-popup > div:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .com-popup__header {
@@ -247,6 +262,7 @@ export default {
   transform-origin: 50% 50%;
   transition: background-image 0.4s ease;
   background-size: 100% 100%;
+
   .flex(@align-items: center; @justify-content: space-between);
 }
 

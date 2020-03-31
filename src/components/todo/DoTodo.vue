@@ -275,6 +275,7 @@ import BoxEditText from './BoxEditText'
 import { mapGetters, mapMutations } from 'vuex'
 import util from '@/js/util.js'
 import todoUtil from '@/js/todo.js'
+
 export default {
   components: {
     ProgressCircle,
@@ -374,6 +375,7 @@ export default {
     },
     timesLeft () {
       const { custom: customTimes } = this.currentTodo.loopTimes
+
       if (customTimes > 0) {
         return this.$t('todo.remain_time', [customTimes])
       } if (customTimes < 0) {
@@ -389,6 +391,7 @@ export default {
     },
     isLastLoop () {
       const { default: defaultTimes, custom: customTimes } = this.currentTodo.loopTimes
+
       return customTimes === 0 || customTimes === 1 || customTimes === '' && defaultTimes === 1
     }
   },
@@ -439,6 +442,7 @@ export default {
         default: defaultTime,
         custom: customTime
       } = this.currentTodo.restTime
+
       if (this.isLastLoop) {
         return this.longRestTime * 60
       }
@@ -618,6 +622,7 @@ export default {
       this.end = new Date(this.start)
       this.end.setSeconds(this.totalDuration)
       let status = 'completed'
+
       if (this.abandonReason !== undefined) {
         status = 'stopped'
       }

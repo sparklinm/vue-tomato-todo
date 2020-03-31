@@ -91,8 +91,7 @@ export default {
 <style lang="less">
 .custom-radio__text {
   display: inline-block;
-  width: 1.1rem;
-  padding: 0.08rem 0;
+  padding: 0.08rem 0.32rem;
   text-align: center;
 }
 

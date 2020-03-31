@@ -54,13 +54,13 @@ export default {
 }
 
 .data-panel__hd {
-  .flex(@justify-content: space-between;);
+  .flex(@justify-content: space-between;@align-items:center;);
   padding: 0 0 0.16rem;
   text-align: left;
 }
 
 .data-panel__hd-text {
-  .scale-font(0.9);
+  font-size: 12px;
 }
 
 .data-panel__hd-btn {

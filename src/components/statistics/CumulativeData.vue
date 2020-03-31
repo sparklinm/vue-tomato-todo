@@ -111,6 +111,7 @@ import MonthlyChart from './MonthlyChart'
 import ClockChart from './ClockChart'
 import StopChart from './StopChart'
 import YearlyChart from './YearlyChart'
+
 export default {
   components: {
     DataPanel,
@@ -180,7 +181,7 @@ export default {
   },
   computed: {
     ...mapState('user', {
-      clocks: state => state.clocks
+      clocks: state => state.getUpclocks
     })
   },
   watch: {
@@ -204,6 +205,7 @@ export default {
     },
     filterStopData (todo, start, end) {
       let stopData = []
+
       if (todo.focus && todo.focus.length) {
         stopData = todo.focus.filter(item => {
           return item.start >= start && item.start <= end && item.status === 'stopped'
@@ -214,6 +216,7 @@ export default {
     },
     filterFocusData (todo, startDate, endDate) {
       let focusData = []
+
       if (todo.focus && todo.focus.length) {
         focusData = todo.focus.filter(item => {
           return item.start >= startDate && item.start <= endDate && item.duration > 0
@@ -225,6 +228,7 @@ export default {
     filterTodo (todo, startDate, endDate) {
       let currentTodo = null
       const focusData = this.filterFocusData(todo, startDate, endDate)
+
       if (focusData.length) {
         currentTodo = _.cloneDeep(todo)
         currentTodo.focus = []
@@ -234,8 +238,10 @@ export default {
     },
     getTodosByFocusTime (startDate = new Date(2000), endDate = new Date()) {
       const currentTodos = []
+
       this.todos.forEach(todo => {
         const currentTodo = this.filterTodo(todo, startDate, endDate)
+
         if (currentTodo) {
           currentTodos.push(currentTodo)
         }
@@ -244,22 +250,27 @@ export default {
     },
     getStopData (start = new Date(2000), end = new Date()) {
       const stopData = []
+
       this.todos.forEach(todo => {
         const data = this.filterStopData(todo, start, end)
+
         stopData.push(...data)
       })
       return stopData
     },
     getFocusDataByFocusTime (date = new Date(2000), endDate = new Date()) {
       const focusData = []
+
       this.todos.forEach(todo => {
         const data = this.filterFocusData(todo, date, endDate)
+
         focusData.push(...data)
       })
       return focusData
     },
     getAllFocus (start = new Date(2000), end = new Date()) {
       let focusData = []
+
       this.todos.forEach(todo => {
         if (todo.focus && todo.focus.length) {
           focusData = todo.focus.filter(item => {
@@ -272,6 +283,7 @@ export default {
     },
     getFocusStatistics (data, unit) {
       const result = {}
+
       if (unit === 'hour') {
         data.forEach(item => {
           const { start: time, duration } = item
@@ -279,12 +291,15 @@ export default {
           const date = time.getDate()
           const hours = time.getHours()
           const minutes = time.getMinutes()
+
           result[hours] = result[hours] || 0
           if (minutes + duration > 60) {
             const cduraion = 60 - minutes
+
             result[hours] += 60 - minutes
             if (date + 1 <= days) {
               const nextHours = hours + 1 > 23 ? 0 : hours + 1
+
               result[nextHours] = duration - cduraion
             }
           } else {
@@ -300,11 +315,14 @@ export default {
           const days = util.getMonthDays(time)
           const date = time.getDate()
           const hours = time.getHours()
+
           result[date] = result[date] || 0
           if (hours + duration / 60 > 24) {
             const cduraion = (24 - hours) * 60
+
             result[date] += (24 - hours) * 60
             const nextDate = date + 1
+
             if (nextDate <= days) {
               result[nextDate] = duration - cduraion
             }
@@ -322,13 +340,17 @@ export default {
           const month = time.getMonth()
           const date = time.getDate()
           const hours = time.getHours()
+
           result[month] = result[month] || 0
           if (hours + duration / 60 > 24) {
             const nextDate = date + 1
+
             if (nextDate > days) {
               const cduraion = (24 - hours) * 60
+
               result[month] += cduraion
               const nextMonth = month + 1
+
               if (nextMonth <= 11) {
                 result[nextMonth] = duration - cduraion
               }
@@ -350,6 +372,7 @@ export default {
       const day = cdate.getDay() || 7
       const oneDay = 24 * 60 * 60 * 1000
       const today = new Date(year, month, date)
+
       if (unit === 'day') {
         return [today, new Date(today.getTime() + oneDay)]
       }
@@ -359,6 +382,7 @@ export default {
       if (unit === 'month') {
         const startDate = 1
         let nextMonth = ''
+
         if (month === 11) {
           nextMonth = new Date(year + 1, 0, 1)
         } else {
@@ -380,6 +404,7 @@ export default {
         return total + data.duration
       }, 0)
       const average = duration / 5
+
       this.allFocusData = {
         times,
         duration,
@@ -397,6 +422,7 @@ export default {
       const duration = focusData.reduce((total, data) => {
         return total + data.duration
       }, 0)
+
       this.todayFocusData = {
         times,
         duration
@@ -431,6 +457,7 @@ export default {
     changePeriod (chart, type) {
       const oneDay = 24 * 60 * 60 * 1000
       let targetDay = null
+
       if (type === 'minus') {
         targetDay = chart.period[0].getTime() - oneDay
       } else {
@@ -447,6 +474,7 @@ export default {
     },
     initFocus (chart, unit) {
       let focus = []
+
       if (chart.period[1] > new Date()) {
         focus = this.getFocusDataByFocusTime(chart.period[0], new Date())
       } else {
@@ -470,36 +498,43 @@ export default {
     },
     initPeriod (chart, range) {
       const period = this.getPeriod(range)
+
       chart.period = period
       chart.range = range
     },
     initFocusChart (range) {
       const chart = this.focusChart
+
       this.initPeriod(chart, range)
       this.initTodos(chart)
     },
     initWorkTimeChart () {
       const chart = this.workTimeChart
+
       this.initPeriod(chart, 'month')
       this.initFocus(chart, 'hour')
     },
     initMonthlyChart () {
       const chart = this.monthlyChart
+
       this.initPeriod(chart, 'month')
       this.initFocus(chart, 'day')
     },
     initClockChart () {
       const chart = this.clockChart
+
       this.initPeriod(chart, 'month')
       this.initClocks(chart, 'day')
     },
     initYearlyChart () {
       const chart = this.yearlyChart
+
       this.initPeriod(chart, 'year')
       this.initFocus(chart, 'month')
     },
     initStopChart () {
       const chart = this.stopChart
+
       this.initPeriod(chart, 'month')
       this.initStops(chart)
     }
