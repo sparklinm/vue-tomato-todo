@@ -3,6 +3,7 @@ c
   <DataPanel
     :title="focusPanelTitle"
     class="focus-chart"
+    :top-btn="topBtn"
     @previous="$emit('previous')"
     @next="$emit('next')"
   >
@@ -38,6 +39,7 @@ c
 import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import CPie from './chart/CPie'
+
 export default {
   components: {
     DataPanel,
@@ -51,11 +53,16 @@ export default {
     period: {
       type: Array,
       default: null
+    },
+    topBtn: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
     return {
       filterValue: 'day',
+      chart: null,
       options: {}
     }
   },
@@ -70,6 +77,7 @@ export default {
         util.formatTime(this.period[0], {
           cut: '-'
         })
+
       if (this.filterValue === 'day') {
         return text
       }
@@ -102,6 +110,7 @@ export default {
         const total = this.getTotalDuration(data)
         const ave = this.getAveDuration(total)
         const chart = this.$refs.pie
+
         this.options = {
           legend: {
             data: legend,
@@ -110,6 +119,7 @@ export default {
                 return item.name === name
               })
               let cname = name
+
               if (cname.length > 8) {
                 cname = name.slice(0, 8) + '...'
               }
@@ -121,7 +131,8 @@ export default {
           },
           series: [
             {
-              data: data
+              data: data,
+              type: 'pie'
             }
           ]
         }
@@ -152,6 +163,9 @@ export default {
       }
     }
   },
+  mounted () {
+    this.chart = this.$refs.pie.$refs.chart
+  },
   methods: {
     handleFilterChange (filter) {
       this.$emit('change', filter)
@@ -163,6 +177,7 @@ export default {
     },
     getAveDuration (total) {
       const days = new Date().getDate() - this.period[0].getDate()
+
       return Math.floor(total / days)
     }
   }
@@ -183,19 +198,26 @@ export default {
     display: inline-block;
     border: 1px solid white;
     border-radius: 4px;
-    font-size: 12px;
-    .scale-font(0.9;right;center);
+    font-size: 10px;
   }
 
   .custom-radio__text {
     display: inline-block;
-    width: 1.1rem;
-    padding: 0.08rem 0;
     text-align: center;
   }
 
   .custom-radio:not(:last-child) .custom-radio__text {
     border-right: 1px solid white;
+  }
+
+  .custom-radio:first-child .custom-radio__text {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .custom-radio:last-child .custom-radio__text {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
   }
 
   .custom-radio__inline {

@@ -23,6 +23,7 @@
 <script>
 import i18n from '../i18n.js'
 import util from '../tools.js'
+
 export default {
   inject: ['options'],
   props: {

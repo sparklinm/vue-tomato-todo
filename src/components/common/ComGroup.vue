@@ -1,4 +1,4 @@
-ComGroup<template>
+<template>
   <div class="com-radio-group">
     <slot />
   </div>
