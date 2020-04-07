@@ -54,6 +54,13 @@
           class="com-popup__footer"
         >
           <button
+            v-if="bottomCancelBtn"
+            class="com-popup__footer-btn"
+            @click="handleCancel"
+          >
+            取消
+          </button>
+          <button
             v-if="bottomConfirmBtn"
             class="com-popup__footer-btn"
             @click="handleSubmit"
@@ -86,6 +93,10 @@ export default {
       default: false
     },
     bottomConfirmBtn: {
+      type: Boolean,
+      default: false
+    },
+    bottomCancelBtn: {
       type: Boolean,
       default: false
     },
@@ -150,9 +161,11 @@ export default {
   watch: {
     showBox (val) {
       if (val) {
+        this.$emit('open')
         this.$modals.add(this.$el)
       } else {
-        this.$modals.delete(this.$el)
+        this.$emit('update:show', false)
+        this.$emit('close')
       }
     },
     show (val) {
@@ -193,14 +206,11 @@ export default {
       this.$emit('opened')
     },
     afterLeave () {
+      this.$modals.delete(this.$el)
       this.$emit('closed')
     },
     close () {
       this.showBox = false
-      this.$nextTick(() => {
-        this.$emit('update:show', false)
-        this.$emit('close')
-      })
     },
     handleSubmit () {
       if (this.submit) {
@@ -238,7 +248,7 @@ export default {
 <style lang="less">
 .com-popup {
   display: inline-block;
-  width: 6.5rem;
+  width: 7rem;
   vertical-align: middle;
   background-color: white;
   text-align: left;
@@ -285,14 +295,20 @@ export default {
 
 .com-popup__footer-btn {
   width: 100%;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 1px;
-  padding: 10px 6px;
+  padding: 8px 6px;
   border: none;
   border-radius: 2px;
   background: white;
   box-shadow: 0 2px 1px 1px rgb(238, 238, 238);
   cursor: pointer;
   outline: none;
+}
+
+.box-custom-rest-duration {
+  .com-popup__content {
+    padding: 10px 60px;
+  }
 }
 </style>

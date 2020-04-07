@@ -50,6 +50,11 @@ export default {
           icon: 'clock-o',
           text: this.$t('word.future_plan'),
           path: 'future_plan'
+        },
+        {
+          icon: 'clock-o',
+          text: this.$t('word.setting'),
+          path: 'me'
         }
       ]
     }
@@ -57,6 +62,7 @@ export default {
   computed: {
     showTabBar () {
       const paths = ['/do']
+
       return !paths.includes(this.$route.path)
     }
   },

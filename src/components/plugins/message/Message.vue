@@ -61,6 +61,7 @@ export default {
 
 <style lang='less'>
 .plu-message {
+  .center-position();
   width: 7.3rem;
   box-sizing: border-box;
   padding: 20px 25px;
@@ -68,7 +69,6 @@ export default {
   border-radius: 3px;
   position: fixed;
   z-index: 200;
-  .center-position();
 
   > div {
     &:not(:last-child) {

@@ -27,10 +27,12 @@ export default {
     },
     deletePlan (state, id) {
       const index = state.plans.findIndex(item => item.id === id)
+
       state.plans.splice(index, 1)
     },
     editPlan (state, obj) {
       const plan = state.plans.find(item => item.id === obj.id)
+
       Object.assign(plan, obj)
     }
 

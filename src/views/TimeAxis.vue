@@ -7,6 +7,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import CalendarView from '../components/calendar/CalendarView'
+
 export default {
   components: {
     CalendarView

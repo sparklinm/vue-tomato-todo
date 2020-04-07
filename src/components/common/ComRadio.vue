@@ -1,5 +1,8 @@
 <template>
-  <label class="custom-radio">
+  <label
+    v-if="type==='default'"
+    class="custom-radio"
+  >
     <input
       ref="radio"
       v-model="curValue"
@@ -9,6 +12,28 @@
       :value="label"
       @change="handleChange"
     >
+    <span class="custom-radio__text">
+      <slot />
+      <span v-if="showContent">
+        {{ content||label }}
+      </span>
+    </span>
+  </label>
+
+  <label
+    v-else
+    class="custom-radio"
+  >
+    <input
+      ref="radio"
+      v-model="curValue"
+      type="radio"
+      :name="name"
+      class="custom-radio__inline"
+      :value="label"
+      @change="handleChange"
+    >
+    <span class="custom-radio__icon" />
     <span class="custom-radio__text">
       <slot />
       <span v-if="showContent">
@@ -28,7 +53,7 @@ export default {
         Object,
         Array
       ],
-      default: ''
+      default: 0
     },
     label: {
       type: [
@@ -46,6 +71,10 @@ export default {
     content: {
       type: String,
       default: ''
+    },
+    type: {
+      type: String,
+      default: 'default'
     }
   },
   data () {
@@ -76,6 +105,7 @@ export default {
     if (typeof this.$parent.value !== 'undefined') {
       this.curValue = this.$parent.value
     }
+
   },
   methods: {
     handleChange (e) {
@@ -89,17 +119,70 @@ export default {
 </script>
 
 <style lang="less">
+.custom-radio {
+  display: inline-block;
+}
+
 .custom-radio__text {
   display: inline-block;
   padding: 0.08rem 0.32rem;
   text-align: center;
+  vertical-align: middle;
 }
 
 .custom-radio__inline {
   width: 0;
   &:checked + span {
+    background: rgb(255, 221, 221);
+    color: rgb(194, 60, 60);
+  }
+}
+
+.custom-radio__icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50% 50%;
+  box-sizing: border-box;
+  border: 2px solid rgb(160, 160, 160);
+  vertical-align: middle;
+  margin-right: 10px;
+  text-align: center;
+  font-size: 0;
+  transition: all 0.3s ease;
+
+  &::after {
+    content: '';
+    transition: all 0.3s ease;
     background: white;
-    color: black;
+  }
+
+  &::before {
+    content: '';
+    display:inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+}
+
+.custom-radio__inline:checked + .custom-radio__icon {
+  border: 2px solid rgb(0, 128, 187);
+
+  &::after {
+    content: '';
+    display:inline-block;
+    width: 8px;
+    height: 8px;
+    vertical-align: middle;
+    border-radius: 50% 50%;
+    background: rgb(0, 128, 187);
+  }
+
+  &::before {
+    content: '';
+    display:inline-block;
+    height: 100%;
+    vertical-align: middle;
   }
 }
 </style>

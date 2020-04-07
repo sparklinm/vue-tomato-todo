@@ -272,25 +272,27 @@
       z-index="2050"
       no-header
     >
-      <div class="title">
-        {{ $t("todo.move_to_set") }}
-      </div>
-      <ul>
-        <li
-          v-for="(set, index) in sets"
-          :key="set.name"
-          class="set-item"
-          @click="submitMoveToSet(set)"
-        >
-          <input
-            type="radio"
-            class="radio"
+      <div class="radio-list">
+        <div class="radio-list__title">
+          {{ $t("todo.move_to_set") }}
+        </div>
+        <ul>
+          <li
+            v-for="(set, index) in sets"
+            :key="set.name"
+            class="set-item"
+            @click="submitMoveToSet(set)"
           >
-          <span class="set-name">
-            {{ set.name }}
-          </span>
-        </li>
-      </ul>
+            <input
+              type="radio"
+              class="radio"
+            >
+            <span class="set-name">
+              {{ set.name }}
+            </span>
+          </li>
+        </ul>
+      </div>
     </ComPopup>
 
     <ComPopup
@@ -966,10 +968,6 @@ export default {
 }
 
 .box-move-todo {
-  .title {
-    margin-bottom: 12px;
-  }
-
   .set-item {
     padding: 10px 0;
     white-space: nowrap;

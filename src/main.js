@@ -8,6 +8,8 @@ import 'dayjs'
 
 import 'normalize.css'
 import 'font-awesome/css/font-awesome.css'
+// import '@fortawesome/fontawesome-free/css/all.css'
+// import '@fortawesome/fontawesome-free/js/all.js'
 import '@/styles/index.less'
 
 import MyPlugins from './components/plugins'

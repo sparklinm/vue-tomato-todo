@@ -6,6 +6,7 @@
 
 <script>
 import ListFuturePlan from '../components/future-plan/ListFuturePlan'
+
 export default {
   components: {
     ListFuturePlan

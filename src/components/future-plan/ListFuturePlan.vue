@@ -137,6 +137,7 @@ export default {
       }
       const oneDay = 24 * 60 * 60 * 1000
       const diffDay = Math.floor((new Date().getTime() - creat.getTime()) / oneDay)
+
       return this.$t('plan.have_passed_days', [`<span class="key">${diffDay}</span>`])
     },
     edit (index) {

@@ -118,6 +118,7 @@
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import ListTodo from './ListTodo'
 import BoxAddTodo from './add/BoxAddTodo'
+
 export default {
   components: {
     ListTodo,
