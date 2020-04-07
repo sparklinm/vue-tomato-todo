@@ -181,7 +181,7 @@ export default {
   },
   computed: {
     ...mapState('user', {
-      clocks: state => state.getUpclocks
+      clocks: state => state.getUpClocks
     })
   },
   watch: {

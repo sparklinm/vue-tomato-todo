@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <div
+    <!-- <div
       class="test"
       style="position:fixed;z-index:99999;min-width:50px;min-height:40px;background:yellow;color:red;padding:10px;left:0;top:0"
-    />
+    /> -->
     <transition
       :name="transitionName"
       :css="css"
@@ -43,6 +43,7 @@
 
 <script>
 import screenshot from '@/js/screenshot'
+import { mapMutations } from 'vuex'
 
 export default {
   data () {
@@ -135,21 +136,40 @@ export default {
       `
       }, 300)
     })
+    this.setUser()
   },
   mounted () {},
   methods: {
+    ...mapMutations('user', {
+      storeSetUser: 'setUser'
+    }),
     fullScreen () {
       this.$refs.img.requestFullscreen()
       // document.documentElement.requestFullscreen()
     },
     toImage () {
       screenshot.downloadImage(document.body, 'test.png')
+    },
+    setUser () {
+      const user = {
+        headIcon: require('./assets/user/head.jpg'),
+        nickname: this.$t('user.not_login'),
+        accound: '0000000000',
+        signature: this.$t('user.click_default_head_login'),
+        creat: new Date(),
+        background: '/background/back4.jpg'
+      }
+
+      this.storeSetUser(user)
     }
   }
 }
 </script>
 
 <style lang="less">
+html,body {
+  // min-height: 100%;
+}
 // #app div:not(:last-child) {
 //   display: none;
 // }

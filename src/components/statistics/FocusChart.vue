@@ -52,7 +52,7 @@ export default {
     },
     period: {
       type: Array,
-      default: null
+      default: () => ([])
     },
     topBtn: {
       type: Boolean,

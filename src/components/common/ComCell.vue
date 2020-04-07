@@ -1,14 +1,28 @@
 <template>
   <div class="com-cell">
     <div class="com-cell__hd">
-      <ComIcon :name="icon" />
+      <ComIcon
+        v-if="icon"
+        :name="icon"
+        :icon-color="iconColor"
+        class="com-cell__hd_icon"
+        :class="{iconClass:true}"
+      />
       <div
         v-if="title !== ''"
         class="com-cell__hd-inner"
-      />
-      <span class="com-cell__hd-title">{{ title }}</span>
-      <div class="com-cell__hd-lable">
-        {{ lable }}
+      >
+        <span
+          v-marquee
+          class="com-cell__hd-title"
+        >{{ title }}</span>
+        <div
+          v-if="lable || $slots.lable && $slots.lable.length"
+          class="com-cell__hd-lable"
+        >
+          <slot name="lable" />
+          {{ lable }}
+        </div>
       </div>
     </div>
     <div class="com-cell__bd">
@@ -16,16 +30,23 @@
         v-if="text !== ''"
         class="com-cell__bd-inner"
       >
-        <span>{{ text }}</span>
+        <span class="com-cell__bd-text">{{ text }}</span>
+        <div
+          v-if="desc || $slots.desc && $slots.desc.length"
+          class="com-cell__bd-desc"
+        >
+          <span v-html="desc" />
+          <slot name="desc" />
+        </div>
       </div>
+      <slot name="right-icon" />
     </div>
-    <div class="com-cell__ft">
+    <!-- <div class="com-cell__ft">
       <div
         v-if="false"
         class="com-cell__ft-inner"
       />
-      <slot name="right-icon" />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -33,6 +54,10 @@
 export default {
   props: {
     icon: {
+      type: String,
+      default: ''
+    },
+    iconColor: {
       type: String,
       default: ''
     },
@@ -49,6 +74,10 @@ export default {
       default: ''
     },
     rightIcon: {
+      type: String,
+      default: ''
+    },
+    desc: {
       type: String,
       default: ''
     }
@@ -80,15 +109,36 @@ export default {
 
 .com-cell__hd {
   font-size: 12px;
+  .flex(@justify-content: space-between; @align-items: center);
+  margin-right: 10px;
+}
+
+.com-cell__bd {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.com-cell__hd_icon {
+  font-size: 16px;
+  margin-right: 12px;
 }
 
 .com-cell__hd-lable {
-  .scale-font(0.8);
   margin-top: 5px;
   color: @gray;
 }
 
 .com-cell__ft {
   flex: none;
+}
+
+.com-cell__bd-inner {
+  text-align: right;
+}
+
+.com-cell__bd-desc {
+  font-size: 10px;
+  margin-top: 5px;
+  color: @gray;
 }
 </style>
