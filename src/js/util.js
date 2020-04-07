@@ -194,6 +194,11 @@ export default {
   getTimeDif (time1, time2, unit) {
     // let
   },
+  getRandomItem (ary) {
+    const random = Math.floor(Math.random() * ary.length)
+
+    return ary[random]
+  },
   getContinueDays (dates) {
     const cdates = dates.map(date => {
       const cdate = new Date(date)

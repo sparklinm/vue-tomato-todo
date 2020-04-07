@@ -9,6 +9,7 @@
 <script>
 import Nav from '../components/nav/Nav.vue'
 import TabBar from '../components/tabbar/TabBar.vue'
+
 export default {
   name: 'Main',
   components: {

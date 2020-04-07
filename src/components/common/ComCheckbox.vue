@@ -1,12 +1,38 @@
 <template>
   <label class="com-checkbox">
-    <span
-      v-if="left"
-      class="com-checkbox__content"
-    >
-      {{ content }}
+    <span v-if="type==='default'">
+      <span
+        v-if="left"
+        class="com-checkbox__content"
+      >
+        {{ content }}
+        <slot />
+      </span>
+      <span class="com-checkbox__area">
+        <input
+          v-model="curValue"
+          type="checkbox"
+          class="com-checkbox__inner"
+          :value="label"
+          @change="handleChange"
+        >
+        <ComIcon
+          name="check"
+          class="com-checkbox__icon-checked"
+        />
+      </span>
+      <span
+        v-if="!left"
+        class="com-checkbox__content"
+      >
+        {{ content }}
+        <slot />
+      </span>
     </span>
-    <span class="com-checkbox__area">
+    <span
+      v-else
+      class="com-checkbox__area"
+    >
       <input
         v-model="curValue"
         type="checkbox"
@@ -14,16 +40,9 @@
         :value="label"
         @change="handleChange"
       >
-      <ComIcon
-        name="check"
-        class="com-checkbox__icon-checked"
-      />
-    </span>
-    <span
-      v-if="!left"
-      class="com-checkbox__content"
-    >
-      {{ content }}
+      <span>
+        <slot />
+      </span>
     </span>
   </label>
 </template>
@@ -39,7 +58,7 @@ export default {
         Array,
         Boolean
       ],
-      default: ''
+      default: 0
     },
     label: {
       type: [
@@ -56,6 +75,10 @@ export default {
     content: {
       type: String,
       default: ''
+    },
+    type: {
+      type: String,
+      default: 'default'
     }
   },
   data () {

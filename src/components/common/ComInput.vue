@@ -130,8 +130,7 @@ export default {
           this.$refs.placeholder,
           {
             scale: '0.5',
-            top: '0px',
-            translateY: '-100%'
+            translateY: '-110%'
           },
           {
             duration: 200
@@ -143,6 +142,13 @@ export default {
     }
   },
   mounted () {
+    const value = this.currentValue
+
+    if (this.type === 'positiveInteger') {
+      this.checkedValue = this.currentValue = this.toPositiveInteger(value)
+    } else {
+      this.checkedValue = value
+    }
   },
   methods: {
     handleInput () {
@@ -188,8 +194,6 @@ export default {
 .com-input__placeholder {
   position: absolute;
   transform-origin: left top;
-  left: 0;
-  top: 0;
 }
 
 .com-input__box {

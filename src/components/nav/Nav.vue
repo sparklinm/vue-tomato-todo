@@ -2,7 +2,6 @@
   <div class="nav-wrap">
     <div
       class="nav"
-      :style="navStyle"
     >
       <div class="left">
         {{ page.title }}
@@ -26,37 +25,47 @@
                   <li @click="focusDurationClock">
                     {{ $t("menu.focus_duration_clock_today") }}
                   </li>
-                  <li>
+                  <li @click="sleepClock">
                     {{ $t("menu.sleep_clock") }}
                   </li>
                 </ul>
               </div>
             </template>
           </ComToolTip>
-
-          <ComIcon
-            v-if="page.buttons.includes('addTodo')"
-            name="plus"
-            @click="showBox('showBoxAddTodo')"
-          />
-
-          <ComIcon
-            v-if="page.buttons.includes('addTodoSet')"
-            name="plus-square"
-            @click="showBox('showBoxAddTodoSet')"
-          />
-
-          <ComIcon
-            v-if="page.buttons.includes('addFuturePlan')"
-            name="plus"
-            @click="showBox('showBoxAddPlan')"
-          />
-
-          <ComIcon
-            v-if="page.buttons.includes('more')"
-            name="ellipsis-v"
-          />
         </span>
+
+        <ComIcon
+          v-if="page.buttons.includes('addTodo')"
+          name="plus"
+          @click="showBox('showBoxAddTodo')"
+        />
+
+        <ComIcon
+          v-if="page.buttons.includes('addTodoSet')"
+          name="plus-square"
+          @click="showBox('showBoxAddTodoSet')"
+        />
+
+        <ComIcon
+          v-if="page.buttons.includes('addFuturePlan')"
+          name="plus"
+          @click="showBox('showBoxAddPlan')"
+        />
+
+        <ComIcon
+          v-if="page.buttons.includes('tip')"
+          name="question-circle"
+        />
+
+        <ComIcon
+          v-if="page.buttons.includes('setting')"
+          name="cog"
+        />
+
+        <ComIcon
+          v-if="page.buttons.includes('more')"
+          name="ellipsis-v"
+        />
       </div>
     </div>
     <BoxAddTodo
@@ -70,6 +79,7 @@
       :title="$t('menu.clock_and_save')"
       :show.sync="showBoxGetUpClock"
       class="box-clock box-get-up-clock"
+      @open="handleBoxClockOpen"
     >
       <template v-slot:header-icon>
         <ComIcon
@@ -85,7 +95,7 @@
         <ComIcon
           name="rotate-left"
           class="box-clock__head-btn"
-          @click="download"
+          @click="setClockBackground"
         />
         <ComIcon
           name="times"
@@ -97,8 +107,8 @@
         class="clock-card"
       >
         <img
-          ref="backgroundImg"
-          src="/background/back4.jpg"
+          ref="getUpCardBackground"
+          :src="background"
           alt=""
           class="clock-card-background"
         >
@@ -106,7 +116,7 @@
         <div class="clock-card-inline">
           <div class="card-header">
             <img
-              src="/background/back6.jpg"
+              :src="headIcon"
               alt=""
               class="head-icon"
             >
@@ -134,12 +144,12 @@
             </div>
           </div>
           <div class="content">
-            {{ $t("sentence.one") }}
+            {{ sentence }}
           </div>
           <div class="copyright">
             {{ $t("common.copyright") }}
             <img
-              src="/background/back8.jpg"
+              :src="productIcon"
               alt=""
               class="copyright-icon"
             >
@@ -150,10 +160,9 @@
 
     <ComPopup
       :title="$t('menu.clock_and_save')"
-      :show.sync="showBoxFocusClock"
-      class="box-clock box-focus-clock"
-      remove-node
-      @opened="initFocusChart('day')"
+      :show.sync="showBoxSleepClock"
+      class="box-clock box-sleep-clock"
+      @open="handleBoxClockOpen"
     >
       <template v-slot:header-icon>
         <ComIcon
@@ -169,7 +178,7 @@
         <ComIcon
           name="rotate-left"
           class="box-clock__head-btn"
-          @click="download"
+          @click="setClockBackground"
         />
         <ComIcon
           name="times"
@@ -181,8 +190,93 @@
         class="clock-card"
       >
         <img
-          ref="backgroundImg"
-          src="/background/back4.jpg"
+          ref="sleepCardBackground"
+          :src="background"
+          alt=""
+          class="clock-card-background"
+        >
+
+        <div class="clock-card-inline">
+          <div class="card-header">
+            <img
+              :src="headIcon"
+              alt=""
+              class="head-icon"
+            >
+            <div class="card-info">
+              <div>
+                <span class="time">{{ sleepCard.time }}</span>
+                <span>{{ sleepCard.date }}</span>
+              </div>
+              <div>
+                <span class="tag">{{ sleepCard.status }}</span>
+                <span class="tag tag_purple">{{
+                  $t("todo.continue_focus_0_days", [focusDays.total])
+                }}</span>
+              </div>
+              <div>
+                <span class="tag">{{
+                  $t("todo.total_focus_0_days", [focusDays.total])
+                }}</span>
+                <span class="tag">{{
+                  $t("user.continue_sleep_early_days", [
+                    sleepDays.continuation
+                  ])
+                }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            {{ sentence }}
+          </div>
+          <div class="copyright">
+            {{ $t("common.copyright") }}
+            <img
+              :src="productIcon"
+              alt=""
+              class="copyright-icon"
+            >
+          </div>
+        </div>
+      </div>
+    </ComPopup>
+
+    <ComPopup
+      :title="$t('menu.clock_and_save')"
+      :show.sync="showBoxFocusClock"
+      class="box-clock box-focus-clock"
+      remove-node
+      @opened="initFocusChart('day')"
+      @open="handleBoxClockOpen"
+    >
+      <template v-slot:header-icon>
+        <ComIcon
+          name="tint"
+          class="box-clock__head-btn"
+          @click="blurBackground"
+        />
+        <ComIcon
+          name="download"
+          class="box-clock__head-btn"
+          @click="download"
+        />
+        <ComIcon
+          name="rotate-left"
+          class="box-clock__head-btn"
+          @click="setClockBackground"
+        />
+        <ComIcon
+          name="times"
+          class="box-clock__head-btn"
+        />
+      </template>
+      <div
+        ref="card"
+        class="clock-card"
+      >
+        <img
+          ref="focusCardBackground"
+          :src="background"
           alt=""
           class="clock-card-background"
         >
@@ -198,7 +292,7 @@
                   $t("todo.total_focus_0_days", [focusDays.total])
                 }}</span>
                 <span class="tag">{{
-                  $t("todo.continue_focus_0_days", [focusDays.total])
+                  $t("todo.continue_focus_0_days", [focusDays.continuation])
                 }}</span>
               </div>
             </div>
@@ -243,75 +337,74 @@
                 </ComGroup>
               </div>
             </div>
-          </div>
-          <FocusChart
-            v-if="showBoxFocusClock"
-            ref="focusChart"
-            :data="focusChart.data"
-            :period="focusChart.period"
-            :top-btn="false"
-            @change="initFocusChart"
-            @previous="changeChart(focusChart, 'minus')"
-            @next="changeChart(focusChart, 'add')"
-          />
-          <DataPanel
-            :title="focusAxis.title"
-            class="time-axis clock-panel"
-            :top-btn="false"
-          >
-            <div class="ev-events__item">
-              <div class="ev-events__hd">
-                <span class="ev-events__hd-text">
-                  <span>
-                    {{ '12:50' }}
+            <FocusChart
+              v-if="showBoxFocusClock && showFocusChart"
+              ref="focusChart"
+              :data="focusChart.data"
+              :period="focusChart.period"
+              :top-btn="false"
+              @change="initFocusChart"
+              @previous="changeChart(focusChart, 'minus')"
+              @next="changeChart(focusChart, 'add')"
+            />
+            <DataPanel
+              v-show="!showFocusChart"
+              :title="focusAxis.title"
+              class="time-axis clock-panel"
+              :top-btn="false"
+            >
+              <div
+                v-for="item in focusAxis.data"
+                :key="item.id"
+                class="ev-events__item"
+              >
+                <div class="ev-events__hd">
+                  <span class="ev-events__hd-text">
+                    <span>
+                      {{ item.end }}
+                    </span>
+                    <span>
+                      {{ item.start }}
+                    </span>
                   </span>
-                  <span>
-                    {{ '13:10' }}
-                  </span>
-                </span>
-              </div>
+                </div>
 
-              <div class="ev-events__bd">
-                <span
-                  class="ev-events__dot"
-                />
-                <div class="ev-events__content">
-                  <div
-                    class="completed-item list-item"
-                  >
-                    <div class="left">
-                      <div class="hd">
-                        {{ '学习' }}
+                <div class="ev-events__bd">
+                  <span class="ev-events__dot" />
+                  <div class="ev-events__content">
+                    <div class="completed-item list-item">
+                      <div class="left">
+                        <div class="hd">
+                          {{ item.name }}
+                        </div>
                       </div>
-                    </div>
-                    <div class="right">
-                      <div
-                        class="hd"
-                      >
-                        <div class="hd-text">
-                          {{ '3分钟' }}
+                      <div class="right">
+                        <div class="hd">
+                          <div class="hd-text">
+                            {{ item.duration +$t('word.minute') }}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </DataPanel>
+            </DataPanel>
+          </div>
           <div class="footer">
-            {{ $t("sentence.one") }}
+            {{ sentence }}
           </div>
           <div class="copyright">
             {{ $t("common.copyright") }}
             <img
-              src="/background/back8.jpg"
+              :src="productIcon"
               alt=""
               class="copyright-icon"
             >
           </div>
         </div>
       </div>
-    </compopup>
+    </ComPopup>
   </div>
 </template>
 
@@ -319,6 +412,7 @@
 import screenshot from '@/js/screenshot'
 import util from '@/js/util'
 import todo from '@/js/todo'
+import setting from '@/js/setting'
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
 import BoxAddTodoSet from '@/components/todo/add/BoxAddTodoSet'
@@ -341,12 +435,19 @@ export default {
       showBoxAddPlan: false,
       showClock: false,
       showBoxGetUpClock: false,
-      showBoxFocusClock: true,
+      showBoxFocusClock: false,
+      showBoxSleepClock: false,
       getUpCard: {
         time: '10:28',
         date: '2020-03-31',
         status: '晚起',
         continueGetUpDays: 1
+      },
+      sleepCard: {
+        time: '10:28',
+        date: '2020-03-31',
+        status: '晚睡',
+        continueSleepDays: 1
       },
       focusCard: {
         date: '2020年03月31日',
@@ -354,6 +455,7 @@ export default {
         focusTimes: 0,
         focusDuration: 0
       },
+      sentence: '',
       focusPanelDate: new Date(),
       today: new Date(),
       filterValue: 'chart',
@@ -363,8 +465,11 @@ export default {
         range: 'day'
       },
       focusAxis: {
-        title: this.$t('todo.tomato_time_axis')
-      }
+        title: this.$t('todo.tomato_time_axis'),
+        data: []
+      },
+      showFocusChart: true,
+      background: ''
     }
   },
   computed: {
@@ -372,10 +477,16 @@ export default {
       focus: state => state.focus
     }),
     ...mapState('user', {
-      getUpTimes: state => state.getUpclocks
+      getUpTimes: state => state.getUpClocks,
+      sleepTimes: state => state.sleepClocks,
+      headIcon: state => state.user.headIcon
     }),
     ...mapGetters('todo', {
       todos: 'getAllTodos'
+    }),
+    ...mapState('settings', {
+      clockBackgrounds: state => state.clockBackgrounds,
+      productIcon: state => state.productIcon
     }),
     focusDays () {
       const data = todo.formatFocus(this.focus)
@@ -387,8 +498,25 @@ export default {
       }
     },
     getUpDays () {
+      const getUpEarlyTimes = this.getUpTimes.filter(item => {
+        const hours = item.getHours()
+
+        return hours < 9
+      })
+
       return {
-        continuation: util.getContinueDays(this.getUpTimes)
+        continuation: util.getContinueDays(getUpEarlyTimes)
+      }
+    },
+    sleepDays () {
+      const sleepEarlyTimes = this.sleepTimes.filter(item => {
+        const hours = item.getHours()
+
+        return hours < 23
+      })
+
+      return {
+        continuation: util.getContinueDays(sleepEarlyTimes)
       }
     },
     pathName () {
@@ -402,7 +530,8 @@ export default {
         set: this.$t('word.todo_set'),
         statistics: this.$t('word.statistics'),
         time_axis: this.$t('todo.history_record_time_axis'),
-        future_plan: this.$t('plan.future_plan')
+        future_plan: this.$t('plan.future_plan'),
+        me: this.$t('menu.my')
       }
 
       const buttons = [
@@ -434,7 +563,7 @@ export default {
           name: 'more',
           icon: 'ellipsis-v',
           event: () => {},
-          limits: ['todo', 'set', 'statistics', 'time_axis', 'future_plan']
+          limits: ['todo', 'set', 'statistics', 'time_axis', 'future_plan', 'me']
         },
         {
           // 旋转屏幕
@@ -456,6 +585,20 @@ export default {
           icon: 'download',
           event: () => {},
           limits: ['do']
+        },
+        {
+          // 设置
+          name: 'setting',
+          icon: 'cog',
+          event: () => {},
+          limits: ['me']
+        },
+        {
+          // 疑问
+          name: 'tip',
+          icon: 'question-circle',
+          event: () => {},
+          limits: ['me']
         }
       ]
 
@@ -473,16 +616,7 @@ export default {
       page.buttons = page.buttons.map(item => {
         return item.name
       })
-
       return page
-    },
-    navStyle () {
-      const styleObj = {}
-
-      if (this.pathName === 'do') {
-        styleObj.background = 'transparent'
-      }
-      return styleObj
     }
   },
   mounted () {
@@ -491,6 +625,8 @@ export default {
       this.today.getMonth(),
       this.today.getDate()
     )
+    this.initTimeAxis()
+    this.setClockBackground()
   },
   methods: {
     ...mapMutations('todo', ['addTodo', 'setIsGetTodos']),
@@ -500,6 +636,13 @@ export default {
     submintAddTodo (data) {
       this.addTodo(data)
       this.setIsGetTodos(true)
+    },
+    setClockBackground () {
+      this.background = setting.getClockBackground()
+    },
+    handleBoxClockOpen () {
+      this.sentence = this.$t(setting.getSentence())
+      this.setClockBackground()
     },
     getUpClock () {
       const date = new Date()
@@ -522,6 +665,28 @@ export default {
 
       this.showClock = false
       this.showBoxGetUpClock = true
+    },
+    sleepClock () {
+      const date = new Date()
+      const hours = date.getHours()
+
+      if (hours < 20 || hours >= 3) {
+        // return false
+      }
+      const obj = {
+        date: util.dateFormatter(date, 'yyyy-MM-dd'),
+        time: util.dateFormatter(date, 'hh:mm')
+      }
+
+      if (hours < 23) {
+        obj.status = this.$t('menu.sleep_early')
+      } else {
+        obj.status = this.$t('menu.sleep_late')
+      }
+      this.sleepCard = obj
+
+      this.showClock = false
+      this.showBoxSleepClock = true
     },
     focusDurationClock () {
       this.formatFocusCard(this.today)
@@ -566,7 +731,19 @@ export default {
       this.formatFocusCard(date)
     },
     blurBackground () {
-      const img = this.$refs.backgroundImg
+      let img = null
+
+      if (this.showBoxGetUpClock) {
+        img = this.$refs.getUpCardBackground
+      } else if (this.showBoxFocusClock) {
+        img = this.$refs.focusCardBackground
+      } else {
+        img = this.$refs.sleepCardBackground
+      }
+
+      if (img.src.startsWith('data')) {
+        return
+      }
       const canvas = document.createElement('canvas')
 
       StackBlur.image(img, canvas, 20)
@@ -576,11 +753,32 @@ export default {
     download () {
       screenshot.downloadImage(this.$refs.card, 'test.png')
     },
-    initFocusChart (range) {
-      const chart = this.focusChart
+    handleFilterChange (val) {
+      this.showFocusChart = val === 'chart'
+      if (this.showFocusChart) {
+        this.$nextTick(() => {
+          this.initFocusChart('day')
+        })
+      }
+    },
+    initTimeAxis () {
+      const todayTodos = todo.getTodosByFocusTime(this.todos, ...this.getPeriod('day'))
+      const focus = []
 
-      this.initPeriod(chart, range)
-      this.initTodos(chart)
+      todayTodos.forEach(todo => {
+        todo.focus.forEach(item => {
+          const obj = {
+            name: todo.name,
+            ...item
+          }
+
+          obj.start = util.dateFormatter(obj.start, 'hh:mm')
+          obj.end = util.dateFormatter(obj.end, 'hh:mm')
+          focus.push(obj)
+        })
+      })
+      focus.sort((a, b) => b.start - a.start)
+      this.focusAxis.data = focus
     },
     getPeriod (unit, cdate = new Date()) {
       const year = cdate.getFullYear()
@@ -613,6 +811,12 @@ export default {
       if (unit === 'year') {
         return [new Date(year, 0, 1), new Date(year + 1, 0, 1)]
       }
+    },
+    initFocusChart (range) {
+      const chart = this.focusChart
+
+      this.initPeriod(chart, range)
+      this.initTodos(chart)
     },
     initPeriod (chart, range) {
       const period = this.getPeriod(range)
@@ -663,7 +867,7 @@ export default {
 
   .right {
     font-size: 18px;
-    span {
+    &>span {
       margin-left: 20px;
       padding: 5px;
     }
@@ -735,15 +939,15 @@ export default {
   }
 
   .copyright-icon {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 2px;
     vertical-align: middle;
     margin-left: 12px;
   }
 }
 
-.box-get-up-clock {
+.box-get-up-clock,.box-sleep-clock {
   .card-header {
     padding: 30px 0px 0 20px;
   }
@@ -798,11 +1002,12 @@ export default {
   }
 
   .content {
-    padding: 12px 0;
+    padding: 8px 0;
   }
 
   .data-panel.clock-panel {
     background: rgba(0, 0, 0, 0.4);
+    padding: 8px;
   }
 
   .data-panel__hd-btn {
@@ -810,7 +1015,10 @@ export default {
   }
 
   .focus-data {
-    margin-bottom: 10px;
+
+    .data-panel__hd {
+      padding-bottom: 2px;
+    }
 
     .text {
       margin-bottom: 5px;
@@ -819,6 +1027,7 @@ export default {
 
   .filters {
     text-align: center;
+    margin: 8px 0;
   }
 
   .com-radio-group {
@@ -866,14 +1075,23 @@ export default {
       box-sizing: border-box;
     }
 
+    .filters {
+      margin-bottom: 0;
+    }
+
     .filters-inline {
       border: none;
+    }
+
+    .pie-contianer {
+      height: 3.0rem;
     }
   }
 
   .time-axis {
     .data-panel__bd {
       display: block;
+      min-height: 200px;
     }
 
     * {
@@ -885,15 +1103,29 @@ export default {
     }
 
     .ev-events__bd {
-      margin-left: 30px;
+      margin-left: 40px;
+      padding: 3px 10px 3px 10px;
+    }
+
+    .ev-events__dot {
+      background-image: radial-gradient(circle, #43bbf2 20%, #fdf4ec);
+      width: 8px;
+      height: 8px;
+      margin: -4px -5px;
     }
 
     .ev-events__hd-text {
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      font-size: 10px;
+      justify-content: space-around;
+      font-size: 9px;
+    }
+
+    .completed-item {
+      background-color: rgba(69, 143, 204, 0.4);
+      padding: 6px 12px;
+      font-size: 12px;
     }
   }
 }

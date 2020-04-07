@@ -1,6 +1,9 @@
 <template>
   <div class="do-todo-wrapper">
-    <div class="do-todo">
+    <div
+      class="do-todo"
+      :style="{'background-image':`url(${background})`}"
+    >
       <div class="tool">
         <ComIcon
           name=""
@@ -21,7 +24,7 @@
             “
           </span>
           <div class="sentence">
-            {{ $t('sentence.one') }}
+            {{ sentence }}
           </div>
         </div>
         <div class="todo-info">
@@ -275,6 +278,7 @@ import BoxEditText from './BoxEditText'
 import { mapGetters, mapMutations } from 'vuex'
 import util from '@/js/util.js'
 import todoUtil from '@/js/todo.js'
+import setting from '@/js/setting'
 
 export default {
   components: {
@@ -351,7 +355,9 @@ export default {
       showBoxText: false,
       experience: '',
       timerGoBack: null,
-      focusObj: {}
+      focusObj: {},
+      sentence: '',
+      background: '/clock/back1.jpg'
     }
   },
   computed: {
@@ -412,6 +418,8 @@ export default {
     }
   },
   mounted () {
+    this.sentence = this.$t(setting.getSentence())
+    this.background = setting.getClockBackground()
     this.currentTodo = _.cloneDeep(this.todo)
     this.initDuration()
     this.setDuration()
@@ -662,6 +670,7 @@ export default {
   text-align: center;
   // padding: 20px 0.6rem 50px;
   background: rgb(51, 51, 51);
+  background-size: 100% 100%;
   color: white;
 
   .tool {
@@ -691,6 +700,7 @@ export default {
     display: inline-block;
     text-align: left;
     box-sizing: border-box;
+    font-size: 14px;
   }
 
   .quo-marks {
@@ -713,13 +723,14 @@ export default {
 
     .name {
       margin-top: 30px;
+      font-size: 18px;
     }
 
     .status {
       margin-top: 10px;
       font-weight: 300;
       opacity: 0.9;
-      .scale-font(0.8;center;center);
+      font-size: 10px;
     }
   }
 
@@ -763,6 +774,7 @@ export default {
     text-align: center;
     width: 25%;
     vertical-align: top;
+    font-size: 18px;
   }
 
   .progress-bar-circle {

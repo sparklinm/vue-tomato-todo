@@ -56,7 +56,7 @@ export default {
         series: [
           {
             type: 'pie',
-            radius: '60%',
+            radius: '40%',
             label: {
               show: true,
               formatter: `{b}({c}${this.$t('word.minute')})`,
