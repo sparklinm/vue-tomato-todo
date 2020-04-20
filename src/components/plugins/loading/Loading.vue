@@ -3,13 +3,15 @@
     v-show="showLoading"
     class="loading"
   >
-    <div class="loading-mask" />
-    <div class="spinner-container">
-      <div class="spinner">
-        <div class="dot1" />
-        <div class="dot2" />
-      </div>
-    </div>
+    <ComPopup
+      :show.sync="showLoading"
+      no-header
+      class="box-loading fade"
+      :close-on-click-mask="false"
+      :z-index="11111"
+    >
+      <div class="loading-circle" />
+    </ComPopup>
   </div>
 </template>
 
@@ -22,12 +24,15 @@ export default {
   },
   methods: {
     show (duration) {
-      this.showLoading = true
-      if (duration >= 0) {
-        setTimeout(() => {
-          this.showLoading = false
-        }, duration)
-      }
+      return new Promise((resolve) => {
+        this.showLoading = true
+        if (duration >= 0) {
+          setTimeout(() => {
+            this.showLoading = false
+            resolve()
+          }, duration)
+        }
+      })
     },
     hide () {
       this.showLoading = false
@@ -38,79 +43,27 @@ export default {
 
 <style lang="less">
 .loading {
-  .fixed-full-screen();
-  z-index: 12345;
-
-  .loading-mask {
-    .fixed-full-screen();
-    background-color: rgb(0, 0, 0);
-    opacity: 0.2;
+  .com-popup__content {
+    padding: 20px;
   }
 
-  .spinner-container {
-    .center-position();
+  .loading-circle {
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 6px solid #2e8e9a;
+    width: 46px;
+    height: 46px;
+    /* animation-name:load; */
+    animation: load 1.5s linear infinite;
+    box-sizing: border-box;
   }
 
-  .spinner {
-    width: 90px;
-    height: 90px;
-    text-align: center;
-    -webkit-animation: rotate 2s infinite linear;
-    animation: rotate 2s infinite linear;
-  }
-
-  .dot1,
-  .dot2 {
-    width: 60%;
-    height: 60%;
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    background-color: #cfbe22;
-    border-radius: 100%;
-
-    -webkit-animation: bounce 2s infinite ease-in-out;
-    animation: bounce 2s infinite ease-in-out;
-  }
-
-  .dot2 {
-    top: auto;
-    bottom: 0px;
-    -webkit-animation-delay: -1s;
-    animation-delay: -1s;
-  }
-
-  @-webkit-keyframes rotate {
-    100% {
-      -webkit-transform: rotate(360deg);
+  @keyframes load {
+    0% {
+      transform: rotate(0deg);
     }
-  }
-  @keyframes rotate {
     100% {
       transform: rotate(360deg);
-      -webkit-transform: rotate(360deg);
-    }
-  }
-
-  @-webkit-keyframes bounce {
-    0%,
-    100% {
-      -webkit-transform: scale(0.5);
-    }
-    50% {
-      -webkit-transform: scale(1);
-    }
-  }
-
-  @keyframes bounce {
-    0%,
-    100% {
-      transform: scale(0);
-      -webkit-transform: scale(0);
-    }
-    50% {
-      transform: scale(1);
-      -webkit-transform: scale(1);
     }
   }
 }

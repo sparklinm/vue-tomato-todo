@@ -54,7 +54,9 @@ export default {
         pomodoro_setting: this.$t('menu.pomodoro_setting'),
         custom_motto: this.$t('menu.custom_pomodoro_motto'),
         appearance_setting: this.$t('menu.poster_and_appearce_setting'),
-        other_setting: this.$t('menu.other_settings')
+        other_setting: this.$t('menu.other_settings'),
+        login: this.$t('word.login'),
+        modify_me: this.$t('menu.me')
       }
 
       return maps[this.path]

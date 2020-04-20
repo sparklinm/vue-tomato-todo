@@ -113,10 +113,6 @@ export default {
   margin-right: 10px;
 }
 
-.com-cell__bd {
-  font-size: 12px;
-  flex-shrink: 0;
-}
 
 .com-cell__hd_icon {
   font-size: 16px;
@@ -125,12 +121,15 @@ export default {
 
 .com-cell__hd-lable {
   margin-top: 5px;
-  color: @gray;
+  color: rgb(138, 138, 138);
+  font-size: 10px;
 }
 
-.com-cell__ft {
-  flex: none;
+.com-cell__bd {
+  font-size: 12px;
+  flex-shrink: 0;
 }
+
 
 .com-cell__bd-inner {
   text-align: right;
@@ -139,6 +138,6 @@ export default {
 .com-cell__bd-desc {
   font-size: 10px;
   margin-top: 5px;
-  color: @gray;
+  color: rgb(138, 138, 138);
 }
 </style>

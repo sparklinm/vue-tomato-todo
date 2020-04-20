@@ -20,7 +20,8 @@ export default {
       signature: '千里之行，始于足下',
       background: '',
       creat: new Date()
-    }
+    },
+    isLogin: false
   },
   getters: {},
   mutations: {
@@ -29,6 +30,9 @@ export default {
     },
     modifyUser (state, obj) {
       Object.assign(state.user, obj)
+    },
+    setLoginStatus (state, isLogin) {
+      state.isLogin = isLogin
     }
   },
   actions: {}
