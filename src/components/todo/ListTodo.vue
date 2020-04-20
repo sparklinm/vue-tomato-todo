@@ -95,7 +95,7 @@
             </ComToolTip>
             <span
               class="btn btn-small"
-              @click="deleteTodo(todoIndex)"
+              @click="deleteTodo(todo.id)"
             >{{
               $t("action.delete")
             }}</span>
@@ -226,45 +226,11 @@
       </div>
     </ComPopup>
 
-    <ComPopup
-      :title="$t('todo.long_press_drag_sort')"
-      class="box-sort"
+    <BoxSortTodo
+      :data="curTodos"
       :show.sync="showBoxSort"
-      :z-index="2050"
-      top-btn
-      :submit="submitSort"
-      @opened="initSort"
-    >
-      <template v-slot:header-icon>
-        <span class="btn-header">
-          <i
-            aria-hidden="true"
-            class="fa fa-question-circle"
-            @click="$message(description.sortTodo)"
-          />
-        </span>
-      </template>
-      <ComList ref="sortContainer">
-        <ComCell
-          v-for="(item, index) in todos"
-          :id="'item' + index"
-          :key="item.name + Math.random()"
-          ref="sortCell"
-          :title="item.name"
-          class="sort-cell"
-        >
-          <template v-slot:right-icon>
-            <i
-              :id="'item' + index"
-              class="fa fa-trash delete-icon"
-              aria-hidden="true"
-              draggable="true"
-              @click="deleteTodo(item.id)"
-            />
-          </template>
-        </ComCell>
-      </ComList>
-    </ComPopup>
+      @submit="submitSort"
+    />
 
     <ComPopup
       class="box-move-todo"
@@ -399,10 +365,10 @@
 import ListItem from './ListItem'
 import ProgressCircle from './ProgressCircle'
 import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
+import BoxSortTodo from '@/components/todo/BoxSortTodo'
 import DatePicker from '../DatePicker'
 import util from '@/js/util.js'
 import todo from '@/js/todo.js'
-import Sorter from '@/sort.js'
 import { mapState, mapMutations } from 'vuex'
 
 export default {
@@ -410,7 +376,8 @@ export default {
     ListItem,
     ProgressCircle,
     BoxAddTodo,
-    DatePicker
+    DatePicker,
+    BoxSortTodo
   },
   props: {
     todos: {
@@ -423,7 +390,6 @@ export default {
       curTodos: [],
       showBoxInfo: false,
       todo: this.todos[0],
-      todoIndex: 0,
       background: '',
       showBoxAddTodo: false,
       showBoxSort: false,
@@ -465,7 +431,8 @@ export default {
   computed: {
     ...mapState('todo', {
       sets: state => state.todoSets,
-      isGetTodos: 'isGetTodos'
+      isGetTodos: 'isGetTodos',
+      showBoxSortTodo: 'showBoxSortTodo'
     }),
     datas () {
       if (!this.curTodos.length) {
@@ -582,12 +549,17 @@ export default {
         this.getData()
         this.storeSetIsGetTodos(false)
       }
+    },
+    showBoxSortTodo (val) {
+      this.showBoxSort = val
+    },
+    showBoxSort (val) {
+      this.storeSetShowBoxSortTodo(val)
     }
   },
   mounted () {
     console.log(this.datas)
     console.log(this.todos)
-    console.log(Sorter)
     this.getData()
   },
   methods: {
@@ -601,7 +573,8 @@ export default {
       storeSetShowTimeAxis: 'setShowTimeAxis',
       storeSetShowStatistics: 'setShowStatistics',
       storeSetTarget: 'setTarget',
-      storeSetIsGetTodos: 'setIsGetTodos'
+      storeSetIsGetTodos: 'setIsGetTodos',
+      storeSetShowBoxSortTodo: 'setShowBoxSortTodo'
     }),
     getData () {
       return new Promise((resolve) => {
@@ -632,7 +605,6 @@ export default {
     edit (index) {
       this.todo = this.curTodos[index]
       this.background = this.todo.background
-      this.todoIndex = index
       this.showBoxInfo = true
     },
     editTodo () {
@@ -653,14 +625,6 @@ export default {
       this.showSortMove = false
       this.showBoxInfo = false
     },
-    initSort () {
-      if (this.sorter) {
-        this.sorter.destroy()
-      }
-
-      this.sorter = new Sorter(this.$refs.sortContainer.$el, this.todos)
-      this.sorter.init()
-    },
     moveToSet () {
       this.showBoxMove = true
       this.showSortMove = false
@@ -678,12 +642,8 @@ export default {
       this.storeDeleteTodo(id)
       this.showBoxInfo = false
     },
-    submitSort () {
-      if (this.sorter) {
-        this.$emit('update-todos', this.sorter.getData())
-        this.sorter.destroy()
-      }
-      this.showBoxSort = false
+    submitSort (data) {
+      this.$emit('update-todos', data)
       this.getData()
     },
     changeBackgroundRandom () {

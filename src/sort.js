@@ -5,7 +5,6 @@
  */
 
 export default class Sorter {
-  id; // 父元素id选择器
   data; // 分类数据
   container; // 父元素节点
   items; // 分类元素对象
@@ -54,6 +53,7 @@ export default class Sorter {
     const top = cRect.top - pRect.top
     const width = cRect.right - cRect.left
     const height = cRect.bottom - cRect.top
+
     return {
       realLeft: cRect.left,
       realTop: cRect.top,
@@ -71,6 +71,7 @@ export default class Sorter {
   setNodeCopy (index) {
     const node = this.items[index].el
     const position = this.items[index].position
+
     this.nodeCopy = node.cloneNode(true)
     const style = {
       position: 'absolute',
@@ -85,6 +86,7 @@ export default class Sorter {
       width: position.width + 'px',
       height: position.height + 'px'
     }
+
     Object.assign(this.nodeCopy.style, style)
     this.container.appendChild(this.nodeCopy, node)
   }
@@ -92,6 +94,7 @@ export default class Sorter {
   hint (x, y) {
     return this.items.findIndex(item => {
       const position = item.position
+
       return (
         x > position.left &&
         x < position.right &&
@@ -105,6 +108,7 @@ export default class Sorter {
     const hintObj = this.items[hint]
     const currentObj = this.items[current]
     const dy = hintObj.position.top - currentObj.position.top
+
     hintObj.el.style.transform = `translate(0,${-dy}px)`
     currentObj.el.style.transform = `translate(0,${dy}px)`
   }
@@ -112,6 +116,7 @@ export default class Sorter {
   swap (current, hint, direction) {
     const hintNode = this.items[hint].el
     const currentNode = this.items[current].el
+
     if (direction > 0) {
       this.container.insertBefore(hintNode, currentNode)
     } else {
@@ -133,9 +138,11 @@ export default class Sorter {
 
   dragStart = e => {
     const event = e
-    event.preventDefault()
+
+    // event.preventDefault()
     const touch = event.targetTouches[0]
     const node = this.getParentByClass(touch.target, 'sort-cell')
+
     if (!node) return
     const index = this.items.findIndex(item => {
       return item.el === node
@@ -166,6 +173,7 @@ export default class Sorter {
     const dy = touch.clientY - this.mouse.originY
     const dx = touch.clientX - this.mouse.originX
     const direction = touch.clientY - this.mouse.startY
+
     this.mouse.startY = touch.clientY
     this.nodeCopy.style.transform = `translate(${dx}px,${dy}px)`
     const hint = this.hint(
@@ -182,6 +190,7 @@ export default class Sorter {
   dragEnd = e => {
     const event = e
     const node = this.getParentByClass(event.target, 'sort-cell')
+
     if (!node) return
     this.container.removeChild(this.nodeCopy)
     node.style.background = ''
@@ -195,11 +204,16 @@ export default class Sorter {
     const dragIndex = this.nodeInitPos.index
     const hintIndex = this.index
     const dragItem = this.data.splice(dragIndex, 1)[0]
+
     this.data.splice(hintIndex, 0, dragItem)
   }
 
   getData () {
     return this.data
+  }
+
+  setData (data) {
+    this.data = data
   }
 
   destroy () {

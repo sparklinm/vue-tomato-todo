@@ -40,15 +40,24 @@ const router = new Router({
         },
         {
           path: '/statistics',
-          component: Statistics
+          component: Statistics,
+          meta: {
+            parent: true
+          }
         },
         {
           path: '/time_axis',
-          component: TimeAxis
+          component: TimeAxis,
+          meta: {
+            parent: true
+          }
         },
         {
           path: '/future_plan',
-          component: FuturePlan
+          component: FuturePlan,
+          meta: {
+            parent: true
+          }
         },
         {
           path: '/me',

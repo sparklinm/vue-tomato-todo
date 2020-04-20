@@ -47,7 +47,7 @@ export default {
           accound: '0000000000000000000',
           signature: this.$t('user.defalut_signature'),
           creat: new Date(),
-          background: '/background/back5.jpg'
+          background: require('@/assets/user/user_cover.jpg')
         }
 
         this.storeSetUser(user)
