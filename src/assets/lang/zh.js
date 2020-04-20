@@ -161,7 +161,8 @@ module.exports = {
     system_default_account: '*系统默认账号',
     modify_nickname: '修改昵称',
     modify_signature: '修改个性签名',
-    input_new_nickname: '请输入新的昵称（1-16）'
+    input_new_nickname: '请输入新的昵称（1-16）',
+    input_new_signature: '请输入个性签名'
   },
   menu: {
     get_up_clock: '早起打卡',
@@ -204,7 +205,8 @@ module.exports = {
     whether_change_theme: '是否要改变当前主题颜色？',
     whether_change_language: '是否要更改系统语言？',
     clear_all_data: '即将清除本地所有历史记录，统计数据，是否继续？（仅清除统计数据，待办或待办集不受影响）',
-    change_cover: '您可以从本地选择喜欢的封面'
+    change_cover: '您可以从本地选择喜欢的封面',
+    confirm_exit_account: '确定退出当前账号吗？'
   },
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',
@@ -221,7 +223,11 @@ module.exports = {
     custome_todo_card_background: '如何自定义待办卡片的背景？',
     set_successfully: '设置成功',
     login_successfully: '登录成功',
-    modify_successfully: '修改成功'
+    modify_successfully: '修改成功',
+    no_more_than: '不能超过 {0} 个字符',
+    no_less_than: '不能少于 {0} 个字符',
+    input_no_empty: '输入不能为空',
+    sort_limit: '只能在待办或待办集页面排序'
   },
   sentence: {
     0: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。',

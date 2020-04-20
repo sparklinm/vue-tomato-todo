@@ -111,6 +111,12 @@
         </button>
       </template>
     </ComPopup>
+
+    <BoxSortTodo
+      :data="sets"
+      :show.sync="showBoxSort"
+      @submit="submitSort"
+    />
   </ComList>
 </template>
 
@@ -118,11 +124,13 @@
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import ListTodo from './ListTodo'
 import BoxAddTodo from './add/BoxAddTodo'
+import BoxSortTodo from '@/components/todo/BoxSortTodo'
 
 export default {
   components: {
     ListTodo,
-    BoxAddTodo
+    BoxAddTodo,
+    BoxSortTodo
   },
   data () {
     return {
@@ -130,19 +138,29 @@ export default {
       showBoxAddTodo: false,
       showBoxModifySet: false,
       currentSet: {},
-      currentSetIndex: 0
+      currentSetIndex: 0,
+      showBoxSort: false
     }
   },
   computed: {
     ...mapState('todo', {
-      sets: state => state.todoSets
+      sets: state => state.todoSets,
+      showBoxSortSet: 'showBoxSortSet'
     }),
     ...mapGetters('todo', {
       getTodosBySet: 'getTodosBySet'
     })
   },
+  watch: {
+    showBoxSortSet (val) {
+      this.showBoxSort = val
+    },
+    showBoxSort (val) {
+      this.setShowBoxSortSet(val)
+    }
+  },
   methods: {
-    ...mapMutations('todo', ['modifyTodoSet']),
+    ...mapMutations('todo', ['modifyTodoSet', 'setTodoSets', 'setShowBoxSortSet']),
     setShowTodos (index, isShow) {
       if (typeof isShow === 'undefined') {
         this.showTodos[index] = !this.showTodos[index]
@@ -166,6 +184,9 @@ export default {
     submitAddTodo (todo) {
       this.currentSet.todos.push(todo)
       this.submitModifySet()
+    },
+    submitSort (data) {
+      this.setTodoSets(data)
     }
   }
 }

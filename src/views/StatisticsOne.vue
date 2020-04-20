@@ -11,6 +11,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import CumulativeData from '../components/statistics/CumulativeData'
+
 export default {
   components: {
     CumulativeData
@@ -28,9 +29,7 @@ export default {
   },
   methods: {
     toLastPage () {
-      this.$router.push({
-        path: '/'
-      })
+      history.back()
     }
   }
 }

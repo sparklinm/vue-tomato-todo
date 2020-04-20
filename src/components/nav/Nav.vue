@@ -62,10 +62,26 @@
           name="cog"
         />
 
-        <ComIcon
-          v-if="page.buttons.includes('more')"
-          name="ellipsis-v"
-        />
+        <span v-if="page.buttons.includes('more')">
+          <ComToolTip :show.sync="showDropListMore">
+            <ComIcon
+              name="ellipsis-v"
+            />
+            <template #content>
+              <div class="drop-list_white drop-list_right">
+                <ul>
+                  <li @click="sortTodos">
+                    {{ $t("action.edit") }}{{ $t("action.sort") }}
+                  </li>
+
+                  <li @click="toTimeAxis">
+                    {{ $t("todo.history_record_time_axis") }}
+                  </li>
+                </ul>
+              </div>
+            </template>
+          </ComToolTip>
+        </span>
       </div>
     </div>
     <BoxAddTodo
@@ -469,7 +485,8 @@ export default {
         data: []
       },
       showFocusChart: true,
-      background: ''
+      background: '',
+      showDropListMore: false
     }
   },
   computed: {
@@ -629,7 +646,12 @@ export default {
     this.setClockBackground()
   },
   methods: {
-    ...mapMutations('todo', ['addTodo', 'setIsGetTodos']),
+    ...mapMutations('todo', [
+      'addTodo',
+      'setIsGetTodos',
+      'setShowBoxSortTodo',
+      'setShowBoxSortSet'
+    ]),
     showBox (key) {
       this[key] = true
     },
@@ -844,6 +866,25 @@ export default {
         targetDay = chart.period[1].getTime()
       }
       chart.period = this.getPeriod(chart.range, new Date(targetDay))
+    },
+    toTimeAxis () {
+      this.showDropListMore = false
+      this.$nextTick(() => {
+        this.$router.push({
+          path: 'time_axis/all'
+        })
+      })
+    },
+    sortTodos () {
+      if (this.pathName === 'todo') {
+        this.showDropListMore = false
+        this.setShowBoxSortTodo(true)
+      } else if (this.pathName === 'set') {
+        this.showDropListMore = false
+        this.setShowBoxSortSet(true)
+      } else {
+        this.$tips(this.$t('tips.sort_limit'))
+      }
     }
   }
 }
@@ -853,6 +894,7 @@ export default {
 .nav-wrap {
   height: 56px;
 }
+
 .nav {
   position: fixed;
   top: 0;
@@ -867,6 +909,7 @@ export default {
 
   .right {
     font-size: 18px;
+
     &>span {
       margin-left: 20px;
       padding: 5px;

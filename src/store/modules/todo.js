@@ -2,6 +2,8 @@ export default {
   namespaced: true,
   state: {
     isGetTodos: false,
+    showBoxSortTodo: false,
+    showBoxSortSet: false,
     todos: [
       {
         id: 0,
@@ -392,6 +394,12 @@ export default {
     setIsGetTodos (state, isGet) {
       state.isGetTodos = isGet
     },
+    setShowBoxSortTodo (state, show) {
+      state.showBoxSortTodo = show
+    },
+    setShowBoxSortSet (state, show) {
+      state.showBoxSortSet = show
+    },
     addTodo (state, todo) {
       state.todos.push({
         id: state.todos[state.todos.length - 1].id + 1,
@@ -421,6 +429,9 @@ export default {
     },
     modifyTodoSet (state, { set, index }) {
       state.todoSets[index] = set
+    },
+    setTodoSets (state, sets) {
+      state.todoSets = sets
     },
     setTarget (state, id) {
       state.target = state.todos.find(todo => todo.id === id)

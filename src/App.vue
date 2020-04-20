@@ -152,12 +152,12 @@ export default {
     },
     setUser () {
       const user = {
-        headIcon: require('./assets/user/head.jpg'),
+        headIcon: require('@/assets/setting/product.png'),
         nickname: this.$t('user.not_login'),
         accound: '0000000000',
         signature: this.$t('user.click_default_head_login'),
         creat: new Date(),
-        background: '/background/back4.jpg'
+        background: require('@/assets/user/user_cover.jpg')
       }
 
       this.storeSetUser(user)

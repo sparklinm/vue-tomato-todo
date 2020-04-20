@@ -20,9 +20,13 @@ export default {
   },
   computed: {
     ...mapGetters('todo', {
-      getTodoById: 'getTodoById'
+      getTodoById: 'getTodoById',
+      getAllTodos: 'getAllTodos'
     }),
     todo () {
+      if (this.$route.params.id === 'all') {
+        return this.getAllTodos
+      }
       return this.getTodoById(parseInt(this.$route.params.id))
     }
   },
@@ -32,9 +36,7 @@ export default {
   },
   methods: {
     toLastPage () {
-      this.$router.push({
-        path: '/'
-      })
+      history.back()
     }
   }
 }
