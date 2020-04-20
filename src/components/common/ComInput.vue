@@ -186,7 +186,7 @@ export default {
 
 .com-input__area {
   position: relative;
-  padding: 2px 0;
+  padding: 4px 0;
   flex: 1;
   .flex(@align-items: center);
 }

@@ -46,7 +46,8 @@ Vue.use(VueI18n)
 const i18n = new VueI18n({
   locale: 'zh', // 语言标识
   messages: {
-    'zh': require('./assets/lang/zh')
+    'zh': require('./assets/lang/zh'),
+    'en': {}
   }
 })
 

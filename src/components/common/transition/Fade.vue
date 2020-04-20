@@ -1,6 +1,7 @@
 <template>
   <transition
     name="fade"
+    @after-enter="$emit('opend')"
   >
     <slot />
   </transition>

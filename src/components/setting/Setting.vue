@@ -1,7 +1,7 @@
 <template>
   <div class="my-settings">
     <div
-      class="user-card"
+      class="settings-user-card"
       :style="{'background-image':`url(${userCardBackground})`}"
       @click.self="uploadImage"
     >
@@ -37,7 +37,6 @@
         @change="doUploadImage"
       >
     </div>
-    <i class="fad fa-camera" />
     <div class="settings-list">
       <router-link
         to="pomodoro_setting"
@@ -137,7 +136,7 @@
     <ComPopup
       :show.sync="shoBoxTheme"
       :title="$t('settings.choose_you_like_theme')"
-      class="box-set-theme"
+      class="box-set-theme fade"
       :close-on-click-mask="false"
       top-btn
     >
@@ -173,7 +172,8 @@ export default {
   },
   computed: {
     ...mapState('user', {
-      user: state => state.user
+      user: state => state.user,
+      isLogin: state => state.isLogin
     }),
     ...mapState('todo', {
       focus: state => state.focus
@@ -209,7 +209,15 @@ export default {
       this.allModules = _.cloneDeep(this.modules)
     },
     uploadImage () {
-      this.$refs.upload.click()
+      this.$message({
+        title: this.$t('settings.change_cover'),
+        content: this.$t('message.change_cover'),
+        options: {
+          showCancel: true
+        }
+      }).then(() => {
+        this.$refs.upload.click()
+      })
     },
     doUploadImage (e) {
       const files = e.target.files
@@ -220,7 +228,15 @@ export default {
       })
     },
     handleUserClick () {
-
+      if (!this.isLogin) {
+        this.$router.push({
+          path: 'login'
+        })
+        return
+      }
+      this.$router.push({
+        path: 'modify_me'
+      })
     },
     setDisplayModule () {
       this.shoBoxDisplayModule = true
@@ -239,8 +255,11 @@ export default {
           showCancel: true
         }
       }).then(() => {
-        document.body.className = theme.class
-        this.$tips(this.$t('tips.set_successfully'))
+        this.shoBoxTheme = false
+        this.$loading.show(2000).then(() => {
+          document.body.className = theme.class
+          this.$tips(this.$t('tips.set_successfully'))
+        })
       })
     }
   }
@@ -253,7 +272,7 @@ export default {
   // min-height: 100%;
 }
 
-.user-card {
+.settings-user-card {
   padding: 15px 0 10px 25px;
   background-size: 100% 100%;
   color: white;

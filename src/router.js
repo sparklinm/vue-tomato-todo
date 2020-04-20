@@ -14,6 +14,8 @@ import PomodoroSetting from './views/PomodoroSetting.vue'
 import CustomMotto from './views/CustomMotto.vue'
 import AppearanceSetting from './views/AppearanceSetting.vue'
 import OtherSettings from './views/OtherSettings.vue'
+import Login from './views/Login.vue'
+import Me from './views/Me.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -105,6 +107,20 @@ const router = new Router({
     {
       path: '/other_setting',
       component: OtherSettings,
+      meta: {
+        child: true
+      }
+    },
+    {
+      path: '/login',
+      component: Login,
+      meta: {
+        child: true
+      }
+    },
+    {
+      path: '/modify_me',
+      component: Me,
       meta: {
         child: true
       }

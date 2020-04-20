@@ -32,7 +32,11 @@ module.exports = {
     sunday: '周日',
     setting: '设置',
     motto: '格言',
-    free: '免费'
+    free: '免费',
+    chinese: '中文',
+    english: '英语',
+    login: '登录'
+
   },
   action: {
     edit: '编辑',
@@ -148,7 +152,16 @@ module.exports = {
     continue_get_up_early_days: '连续早起{0}天',
     continue_sleep_early_days: '连续早睡{0}天',
     not_login: '未登录',
-    click_default_head_login: '请点击默认头像登录'
+    click_default_head_login: '请点击默认头像登录',
+    defalut_nickname: '早起的鸟',
+    defalut_signature: '千里之行，始于足下',
+    account: '账号',
+    nickname: '昵称',
+    signature: '签名',
+    system_default_account: '*系统默认账号',
+    modify_nickname: '修改昵称',
+    modify_signature: '修改个性签名',
+    input_new_nickname: '请输入新的昵称（1-16）'
   },
   menu: {
     get_up_clock: '早起打卡',
@@ -160,6 +173,7 @@ module.exports = {
     sleep_early: '早睡',
     sleep_late: '晚睡',
     my: '我的',
+    me: '我',
     pomodoro_setting: '番茄钟设置 ',
     custom_pomodoro_motto: '自定义番茄格言',
     poster_and_appearce_setting: '海报背景和外观设置',
@@ -187,7 +201,10 @@ module.exports = {
     save_online_poster: '点击计时界面右上角或者保存按钮，在弹出的界面中再次点击保存按钮即可。',
     custome_todo_card_background: `<p>首先，您需要在本页面点击 [待办卡片背景]，即可设置卡片为多彩背景图或是纯色。</p>
                                    <p>当背景为多彩背景图时，长按待办，点击 [更换背景] 即可选择 [随机] 或 [从相册选择]。</p>`,
-    whether_change_theme: '是否要改变当前主题颜色？'
+    whether_change_theme: '是否要改变当前主题颜色？',
+    whether_change_language: '是否要更改系统语言？',
+    clear_all_data: '即将清除本地所有历史记录，统计数据，是否继续？（仅清除统计数据，待办或待办集不受影响）',
+    change_cover: '您可以从本地选择喜欢的封面'
   },
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',
@@ -202,7 +219,9 @@ module.exports = {
     what_is_pomodoro_poster: '什么是番茄钟海报？',
     save_online_poster: '我该如何保存喜欢的在线海报？',
     custome_todo_card_background: '如何自定义待办卡片的背景？',
-    set_successfully: '设置成功'
+    set_successfully: '设置成功',
+    login_successfully: '登录成功',
+    modify_successfully: '修改成功'
   },
   sentence: {
     0: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。',
@@ -307,6 +326,19 @@ module.exports = {
     choose_you_like_theme: '选择一个您喜欢的主题颜色吧',
     chart_settings: '图表设置',
     clear_cache: '清除统计数据缓存',
-    set_language: '设置软件内置语言'
+    set_language: '设置软件内置语言',
+    chart_duration_unit: '统计图表时长单位',
+    hour: '小时',
+    minute: '@:word.minute',
+    chart_duration_unit_desc: '仅对月度统计图和年度统计图生效',
+    monthly_statistics_display_range: '月度数据展示范围',
+    monthly_statistics_display_range_desc: '7天：默认展示7天数据，可左右滑动 <br> 整月：默认展示完成的月数据，可双指任意缩放',
+    seven_days: '7天',
+    whole_month: '整月',
+    not_show_completed_plan: '不在小组件显示已完成的未来计划',
+    exit_login: '退出登录',
+    exit_login_desc: '退出当前登录的账号',
+    change_cover: '更换封面吗',
+    use_default_account_login: '默认账号登录'
   }
 }

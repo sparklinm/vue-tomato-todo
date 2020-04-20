@@ -113,7 +113,6 @@ export default {
   .fixed-full-screen();
   background-color: transparent;
   font-size: 10px;
-  color: white;
   transition: all;
 }
 

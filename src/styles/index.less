@@ -7,6 +7,13 @@ body {
   letter-spacing: 0.5px;
 }
 
+button {
+  outline: none;
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+
 // theme-1
 .theme-1 {
   .font-color-base {
@@ -196,6 +203,7 @@ ul {
 
 .drop-list_simple {
   text-align: left;
+  color: white;
 
   li {
     line-height: normal;
@@ -206,6 +214,29 @@ ul {
       margin-top: 1px;
     }
   }
+}
+
+.drop-list_white {
+  text-align: left;
+  background-color: white;
+  box-shadow: 0 0 2px 1px rgb(223, 223, 223);
+  font-size: 12px;
+
+
+  li {
+    line-height: normal;
+    padding: 10px 20px;
+
+    &:not(:first-child) {
+      margin-top: 1px;
+    }
+  }
+}
+
+.drop-list_right {
+  position: fixed;
+  right: 0;
+  width: 40%;
 }
 
 .com-input__purple {
@@ -226,7 +257,8 @@ ul {
 .box-set-settings,
 .box-set-loop,
 .box-edit-duration,
-.box-custom-pause-duration {
+.box-custom-pause-duration,
+.box-modify-nickname {
   .com-popup__content {
     font-size: 15px;
     padding: 15px 20px 5px;
