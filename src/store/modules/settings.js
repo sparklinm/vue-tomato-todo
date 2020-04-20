@@ -81,6 +81,14 @@ export default {
       timeTextSize: 'normal',
       timeTextStyle: 'normal'
     },
+    chart: {
+      showClockChart: true,
+      showStopChart: true,
+      chartDurationUnit: 'hour',
+      monthlyStatisticsDisplayRange: 'seven_days'
+    },
+    language: 'zh',
+    noShowCompletedPlan: true,
     beeps: [
       {
         name: 'ding_ding',
@@ -174,6 +182,15 @@ export default {
     },
     setModules (state, ary) {
       state.modules = ary.concat()
+    },
+    modifyChart (state, obj) {
+      Object.assign(state.chart, obj)
+    },
+    setLanguage (state, value) {
+      state.language = value
+    },
+    setNoShowCompletedPlan (state, value) {
+      state.noShowCompletedPlan = value
     }
   },
   actions: {}

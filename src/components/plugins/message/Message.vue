@@ -1,9 +1,9 @@
 <template>
-  <Fade>
+  <Fade @opend="startCountdown">
     <div
       v-show="show"
       class="box-wrap"
-      style="z-index:2700"
+      style="z-index:23456"
       @click.self="hide"
     >
       <div class="plu-message">
@@ -20,7 +20,15 @@
             class="cancel"
             @click="hide"
           >取消</span>
-          <span @click="confirm">确定</span>
+          <button
+            class="confirm"
+            :disabled="showCountdown"
+            :class="{ 'plu-message__confirm_disabled': showCountdown }"
+            @click="confirm"
+          >
+            确定
+            <span v-if="showCountdown"> ({{ confirmCountdown }}) </span>
+          </button>
         </div>
       </div>
     </div>
@@ -34,7 +42,13 @@ export default {
       title: '',
       content: '',
       show: false,
-      showCancel: false
+      showCancel: false,
+      confirmCountdown: 0
+    }
+  },
+  computed: {
+    showCountdown () {
+      return this.confirmCountdown > 0
     }
   },
   watch: {
@@ -42,6 +56,10 @@ export default {
       if (val) {
         this.$modals.add(this.$el)
       } else {
+        Object.assign(this, {
+          showCancel: false,
+          confirmCountdown: 0
+        })
         this.$modals.delete()
       }
     }
@@ -54,12 +72,21 @@ export default {
     confirm () {
       this.show = false
       this.$emit('confirm')
+    },
+    startCountdown () {
+      if (this.confirmCountdown <= 0) {
+        return
+      }
+      setTimeout(() => {
+        this.confirmCountdown--
+        this.startCountdown()
+      }, 1000)
     }
   }
 }
 </script>
 
-<style lang='less'>
+<style lang="less">
 .plu-message {
   .center-position();
   width: 7.3rem;
@@ -88,7 +115,7 @@ export default {
     text-align: justify;
 
     p {
-      margin:10px 0;
+      margin: 10px 0;
     }
   }
 
@@ -101,8 +128,20 @@ export default {
       padding: 10px 0;
     }
 
+    .confirm {
+      outline: none;
+      border: none;
+      padding: 0;
+      background: transparent;
+      color: @theme-base-color-1-20;
+    }
+
+    .plu-message__confirm_disabled {
+      color: rgb(156, 156, 156);
+    }
+
     .cancel {
-      margin-right: 15px;
+      margin-right: 30px;
     }
   }
 }
