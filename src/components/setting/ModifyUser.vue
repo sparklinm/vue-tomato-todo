@@ -7,7 +7,7 @@
     >
       <div class="user-info-container">
         <img
-          :src="user.headIcon"
+          :src="curUser.headIcon"
           alt=""
           class="user-head-icon"
         >
@@ -38,11 +38,11 @@
       <div class="modify-user-list">
         <ComCell
           :title="$t('user.modify_nickname')"
-          @click.native="showBoxModify=true"
+          @click.native="showBoxModifyNickname=true"
         />
         <ComCell
           :title="$t('user.modify_signature')"
-          @click.native="showBoxChartSettings=true"
+          @click.native="showBoxModifySignature=true"
         />
         <!-- <ComCell
           :title="$t('settings.not_show_completed_plan')"
@@ -62,13 +62,13 @@
         </ComCell> -->
         <ComCell
           :title="$t('settings.exit_login')"
-          @click="exitLogin"
+          @click.native="exitLogin"
         />
       </div>
     </div>
 
     <ComPopup
-      :show.sync="showBoxModify"
+      :show.sync="showBoxModifyNickname"
       no-header
       class="box-modify-nickname fade"
       bottom-confirm-btn
@@ -84,14 +84,31 @@
         :placeholder="$t('user.input_new_nickname')"
       />
     </ComPopup>
+
+    <ComPopup
+      :show.sync="showBoxModifySignature"
+      no-header
+      class="box-modify-signature fade"
+      bottom-confirm-btn
+      bottom-cancel-btn
+      :submit="submitModifySignature"
+      :close-on-click-mask="false"
+      @closed="signature=''"
+      @opened="$refs.inputSignature.focus()"
+    >
+      <ComInput
+        ref="inputSignature"
+        v-model="signature"
+        :placeholder="$t('user.input_new_signature')"
+      />
+    </ComPopup>
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-import setting from '@/js/setting.js'
 import SubNav from '@/components/nav/SubNav'
-import BoxRadioList from '@/components/BoxRadioList'
+import settins from '@/js/setting.js'
 
 export default {
   components: {
@@ -99,13 +116,15 @@ export default {
   },
   data () {
     return {
-      showBoxModify: true,
+      showBoxModifyNickname: false,
+      showBoxModifySignature: false,
       curUser: {
         headIcon: '',
         nickname: '',
         signature: ''
       },
-      nickname: ''
+      nickname: '',
+      signature: ''
     }
   },
   computed: {
@@ -130,7 +149,13 @@ export default {
     handleUserChange () {
       this.storeModifyUser(this.curUser)
     },
+    showLengthTip (str, length, tag = 'more', i18n) {
+      return settins.showLengthTip.call(this, str, length, tag, i18n)
+    },
     submitModifyNickname (done) {
+      if (this.showLengthTip(this.nickname, 16) || this.showLengthTip(this.nickname, 1, false)) {
+        return
+      }
       this.storeModifyUser({
         nickname: this.nickname
       })
@@ -140,8 +165,40 @@ export default {
         this.setCurUser()
       })
     },
+    submitModifySignature (done) {
+      if (this.showLengthTip(this.signature, 25) || this.showLengthTip(this.signature, 1, false)) {
+        return
+      }
+      this.storeModifyUser({
+        signature: this.signature
+      })
+      done()
+      this.$loading.show(1000).then(() => {
+        this.$tips(this.$t('tips.modify_successfully'))
+        this.setCurUser()
+      })
+    },
     exitLogin () {
+      this.$message({
+        title: this.$t('word.tip'),
+        content: this.$t('message.confirm_exit_account'),
+        options: {
+          showCancel: true
+        }
+      }).then(() => {
+        const user = {
+          headIcon: require('@/assets/setting/product.png'),
+          nickname: this.$t('user.not_login'),
+          accound: '0000000000',
+          signature: this.$t('user.click_default_head_login'),
+          creat: new Date(),
+          background: require('@/assets/user/user_cover.jpg')
+        }
 
+        this.storeSetUser(user)
+        this.storeSetLoginStatus(false)
+        history.back()
+      })
     }
   }
 }

@@ -11,6 +11,7 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import ListTodo from '../components/todo/ListTodo'
+
 export default {
   name: 'Todo',
   components: {
