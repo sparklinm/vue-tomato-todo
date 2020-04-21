@@ -1,8 +1,6 @@
 <template>
   <div class="nav-wrap">
-    <div
-      class="nav"
-    >
+    <div class="nav">
       <div class="left">
         {{ page.title }}
       </div>
@@ -64,9 +62,7 @@
 
         <span v-if="page.buttons.includes('more')">
           <ComToolTip :show.sync="showDropListMore">
-            <ComIcon
-              name="ellipsis-v"
-            />
+            <ComIcon name="ellipsis-v" />
             <template #content>
               <div class="drop-list_white drop-list_right">
                 <ul>
@@ -122,11 +118,13 @@
         ref="card"
         class="clock-card"
       >
+        <div class="clock-card-background clock-card-default-background" />
         <img
           ref="getUpCardBackground"
           :src="background"
           alt=""
           class="clock-card-background"
+          @load="showImg"
         >
 
         <div class="clock-card-inline">
@@ -235,9 +233,7 @@
                   $t("todo.total_focus_0_days", [focusDays.total])
                 }}</span>
                 <span class="tag">{{
-                  $t("user.continue_sleep_early_days", [
-                    sleepDays.continuation
-                  ])
+                  $t("user.continue_sleep_early_days", [sleepDays.continuation])
                 }}</span>
               </div>
             </div>
@@ -397,7 +393,7 @@
                       <div class="right">
                         <div class="hd">
                           <div class="hd-text">
-                            {{ item.duration +$t('word.minute') }}
+                            {{ item.duration + $t("word.minute") }}
                           </div>
                         </div>
                       </div>
@@ -580,7 +576,14 @@ export default {
           name: 'more',
           icon: 'ellipsis-v',
           event: () => {},
-          limits: ['todo', 'set', 'statistics', 'time_axis', 'future_plan', 'me']
+          limits: [
+            'todo',
+            'set',
+            'statistics',
+            'time_axis',
+            'future_plan',
+            'me'
+          ]
         },
         {
           // 旋转屏幕
@@ -659,8 +662,46 @@ export default {
       this.addTodo(data)
       this.setIsGetTodos(true)
     },
+    getImgEl () {
+      let img = null
+
+      if (this.showBoxGetUpClock) {
+        img = this.$refs.getUpCardBackground
+      } else if (this.showBoxFocusClock) {
+        img = this.$refs.focusCardBackground
+      } else {
+        img = this.$refs.sleepCardBackground
+      }
+      return img
+    },
     setClockBackground () {
-      this.background = setting.getClockBackground()
+      this.hideImg(setting.getClockBackground())
+    },
+    hideImg (src) {
+      const img = this.getImgEl()
+
+      Object.assign(img.style, {
+        opacity: 0
+      })
+      setTimeout(() => {
+        img.src = src
+      })
+    },
+    showImg (e) {
+      const el = e.target
+
+      setTimeout(() => {
+        Object.assign(el.style, {
+          opacity: 1,
+          transition: 'opacity 0.5s ease'
+        })
+
+        el.addEventListener('transitionend', () => {
+          Object.assign(el.style, {
+            transition: 'initial'
+          })
+        })
+      }, 300)
     },
     handleBoxClockOpen () {
       this.sentence = this.$t(setting.getSentence())
@@ -753,15 +794,7 @@ export default {
       this.formatFocusCard(date)
     },
     blurBackground () {
-      let img = null
-
-      if (this.showBoxGetUpClock) {
-        img = this.$refs.getUpCardBackground
-      } else if (this.showBoxFocusClock) {
-        img = this.$refs.focusCardBackground
-      } else {
-        img = this.$refs.sleepCardBackground
-      }
+      const img = this.getImgEl()
 
       if (img.src.startsWith('data')) {
         return
@@ -784,7 +817,10 @@ export default {
       }
     },
     initTimeAxis () {
-      const todayTodos = todo.getTodosByFocusTime(this.todos, ...this.getPeriod('day'))
+      const todayTodos = todo.getTodosByFocusTime(
+        this.todos,
+        ...this.getPeriod('day')
+      )
       const focus = []
 
       todayTodos.forEach(todo => {
@@ -910,7 +946,7 @@ export default {
   .right {
     font-size: 18px;
 
-    &>span {
+    & > span {
       margin-left: 20px;
       padding: 5px;
     }
@@ -953,6 +989,11 @@ export default {
     z-index: 0;
     width: 100%;
     height: 100%;
+    transition: all 0.5s ease;
+  }
+
+  .clock-card-default-background {
+    background-image:linear-gradient(to bottom,rgb(1, 104, 173), rgb(1, 58, 97));
   }
 
   .clock-card-inline {
@@ -990,7 +1031,8 @@ export default {
   }
 }
 
-.box-get-up-clock,.box-sleep-clock {
+.box-get-up-clock,
+.box-sleep-clock {
   .card-header {
     padding: 30px 0px 0 20px;
   }
@@ -1058,7 +1100,6 @@ export default {
   }
 
   .focus-data {
-
     .data-panel__hd {
       padding-bottom: 2px;
     }
@@ -1127,7 +1168,7 @@ export default {
     }
 
     .pie-contianer {
-      height: 3.0rem;
+      height: 3rem;
     }
   }
 

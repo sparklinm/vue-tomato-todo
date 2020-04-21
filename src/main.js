@@ -60,7 +60,7 @@ Vue.use(Calendar, {
 
 Vue.mixin({
   beforeRouteLeave (to, from, next) {
-    if (from.meta.parent && to.meta.child || from.meta.child && to.meta.parent) {
+    if (from.meta.keepAlive || to.meta.keepAlive) {
       this.$root.keepAlive = ['Main']
     } else {
       this.$root.keepAlive = ['None']

@@ -558,8 +558,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.datas)
-    console.log(this.todos)
     this.getData()
   },
   methods: {

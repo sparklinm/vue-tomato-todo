@@ -49,7 +49,7 @@ export default {
       darken20: '#4c947b',
       lighter10: '#76ecc3'
     },
-    productIcon: require('../../assets/setting/product.png'),
+    productIcon: require('@/assets/setting/product.png'),
     keepAlive: [],
     todo: {
       beep: true,
