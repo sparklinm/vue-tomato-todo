@@ -378,7 +378,7 @@ export default {
         name: file.name,
         src: url,
         custom: true,
-        backgroundImg: setting.getMusicBackground()
+        backgroundImg: `/music/background/back${this.todoMusic.length}.jpg`
       }
 
       this.storeAddTodoMusic(music)
