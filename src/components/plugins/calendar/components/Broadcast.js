@@ -45,9 +45,9 @@ export default class extends Events {
   el = null;
   parentNode = null;
 
-  constructor (id, options = {}) {
+  constructor (el, options = {}) {
     super()
-    this.el = document.querySelector(id)
+    this.el = el
     this.parentNode = this.el.parentNode
     const defaultOptions = {
       // 是否循环显示
@@ -57,12 +57,14 @@ export default class extends Events {
       width: 0
     }
     const curOptions = Object.assign(defaultOptions, options)
+
     this.loop = curOptions.loop
     this.timingHeight = curOptions.timingHeight
     this.width = curOptions.width
 
     this.addlistener()
     const domResize = new DomResize(this.parentNode)
+
     domResize.on('domResize', () => {
 
       this.init()
@@ -111,9 +113,11 @@ export default class extends Events {
     let curTick = false
     const that = this
     const params = [...arguments]
+
     params.shift()
     return function () {
       const curParams = [...arguments]
+
       if (!curTick) {
         curTick = true
         requestAnimationFrame(() => {
@@ -130,11 +134,13 @@ export default class extends Events {
     if (!this.isAnimated) {
       const pos = e.detail
       let dx = pos.dx
+
       if (!this.loop) {
         // 非loop模式下的 最大左滑和最大右滑
         const maxOffset = 200
         const leftLimit = this.posAry[0] + maxOffset
         const rightLimit = this.posAry[this.posAry.length - 1] - maxOffset
+
         if (this.translateX > leftLimit) {
           dx = 0
         } else if (this.translateX + pos.dx > leftLimit) {
@@ -181,9 +187,11 @@ export default class extends Events {
   doSmoothSlide (distance) {
     setTimeout(() => {
       let piece = 0
+
       if (distance > 0) {
         piece = 5
         const d = distance - piece
+
         if (d > 0) {
           this.setPos(piece)
           this.doSmoothSlide(d)
@@ -194,6 +202,7 @@ export default class extends Events {
       } else if (distance < 0) {
         piece = -5
         const d = distance - piece
+
         if (d < 0) {
           this.setPos(piece)
           this.doSmoothSlide(d)
@@ -225,6 +234,7 @@ export default class extends Events {
   // 滑动到某个元素（待优化）
   toItem (index, animation = true) {
     let cindex = index
+
     if (!this.loop) {
       if (index < 0) {
         cindex = 0
@@ -281,6 +291,7 @@ export default class extends Events {
       }
     } else {
       const distance = (this.currentIndex - cindex) * this.size.width
+
       if (!animation) {
         this.slide(distance)
         this.setCurrentIndex()
@@ -302,6 +313,7 @@ export default class extends Events {
   // loop模式下跳转
   toLast () {
     const distance = (this.currentIndex - this.length) * this.size.width
+
     this.slide(distance)
     this.setCurrentIndex()
   }
@@ -309,6 +321,7 @@ export default class extends Events {
   // loop模式下跳转
   toFirst () {
     const distance = (this.currentIndex + 1 - 0) * this.size.width
+
     this.slide(distance)
     this.setCurrentIndex()
   }
@@ -338,6 +351,7 @@ export default class extends Events {
       this.el.removeChild(this.last)
     }
     const children = this.el.children
+
     this.last = children[0].cloneNode(true)
     this.first = children[children.length - 1].cloneNode(true)
     this.el.insertBefore(this.first, children[0])
@@ -346,6 +360,7 @@ export default class extends Events {
 
   setConSize () {
     const style = window.getComputedStyle(this.parentNode)
+
     this.size = {
       width: this.width || parseFloat(style.width),
       height: parseFloat(style.height)
@@ -361,6 +376,7 @@ export default class extends Events {
   setNodes () {
     const children = this.el.children
     const nodes = []
+
     for (let i = 0; i < children.length; i++) {
       nodes.push({
         el: children[i],
@@ -372,6 +388,7 @@ export default class extends Events {
 
   setPosAry () {
     const posAry = []
+
     for (let i = 0; i < this.length; i++) {
       posAry[i] = this.getPosByIndex(i)
     }
@@ -383,10 +400,12 @@ export default class extends Events {
     let correctedx = 0
     const firstPos = this.posAry[0]
     const lastPos = this.posAry[this.posAry.length - 1]
+
     if (this.translateX > firstPos) {
       // 首元素继续右移时
       if (this.loop) {
         const d = Math.abs(this.translateX - firstPos)
+
         if (d < this.size.width / 2) {
           correctedx = -d
         } else {
@@ -400,6 +419,7 @@ export default class extends Events {
       // 尾元素继续左移时
       if (this.loop) {
         const d = Math.abs(this.translateX - lastPos)
+
         if (d < this.size.width / 2) {
           correctedx = d
         } else {
@@ -415,6 +435,7 @@ export default class extends Events {
           this.translateX > this.posAry[index + 1]
         ) {
           const d = Math.abs(this.translateX - item)
+
           if (d < this.size.width / 2) {
             correctedx = d
           } else {
@@ -429,12 +450,14 @@ export default class extends Events {
   // 获得这个位置的元素索引
   getIndexByPos (offsetx) {
     const index = -offsetx / this.size.width
+
     return this.correctIndex(index)
   }
 
   // 修正两种模式下的元素索引
   correctIndex (index) {
     let cindex = index
+
     if (!this.loop) {
       if (index < 0) {
         cindex = 0
@@ -455,6 +478,7 @@ export default class extends Events {
   // 获得这个元素索引的位置
   getPosByIndex (index) {
     const pos = -index * this.size.width
+
     if (!this.loop) {
       return pos
     }
@@ -469,6 +493,7 @@ export default class extends Events {
       .height
     const conHeight =
       Math.max(parseFloat(curHeight), parseFloat(nextHeight)) + 'px'
+
     this.style(this.el, {
       height: conHeight
     })

@@ -15,6 +15,7 @@ export default {
   data () {
     return {}
   },
+
   computed: {
     ...mapGetters('todo', {
       todos: 'getAllTodos'

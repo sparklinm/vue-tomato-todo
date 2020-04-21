@@ -28,14 +28,16 @@ const router = new Router({
           path: '',
           component: Todo,
           meta: {
-            parent: true
+            parent: true,
+            keepAlive: true
           }
         },
         {
           path: '/set',
           component: TodoSet,
           meta: {
-            parent: true
+            parent: true,
+            keepAlive: true
           }
         },
         {

@@ -58,7 +58,6 @@
 
       <div class="ev-calendar__main-container">
         <div
-          id="main"
           ref="main"
           class="ev-calendar__main"
         >
@@ -124,6 +123,7 @@ export default {
   computed: {
     fullTime () {
       const curDate = this.curSelectedDay
+
       return {
         year: curDate.getFullYear(),
         month: curDate.getMonth(),
@@ -160,7 +160,7 @@ export default {
     }
   },
   mounted () {
-    this.broadcast = new Broadcast('#main', {
+    this.broadcast = new Broadcast(this.$refs.main, {
       loop: false,
       timingHeight: true
     })

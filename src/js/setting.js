@@ -1,3 +1,29 @@
+function getNonRepeatRandom (lower, upper) {
+  const cache = []
+
+  function randomNumber () {
+    const random = Math.floor(Math.random() * (upper - lower + 1) + lower)
+
+    if (cache.length === upper - lower + 1) {
+      const lastValue = cache[cache.length - 1]
+
+      if (random === lastValue) {
+        return randomNumber()
+      }
+      cache.length = 0
+    }
+
+    if (cache.some(number => number === random)) {
+      return randomNumber()
+    }
+    cache.push(random)
+    return random
+  }
+  return randomNumber
+}
+
+const randomClockBackground = getNonRepeatRandom(0, 3)
+
 export default {
   getSentence () {
     const length = 2
@@ -6,16 +32,9 @@ export default {
     return `sentence.${random}`
   },
   getClockBackground () {
-    const length = 4
-    const random = Math.floor(Math.random() * length)
+    const random = randomClockBackground()
 
     return `/clock/back${random}.jpg`
-  },
-  getMusicBackground () {
-    const length = 4
-    const random = Math.floor(Math.random() * length)
-
-    return `/music/background/back${random}.jpg`
   },
   showLengthTip (str, length, noMore = true, i18) {
     if (str.length === 'undefined') {
@@ -37,7 +56,5 @@ export default {
       }
     }
     return false
-  },
-  getNoLoginUser () {
   }
 }
