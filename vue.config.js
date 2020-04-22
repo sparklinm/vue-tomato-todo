@@ -25,7 +25,12 @@ module.exports = {
       new webpack.ProvidePlugin({
         StackBlur: 'stackblur-canvas'
       }),
-
+      new webpack.ProvidePlugin({
+        gsap: 'gsap'
+      }),
+      new webpack.ProvidePlugin({
+        TWEEN: 'tween'
+      }),
       // 忽略 moment.js的所有本地文件
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new BrowserSyncPlugin(

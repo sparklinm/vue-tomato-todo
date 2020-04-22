@@ -25,19 +25,52 @@
       >
         <div class="column">
           <span class="text">{{ $t('todo.focus_times') }}</span>
-          <span class="number">{{ allFocusData.times }}</span>
+          <AnimatedInteger
+            v-if="showAnimatedInteger"
+            :value="allFocusData.times"
+            :duration="800"
+            class="number"
+          />
+          <span
+            v-else
+            class="number"
+          >
+            0
+          </span>
         </div>
         <div class="column">
           <span class="text">{{ $t('todo.focus_duration') }}</span>
           <span class="focus-data-inlne">
-            <span class="number">{{ allFocusData.duration }}</span>
+            <AnimatedInteger
+              v-if="showAnimatedInteger"
+              :value="allFocusData.duration"
+              :duration="800"
+              class="number"
+            />
+            <span
+              v-else
+              class="number"
+            >
+              0
+            </span>
             <span class="unit">{{ $t('word.minute') }}</span>
           </span>
         </div>
         <div class="column">
           <span class="text">{{ $t('todo.everyday_focus') }}</span>
           <span class="focus-data-inlne">
-            <span class="number">{{ allFocusData.average }}</span>
+            <AnimatedInteger
+              v-if="showAnimatedInteger"
+              :value="allFocusData.average"
+              :duration="800"
+              class="number"
+            />
+            <span
+              v-else
+              class="number"
+            >
+              0
+            </span>
             <span class="unit">{{ $t('word.minute') }}</span>
           </span>
         </div>
@@ -50,12 +83,34 @@
       >
         <div class="column">
           <span class="text">{{ $t('todo.focus_times') }}</span>
-          <span class="number">{{ todayFocusData.times }}</span>
+          <AnimatedInteger
+            v-if="showAnimatedInteger"
+            :value="todayFocusData.times"
+            :duration="800"
+            class="number"
+          />
+          <span
+            v-else
+            class="number"
+          >
+            0
+          </span>
         </div>
         <div class="column">
           <span class="text">{{ $t('todo.focus_duration') }}</span>
           <span class="focus-data-inlne">
-            <span class="number">{{ todayFocusData.duration }}</span>
+            <AnimatedInteger
+              v-if="showAnimatedInteger"
+              :value="todayFocusData.duration"
+              :duration="800"
+              class="number"
+            />
+            <span
+              v-else
+              class="number"
+            >
+              0
+            </span>
             <span class="unit">{{ $t('word.minute') }}</span>
           </span>
         </div>
@@ -111,6 +166,7 @@ import MonthlyChart from './MonthlyChart'
 import ClockChart from './ClockChart'
 import StopChart from './StopChart'
 import YearlyChart from './YearlyChart'
+import AnimatedInteger from '@/components/AnimatedInteger'
 
 export default {
   components: {
@@ -120,7 +176,8 @@ export default {
     MonthlyChart,
     ClockChart,
     StopChart,
-    YearlyChart
+    YearlyChart,
+    AnimatedInteger
   },
   props: {
     name: {
@@ -176,7 +233,8 @@ export default {
         data: [],
         period: [],
         range: 'year'
-      }
+      },
+      showAnimatedInteger: false
     }
   },
   computed: {
@@ -191,6 +249,9 @@ export default {
   },
   mounted () {
     this.init()
+    setTimeout(() => {
+      this.showAnimatedInteger = true
+    })
   },
   methods: {
     init () {
