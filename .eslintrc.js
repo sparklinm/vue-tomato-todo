@@ -196,6 +196,8 @@ module.exports = {
     'module': true,
     'Velocity': true,
     'html2canvas': true,
-    'StackBlur': true
+    'StackBlur': true,
+    'gsap': true,
+    'TWEEN': true
   }
 }

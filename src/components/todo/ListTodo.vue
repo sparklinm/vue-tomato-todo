@@ -27,6 +27,7 @@
       class="box-edit"
       :header-background="background"
       @closed="handleBoxInfoClosed"
+      @opened="showAnimatedInteger=true"
     >
       <template v-slot:header-icon>
         <span
@@ -124,11 +125,31 @@
           <div class="cell-bd">
             <div class="column">
               <span class="text">{{ $t("todo.focus_times") }}</span>
-              <span class="number">{{ todo.focus.length }}</span>
+              <AnimatedInteger
+                v-if="showAnimatedInteger"
+                :value="todo.focus.length"
+                class="number"
+              />
+              <span
+                v-else
+                class="number"
+              >
+                0
+              </span>
             </div>
             <div class="column">
               <span class="text">{{ $t("todo.focus_duration") }}</span>
-              <span class="number">{{ focusDuration }}</span>
+              <AnimatedInteger
+                v-if="showAnimatedInteger"
+                :value="focusDuration"
+                class="number"
+              />
+              <span
+                v-else
+                class="number"
+              >
+                0
+              </span>
               <span class="unit">{{ $t("word.minute") }}</span>
             </div>
           </div>
@@ -176,7 +197,17 @@
           <div class="cell-bd">
             <div class="column">
               <span class="text">{{ progress.bd.completed }}</span>
-              <span class="number">{{ progress.data.complete }}</span>
+              <AnimatedInteger
+                v-if="showAnimatedInteger"
+                :value="progress.data.complete"
+                class="number"
+              />
+              <span
+                v-else
+                class="number"
+              >
+                0
+              </span>
               <span class="unit">{{
                 progress.data.customUnit || $t("word.minute")
               }}</span>
@@ -191,9 +222,17 @@
             </div>
             <div class="column">
               <span class="text">{{ progress.bd.total }}</span>
-              <span class="number">{{
-                progress.data.total || progress.data.piece
-              }}</span>
+              <AnimatedInteger
+                v-if="showAnimatedInteger"
+                :value="progress.data.total || progress.data.piece"
+                class="number"
+              />
+              <span
+                v-else
+                class="number"
+              >
+                0
+              </span>
               <span class="unit">{{
                 progress.data.customUnit || $t("word.minute")
               }}</span>
@@ -367,6 +406,7 @@ import ProgressCircle from './ProgressCircle'
 import BoxAddTodo from '@/components/todo/add/BoxAddTodo'
 import BoxSortTodo from '@/components/todo/BoxSortTodo'
 import DatePicker from '../DatePicker'
+import AnimatedInteger from '../AnimatedInteger'
 import util from '@/js/util.js'
 import todo from '@/js/todo.js'
 import { mapState, mapMutations } from 'vuex'
@@ -377,7 +417,8 @@ export default {
     ProgressCircle,
     BoxAddTodo,
     DatePicker,
-    BoxSortTodo
+    BoxSortTodo,
+    AnimatedInteger
   },
   props: {
     todos: {
@@ -387,6 +428,7 @@ export default {
   },
   data () {
     return {
+      testnumer: 0,
       curTodos: [],
       showBoxInfo: false,
       todo: this.todos[0],
@@ -424,7 +466,8 @@ export default {
       },
       reminderTime: [9, 5],
       isAddReminder: false,
-      showTimeAxis: false
+      showTimeAxis: false,
+      showAnimatedInteger: false
     }
   },
 
@@ -617,6 +660,8 @@ export default {
       if (!this.showBoxSort) {
         this.getData()
       }
+
+      this.showAnimatedInteger = false
     },
     sort () {
       this.showBoxSort = true

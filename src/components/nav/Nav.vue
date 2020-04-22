@@ -112,6 +112,7 @@
         <ComIcon
           name="times"
           class="box-clock__head-btn"
+          @click="showBoxGetUpClock=false"
         />
       </template>
       <div
@@ -675,9 +676,9 @@ export default {
       return img
     },
     setClockBackground () {
-      this.hideImg(setting.getClockBackground())
+      this.changeSrc(setting.getClockBackground())
     },
-    hideImg (src) {
+    changeSrc (src) {
       const img = this.getImgEl()
 
       Object.assign(img.style, {

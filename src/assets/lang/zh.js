@@ -227,7 +227,8 @@ module.exports = {
     no_more_than: '不能超过 {0} 个字符',
     no_less_than: '不能少于 {0} 个字符',
     input_no_empty: '输入不能为空',
-    sort_limit: '只能在待办或待办集页面排序'
+    sort_limit: '只能在待办或待办集页面排序',
+    changing_background: '正在更换背景图'
   },
   sentence: {
     0: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。',
