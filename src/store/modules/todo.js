@@ -23,7 +23,8 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        background: '/background/back5.jpg'
+        background: '/background/back5.jpg',
+        color: '#0099CC'
       },
       {
         id: 1,
@@ -48,7 +49,8 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        background: '/background/back1.jpg'
+        background: '/background/back1.jpg',
+        color: '#996699'
       },
       {
         id: 2,
@@ -66,7 +68,8 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        background: '/background/back6.jpg'
+        background: '/background/back6.jpg',
+        color: '#333366'
       },
       {
         id: 3,
@@ -90,7 +93,8 @@ export default {
         },
         create: new Date(2019, 10, 24),
         hideAfterComplete: false,
-        background: '/background/back8.jpg'
+        background: '/background/back8.jpg',
+        color: '#CC9966'
       }
     ],
     reminders: [

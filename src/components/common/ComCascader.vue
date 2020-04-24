@@ -122,13 +122,11 @@ export default {
 
           // 滑动时，触发change事件，重新渲染下级选择器
           slide.on('change', (el, index, children) => {
-            console.log('m1')
             renderSlide(el, this.curData[i][index], children)
           })
 
           // init后触发finsh事件，重新渲染下级选择器
           slide.on('finsh', (el, index, children) => {
-            console.log('m2')
             renderSlide(el, this.curData[i][index], children)
           })
           slide.init({

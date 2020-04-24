@@ -206,7 +206,8 @@ module.exports = {
     whether_change_language: '是否要更改系统语言？',
     clear_all_data: '即将清除本地所有历史记录，统计数据，是否继续？（仅清除统计数据，待办或待办集不受影响）',
     change_cover: '您可以从本地选择喜欢的封面',
-    confirm_exit_account: '确定退出当前账号吗？'
+    confirm_exit_account: '确定退出当前账号吗？',
+    not_enable_todo_card_background_img: '没有开启待办卡片背景图片，请前往 <span class="pink">我的-外观设置</span> 开启。'
   },
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',

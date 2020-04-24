@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div style="height:100%">
     <Nav />
-    <router-view />
+    <main class="main">
+      <router-view />
+    </main>
     <TabBar />
   </div>
 </template>

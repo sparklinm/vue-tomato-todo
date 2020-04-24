@@ -10,6 +10,10 @@ export default {
     show: {
       type: Boolean,
       default: false
+    },
+    showOnClick: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -26,7 +30,9 @@ export default {
     },
     curShow (val) {
       if (val) {
-        this.creatContent()
+        this.$nextTick(() => {
+          this.creatContent()
+        })
       } else {
         this.removeContent()
       }
@@ -34,9 +40,11 @@ export default {
     }
   },
   mounted () {
-    this.$el.addEventListener('click', () => {
-      this.curShow = true
-    })
+    if (this.showOnClick) {
+      this.$el.addEventListener('click', () => {
+        this.curShow = true
+      })
+    }
     if (this.curShow) {
       this.creatContent()
     }

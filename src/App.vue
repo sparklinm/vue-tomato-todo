@@ -1,5 +1,8 @@
 <template>
-  <div id="app">
+  <div
+    id="app"
+    :style="{backgroundImage:`url(${appearance.mainPageBackground})`}"
+  >
     <!-- <div
       class="test"
       style="position:fixed;z-index:99999;min-width:50px;min-height:40px;background:yellow;color:red;padding:10px;left:0;top:0"
@@ -43,7 +46,7 @@
 
 <script>
 import screenshot from '@/js/screenshot'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
 export default {
   data () {
@@ -52,7 +55,11 @@ export default {
       css: false
     }
   },
-  computed: {},
+  computed: {
+    ...mapState('settings', {
+      appearance: 'appearance'
+    })
+  },
   watch: {
     $route (to, from) {
       if (to.meta.child && from.meta.parent) {
@@ -138,7 +145,8 @@ export default {
     })
     this.setUser()
   },
-  mounted () {},
+  mounted () {
+  },
   methods: {
     ...mapMutations('user', {
       storeSetUser: 'setUser'
@@ -169,6 +177,12 @@ export default {
 <style lang="less">
 html,body {
   // min-height: 100%;
+  height: 100%;
+}
+
+#app {
+  height: 100%;
+  background-size: 100% 100%;
 }
 // #app div:not(:last-child) {
 //   display: none;

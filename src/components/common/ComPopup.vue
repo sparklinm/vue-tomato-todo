@@ -15,8 +15,16 @@
         <div
           v-if="!noHeader"
           class="com-popup__header"
-          :style="{ 'background-image': `url(${headerBackground})` }"
+          :style="headerStyle"
         >
+          <transition name="com-popup__header-shadow_fade">
+            <div
+              v-if="showHeadShadow"
+              v-show="showShadowAfterOpen"
+              class="com-popup__header-shadow"
+            />
+          </transition>
+
           <div class="com-popup__header-text">
             {{ title }}
           </div>
@@ -80,9 +88,9 @@ export default {
       type: Boolean,
       default: false
     },
-    headerBackground: {
-      type: String,
-      default: ''
+    headerStyle: {
+      type: Object,
+      default: () => ({})
     },
     title: {
       type: String,
@@ -143,11 +151,16 @@ export default {
     removeNode: {
       type: Boolean,
       default: false
+    },
+    showHeadShadow: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
     return {
-      showBox: false
+      showBox: false,
+      showShadowAfterOpen: false
     }
   },
   computed: {
@@ -204,10 +217,12 @@ export default {
   methods: {
     afterEnter () {
       this.$emit('opened')
+      this.showShadowAfterOpen = true
     },
     afterLeave () {
       this.$modals.delete(this.$el)
       this.$emit('closed')
+      this.showShadowAfterOpen = false
     },
     close () {
       this.showBox = false
@@ -270,14 +285,20 @@ export default {
   font-size: 16px;
   padding: 15px 15px;
   transform-origin: 50% 50%;
+  position: relative;
   transition: background-image 0.4s ease;
   background-size: 100% 100%;
 
   .flex(@align-items: center; @justify-content: space-between);
 }
 
+.com-popup__header-text {
+  position: relative;
+}
+
 .com-popup__header-btn-area {
   .flex(@align-items: center);
+  position: relative;
 }
 
 .com-popup__header-btn {
@@ -306,9 +327,23 @@ export default {
   outline: none;
 }
 
-.box-custom-rest-duration {
-  .com-popup__content {
-    padding: 10px 60px;
-  }
+.com-popup__header-shadow {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  left: 0;
+}
+
+.com-popup__header-shadow_fade-enter {
+  opacity: 0;
+}
+
+.com-popup__header-shadow_fade-enter-active {
+  transition: opacity 0.6s linear 2s;
+}
+
+.com-popup__header-shadow_fade-leave-active {
+  transition: none;
 }
 </style>

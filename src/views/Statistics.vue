@@ -1,5 +1,5 @@
 <template>
-  <div class="page-statistics main">
+  <div class="page-statistics">
     <CumulativeData :todos="todos" />
   </div>
 </template>
