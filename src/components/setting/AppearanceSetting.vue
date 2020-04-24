@@ -243,6 +243,7 @@
             :show.sync="showBoxTodoCardBackground"
             :data="selTodoCardBackground"
             name="todo_back"
+            @change="handleSettingChange"
           />
 
           <BoxRadioList
@@ -250,6 +251,7 @@
             :show.sync="showBoxTodoOpacity"
             :data="selTodoOpacity"
             name="todo_opac"
+            @change="handleSettingChange"
           />
 
           <BoxRadioList
@@ -257,6 +259,7 @@
             :show.sync="showBoxTodoSetCardBackground"
             :data="selTodoSetCardBackground"
             name="set_back"
+            @change="handleSettingChange"
           />
 
           <BoxRadioList
@@ -264,6 +267,7 @@
             :show.sync="showBoxTodoSetOpacity"
             :data="selTodoSetOpacity"
             name="set_opac"
+            @change="handleSettingChange"
           />
         </div>
 

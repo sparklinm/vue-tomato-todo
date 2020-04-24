@@ -16,6 +16,7 @@
 import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import CLine from './chart/CLine'
+
 export default {
   components: {
     DataPanel,
@@ -60,8 +61,10 @@ export default {
         const monthDays = util.getMonthDays(time)
         const xAxisData = []
         const seriesData = []
+
         for (let i = 0; i < monthDays; i++) {
           const date = new Date(year, month, day + i)
+
           xAxisData.push(
             util.formatTime(date, {
               cut: '-',
@@ -74,11 +77,13 @@ export default {
             const day = item.getDate()
             const hours = item.getHours()
             const minutes = item.getMinutes()
+
             if ((day - 1) === i) {
               seriesData.push([i, hours + minutes / 60, util.addZero(hours, 10), util.addZero(minutes, 10)])
               return true
             }
           })
+
           if (!item) {
             seriesData.push([i, 0, '', ''])
           }
@@ -91,6 +96,7 @@ export default {
             formatter: obj => {
               const getUp = this.getUpTime(obj[0].data[2], obj[0].data[3])
               const text = `${obj[0].axisValueLabel}<br>${this.$t('todo.get_up_time')}:`
+
               if (getUp) {
                 return text + getUp
               }
@@ -119,6 +125,7 @@ export default {
               label: {
                 formatter: params => {
                   const data = params.data
+
                   return this.getUpTime(data[2], data[3])
                 }
               }
@@ -144,12 +151,14 @@ export default {
           item.getMilliseconds()
         ).getTime()
       }, 0)
+
       if (!total) {
         return this.$t('todo.not_record')
       }
       const aveDate = new Date(total / data.length)
       const hours = util.addZero(aveDate.getHours(), 10)
       const minutes = util.addZero(aveDate.getMinutes(), 10)
+
       return `${hours}:${minutes}`
     },
     getUpTime (hours, minutes) {

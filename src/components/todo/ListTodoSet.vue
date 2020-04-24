@@ -11,6 +11,7 @@
       <ComCell
         :title="item.name"
         class="todo-set-inner"
+        :class="setClass"
         :style="{borderLeftColor:item.background}"
         @click.native.self="setShowTodos(index)"
       >
@@ -61,6 +62,7 @@
         v-show="showTodos[index]"
         :todos="getTodosBySet(item.id)"
         class="list-set-todo"
+        in-set
       />
     </div>
     <BoxAddTodo
@@ -121,10 +123,10 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex'
 import ListTodo from './ListTodo'
 import BoxAddTodo from './add/BoxAddTodo'
 import BoxSortTodo from '@/components/todo/BoxSortTodo'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 
 export default {
   components: {
@@ -139,13 +141,19 @@ export default {
       showBoxModifySet: false,
       currentSet: {},
       currentSetIndex: 0,
-      showBoxSort: false
+      showBoxSort: false,
+      setClass: {
+        'todo-set_opaque': true
+      }
     }
   },
   computed: {
     ...mapState('todo', {
       sets: state => state.todoSets,
       showBoxSortSet: 'showBoxSortSet'
+    }),
+    ...mapState('settings', {
+      appearance: 'appearance'
     }),
     ...mapGetters('todo', {
       getTodosBySet: 'getTodosBySet'
@@ -157,6 +165,17 @@ export default {
     },
     showBoxSort (val) {
       this.setShowBoxSortSet(val)
+    }
+  },
+  mounted () {
+    if (this.appearance.todoSetOpacity === 'opaque') {
+      this.setClass = {
+        'todo-set_opaque': true
+      }
+    } else {
+      this.setClass = {
+        'todo-set_translucent': true
+      }
     }
   },
   methods: {
@@ -201,10 +220,18 @@ export default {
     border-bottom: 1px solid @gray-l-m;
   }
 
-  .list-set-todo {
-    .list-item {
-      padding: 10px 0 5px 15px;
+  .todo-set_opaque {
+    background: white;
+  }
 
+  .todo-set_translucent {
+    background: rgba(255, 255, 255,0.65);
+  }
+
+  .list-set-todo {
+    padding:3px 5px;
+
+    .list-item {
       .name {
         font-size: 15px;
       }

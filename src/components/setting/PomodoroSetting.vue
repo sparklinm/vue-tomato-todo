@@ -461,6 +461,10 @@ export default {
 }
 
 .box-custom-rest-duration {
+  .com-popup__content {
+    padding: 10px 60px;
+  }
+
   .com-popup__footer .com-popup__footer-btn {
     color: black;
   }
