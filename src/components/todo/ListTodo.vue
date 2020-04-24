@@ -8,7 +8,8 @@
       :key="index"
       v-bind="{ ...data }"
       class="list-todo__item"
-      :style="{ 'background-image': `url(${data.img})` }"
+      :style="listStyles[index]"
+      :class="listStyles[index]"
       @start="start(index)"
       @edit="edit(index)"
     >
@@ -25,9 +26,9 @@
       :show.sync="showBoxInfo"
       :title="todo.name"
       class="box-edit"
-      :header-background="background"
+      :header-style="boxHeaderStyle"
       @closed="handleBoxInfoClosed"
-      @opened="showAnimatedInteger=true"
+      @opened="showAnimatedInteger = true"
     >
       <template v-slot:header-icon>
         <span
@@ -37,8 +38,14 @@
           <i class="fa fa-clock-o" />
           <span class="text">{{ $t("todo.timed_reminder") }}</span>
         </span>
-        <ComToolTip :show.sync="showChangeBackground">
-          <span class="btn-header">
+        <ComToolTip
+          :show.sync="showChangeBackground"
+          :show-on-click="false"
+          @click.native="boolCanChangeBackground"
+        >
+          <span
+            class="btn-header"
+          >
             <i
               class="fa fa-picture-o"
               aria-hidden="true"
@@ -409,6 +416,7 @@ import DatePicker from '../DatePicker'
 import AnimatedInteger from '../AnimatedInteger'
 import util from '@/js/util.js'
 import todo from '@/js/todo.js'
+import setting from '@/js/setting.js'
 import { mapState, mapMutations } from 'vuex'
 
 export default {
@@ -424,6 +432,10 @@ export default {
     todos: {
       type: Array,
       default: null
+    },
+    inSet: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -432,7 +444,7 @@ export default {
       curTodos: [],
       showBoxInfo: false,
       todo: this.todos[0],
-      background: '',
+      boxHeaderStyle: {},
       showBoxAddTodo: false,
       showBoxSort: false,
       showBoxMove: false,
@@ -467,7 +479,8 @@ export default {
       reminderTime: [9, 5],
       isAddReminder: false,
       showTimeAxis: false,
-      showAnimatedInteger: false
+      showAnimatedInteger: false,
+      listStyles: []
     }
   },
 
@@ -477,9 +490,12 @@ export default {
       isGetTodos: 'isGetTodos',
       showBoxSortTodo: 'showBoxSortTodo'
     }),
+    ...mapState('settings', {
+      appearance: 'appearance'
+    }),
     datas () {
       if (!this.curTodos.length) {
-        return {}
+        return []
       }
 
       return this.curTodos.map(todo => {
@@ -524,7 +540,8 @@ export default {
           progress: progress,
           deadline: deadline,
           progressBar: progressBar,
-          img: todo.background
+          img: todo.background,
+          color: todo.color
         }
       })
     },
@@ -601,7 +618,9 @@ export default {
     }
   },
   mounted () {
-    this.getData()
+    this.getData().then(() => {
+      this.setListStyles()
+    })
   },
   methods: {
     ...mapMutations('todo', {
@@ -618,17 +637,80 @@ export default {
       storeSetShowBoxSortTodo: 'setShowBoxSortTodo'
     }),
     getData () {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         setTimeout(() => {
           this.curTodos = _.cloneDeep(this.todos)
           if (this.todo) {
             this.todo =
               this.curTodos.find(item => item.id === this.todo.id) ||
               this.curTodos[0]
-            this.background = this.todo.background
+            this.setBoxHeaderStyle(this.todo)
             resolve()
           }
         })
+      })
+    },
+    setBoxHeaderStyle (todo) {
+      if (this.appearance.todoCardBackground === 'colorful') {
+        this.boxHeaderStyle = {
+          backgroundImage: `url(${todo.background})`
+        }
+      } else if (this.appearance.todoCardBackground === 'solid') {
+        this.boxHeaderStyle = {
+          backgroundColor: todo.color
+        }
+      } else {
+        this.boxHeaderStyle = {}
+      }
+    },
+    setListStyles () {
+      this.datas.forEach(data => {
+        let obj = {}
+
+        if (this.inSet) {
+          if (this.appearance.todoSetCardBackground === 'colorful') {
+            obj = {
+              backgroundImage: `url(${data.img})`
+            }
+          } else {
+            obj = {
+              backgroundColor: data.color
+            }
+          }
+        } else {
+          if (this.appearance.todoCardBackground === 'colorful') {
+            if (this.appearance.todoOpacity === 'opaque') {
+              obj = {
+                backgroundImage: `url(${data.img})`
+              }
+            } else {
+              obj = {
+                backgroundColor: 'rgba(0, 0, 0, 0.4)'
+              }
+            }
+          } else if (this.appearance.todoCardBackground === 'solid') {
+            if (this.appearance.todoOpacity === 'opaque') {
+              obj = {
+                backgroundColor: data.color
+              }
+            } else {
+              obj = {
+                backgroundColor: util.toRgba(data.color, 0.7)
+              }
+            }
+          } else {
+            if (this.appearance.todoOpacity === 'opaque') {
+              obj = {
+                'list-item_no-background ': true
+              }
+            } else {
+              obj = {
+                'list-item_no-background-translucent': true
+              }
+            }
+          }
+        }
+        this.listStyles.push(obj)
       })
     },
     start () {
@@ -645,7 +727,7 @@ export default {
     },
     edit (index) {
       this.todo = this.curTodos[index]
-      this.background = this.todo.background
+      this.setBoxHeaderStyle(this.todo)
       this.showBoxInfo = true
     },
     editTodo () {
@@ -689,16 +771,25 @@ export default {
       this.$emit('update-todos', data)
       this.getData()
     },
+    boolCanChangeBackground () {
+      if (this.appearance.todoCardBackground !== 'colorful') {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('message.not_enable_todo_card_background_img')
+        })
+        return
+      }
+      this.showChangeBackground = true
+    },
     changeBackgroundRandom () {
-      const randomBackground = `/background/back${Math.floor(
-        Math.random() * 8
-      )}.jpg`
+      const randomBackground = setting.getTodoCardBackground()
 
       this.storeEditTodo({
         id: this.todo.id,
         background: randomBackground
       })
-      this.background = randomBackground
+      this.todo.background = randomBackground
+      this.setBoxHeaderStyle(this.todo)
       this.showChangeBackground = false
     },
     getReminderCycle (days) {
@@ -786,10 +877,22 @@ export default {
 
 <style lang="less">
 .list-todo {
-  padding: 0 12px;
+  padding: 12px 12px;
 
-  .list-item {
-    margin-top: 8px;
+  .list-item:not(:last-of-type) {
+    margin-bottom: 10px;
+  }
+
+  .list-item_no-background {
+    .left {
+      background: white;
+      color: black;
+    }
+  }
+
+  .list-item_no-background-translucent {
+    background: rgba(255, 255, 255, 0.4);
+    color: black;
   }
 }
 

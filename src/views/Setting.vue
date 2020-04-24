@@ -1,5 +1,5 @@
 <template>
-  <div class="page-me main">
+  <div class="page-me">
     <Setting />
   </div>
 </template>

@@ -72,7 +72,6 @@ export default {
 
 <style lang="less">
 .list-item {
-  padding: 8px 0px 8px 20px;
   background-color: rgb(49, 159, 202);
   background-size: 100% 100%;
   color: white;
@@ -81,7 +80,9 @@ export default {
   .flex(@justify-content: space-between);
 
   .left {
+     padding: 12px 0px 8px 20px;
     .flex(@flex-direction: column);
+    flex-grow: 1;
 
     .content {
       margin-top: 15px;
@@ -121,12 +122,12 @@ export default {
   .right {
     position: relative;
     width: 90px;
+    padding: 12px 0px 8px 0px;
 
     .deadline {
       position: absolute;
-      top: 0;
       left: 50%;
-      transform: translate(-50%, -50%) scale(0.7);
+      transform: translate(-50%, -50%) scale(0.8);
       font-size: 10px;
       letter-spacing: 1px;
       white-space: nowrap;

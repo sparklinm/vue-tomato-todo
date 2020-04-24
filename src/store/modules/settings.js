@@ -73,7 +73,7 @@ export default {
     appearance: {
       posterRandomMode: 'online',
       morePoster: false,
-      mainPageBackground: '',
+      mainPageBackground: '/background/back4.jpg',
       todoCardBackground: 'colorful',
       todoOpacity: 'opaque',
       todoSetCardBackground: 'solid',

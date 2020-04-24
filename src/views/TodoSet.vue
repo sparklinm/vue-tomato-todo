@@ -6,6 +6,7 @@
 
 <script>
 import ListTodoSet from '@/components/todo/ListTodoSet'
+
 export default {
   components: {
     ListTodoSet

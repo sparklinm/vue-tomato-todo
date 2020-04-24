@@ -23,6 +23,7 @@ function getNonRepeatRandom (lower, upper) {
 }
 
 const randomClockBackground = getNonRepeatRandom(0, 3)
+const randomTodoCardBackground = getNonRepeatRandom(0, 7)
 
 export default {
   getSentence () {
@@ -35,6 +36,11 @@ export default {
     const random = randomClockBackground()
 
     return `/clock/back${random}.jpg`
+  },
+  getTodoCardBackground () {
+    const random = randomTodoCardBackground()
+
+    return `/background/back${random}.jpg`
   },
   showLengthTip (str, length, noMore = true, i18) {
     if (str.length === 'undefined') {

@@ -1,5 +1,5 @@
 <template>
-  <div class="muti-page">
+  <div class="">
     <ListTodo
       :todos="todos"
       class="main-page"

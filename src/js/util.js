@@ -263,5 +263,34 @@ export default {
       }
     }
     return count
+  },
+  HexToRgb (str) {
+    const hexReg = /^#?[0-9A-Fa-f]{6}$/
+
+    if (!hexReg.test(str)) {
+      return str
+    }
+    let color = str
+
+    color = color.replace('#', '')
+    const hxs = color.match(/../g)
+
+    for (let i = 0; i < 3; i++) hxs[i] = parseInt(hxs[i], 16)
+    return `rbg(${hxs.join(',')})`
+  },
+  toRgba (color, opacity) {
+    if (opacity > 1 || opacity < 0) {
+      return
+    }
+    const rgb = this.HexToRgb(color)
+    const reg = /\d{1,3}/g
+    const rgbAry = rgb.match(reg)
+
+    if (!rgbAry.length) {
+      return
+    }
+
+    rgbAry.push(opacity)
+    return `rgba(${rgbAry.join(', ')})`
   }
 }
