@@ -43,9 +43,7 @@
           :show-on-click="false"
           @click.native="boolCanChangeBackground"
         >
-          <span
-            class="btn-header"
-          >
+          <span class="btn-header">
             <i
               class="fa fa-picture-o"
               aria-hidden="true"
@@ -727,6 +725,7 @@ export default {
     },
     edit (index) {
       this.todo = this.curTodos[index]
+      this.listIndex = index
       this.setBoxHeaderStyle(this.todo)
       this.showBoxInfo = true
     },
@@ -740,9 +739,16 @@ export default {
     },
     handleBoxInfoClosed () {
       if (!this.showBoxSort) {
-        this.getData()
+        this.getData().then(() => {
+          if (this.appearance.todoCardBackground === 'colorful') {
+            this.listStyles.splice(this.listIndex, 1, {
+              backgroundImage: `url(${
+                this.curTodos[this.listIndex].background
+              })`
+            })
+          }
+        })
       }
-
       this.showAnimatedInteger = false
     },
     sort () {
@@ -781,8 +787,16 @@ export default {
       }
       this.showChangeBackground = true
     },
+    getBackgroundRandom () {
+      const img = setting.getTodoCardBackground()
+
+      if (this.todos.some(item => item.background === img)) {
+        return this.getBackgroundRandom()
+      }
+      return img
+    },
     changeBackgroundRandom () {
-      const randomBackground = setting.getTodoCardBackground()
+      const randomBackground = this.getBackgroundRandom()
 
       this.storeEditTodo({
         id: this.todo.id,

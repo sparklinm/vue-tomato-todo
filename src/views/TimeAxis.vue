@@ -1,5 +1,5 @@
 <template>
-  <div class="page-time-axis main">
+  <div class="page-time-axis">
     <CalendarView :todos="todos" />
   </div>
 </template>
@@ -25,5 +25,7 @@ export default {
 </script>
 
 <style lang="less">
-
+.page-time-axis {
+  height: 100%;
+}
 </style>

@@ -87,7 +87,7 @@ button {
   }
 
   .data-panel {
-    background: @theme-base-color-1;
+    color: @theme-base-color-1-20;
   }
 
   .custom-time {
@@ -173,6 +173,26 @@ button {
   .list-item_no-background {
     .right {
       background: @theme-base-color-1;
+    }
+  }
+
+  .page-statistics {
+    background-image: linear-gradient(to bottom, @theme-base-color-1,#fff);
+  }
+
+  .focus-chart {
+    .filters-inline {
+      border-color: @theme-base-color-1-l20;
+      color: @theme-base-color-1-l20;
+    }
+
+    .custom-radio__inline {
+      width: 0;
+      &:checked + span {
+        background: @theme-base-color-1-l20;
+        color: @theme-base-color-1-20;
+        font-weight: 600;
+      }
     }
   }
 }
@@ -529,6 +549,18 @@ textarea:disabled {
 
 .fade-leave-active {
   animation: fade 0.15s ease-out reverse;
+}
+
+.shadow_fade-enter {
+  opacity: 0;
+}
+
+.shadow_fade-enter-active {
+  transition: opacity 0.6s linear 2s;
+}
+
+.shadow_fade-leave-active {
+  transition: none;
 }
 
 @keyframes slide {

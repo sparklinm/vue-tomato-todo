@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   props: {
     options: {
@@ -23,6 +25,8 @@ export default {
     }
   },
   data () {
+    const theme = JSON.parse(localStorage.getItem('theme'))
+
     return {
       chartInitHeight: 0,
       chartInitOptions: {},
@@ -40,7 +44,7 @@ export default {
             fontSize: 10
           },
           formatter: obj => {
-            return `${obj[0].axisValueLabel}<br>${this.$t('todo.focus_duration')}:${obj[0].data[1]}`
+            return `${obj[0].axisValueLabel}<br>${this.$t('todo.focus_duration')}:${obj[0].data[2]}`
           }
         },
         legend: {
@@ -49,7 +53,7 @@ export default {
           padding: 0,
           textStyle: {
             fontSize: 9,
-            color: '#fff'
+            color: '#555'
           },
           itemWidth: 14,
           itemHeight: 14,
@@ -77,9 +81,7 @@ export default {
               alignWithLabel: true
             },
             axisLine: {
-              lineStyle: {
-                color: '#fff'
-              }
+              show: false
             },
             boundaryGap: false
           }
@@ -99,9 +101,7 @@ export default {
               alignWithLabel: true
             },
             axisLine: {
-              lineStyle: {
-                color: '#fff'
-              }
+              show: false
             }
           }
         ],
@@ -126,10 +126,11 @@ export default {
             label: {
               show: true,
               position: 'top',
-              fontSize: 8
+              fontSize: 8,
+              color: '#555'
             },
             itemStyle: {
-              color: '#fff'
+              color: theme.darken10
             },
             areaStyle: {
               color: {
@@ -140,8 +141,8 @@ export default {
                 y2: 1,
                 colorStops: [
                   {
-                    offset: 0,
-                    color: '#fff'
+                    offset: 0.5,
+                    color: theme.darken10
                   },
                   {
                     offset: 1,
@@ -160,6 +161,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState('settings', {
+      currentTheme: 'currentTheme'
+    })
+  },
   watch: {
     options (val) {
       if (!_.isEmpty(val)) {
@@ -169,24 +175,7 @@ export default {
   },
   mounted () {
     setTimeout(() => {
-      this.chartOptions.series = [
-        {
-          areaStyle: {
-            color: {
-              colorStops: [
-                {
-                  offset: 0,
-                  color: '#fff'
-                },
-                {
-                  offset: 1,
-                  color: window.getComputedStyle(document.querySelector('.data-panel')).backgroundColor
-                }
-              ]
-            }
-          }
-        }
-      ]
+
     })
   }
 }

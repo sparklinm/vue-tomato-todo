@@ -141,7 +141,6 @@
 import { mapState, mapMutations } from 'vuex'
 import SubNav from '@/components/nav/SubNav'
 import BoxRadioList from '@/components/BoxRadioList'
-import setting from '@/js/setting.js'
 
 export default {
   components: {
@@ -154,7 +153,7 @@ export default {
       charSettins: {
         showClockChart: true,
         showStopChart: true,
-        chartDurationUnit: 'hour',
+        chartDurationUnit: 'minute',
         monthlyStatisticsDisplayRange: 'seven_days'
       },
       showSelUnit: false,

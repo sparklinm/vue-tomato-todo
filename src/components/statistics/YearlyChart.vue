@@ -16,6 +16,8 @@
 import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import CLine from './chart/CLine'
+import { mapState } from 'vuex'
+
 export default {
   components: {
     DataPanel,
@@ -37,6 +39,9 @@ export default {
     }
   },
   computed: {
+    ...mapState('settings', {
+      chart: 'chart'
+    }),
     panelTitle () {
       return (
         this.$t('todo.yearly_statistics') +
@@ -58,8 +63,20 @@ export default {
         const year = time.getFullYear()
         const xAxisData = []
         const seriesData = []
+
+        let unit = 'minute'
+
+        if (this.chart.chartDurationUnit === 'hour') {
+          const values = Object.values(data)
+
+          if (Math.max(...values) >= 60) {
+            unit = 'hour'
+          }
+        }
+
         for (let i = 0; i < 12; i++) {
           const date = new Date(year, i, 1)
+
           xAxisData.push(
             util.formatTime(date, {
               cut: '-',
@@ -72,26 +89,60 @@ export default {
           const item = Object.entries(data).find(item => {
             return parseInt(item[0]) === i
           })
+
           if (item) {
-            seriesData.push([parseInt(item[0]), item[1], item[1]])
+            if (unit === 'hour') {
+              let yValue = item[1] / 60
+
+              if (yValue < 1) {
+                yValue = yValue.toFixed(2)
+              } else {
+                yValue = yValue.toFixed(1)
+              }
+              seriesData.push([parseInt(item[0]), yValue, yValue + ' ' + this.$t('settings.hour')])
+            } else {
+              seriesData.push([parseInt(item[0]), item[1], item[1] + ' ' + this.$t('word.minute')])
+            }
           } else {
-            seriesData.push([i, 0, ''])
+            seriesData.push([i, 0, 0])
           }
         }
-        this.options = {
+
+        const month = new Date().getMonth()
+        const options = {
           xAxis: [
             {
               data: xAxisData
+            }
+          ],
+          dataZoom: [
+            {
+              startValue: month - 3,
+              endValue: month - 3 + 6
             }
           ],
           series: [
             {
               name: this.panelTitle,
               data: seriesData,
-              label: '{@[2]}'
+              label: {
+                formatter: '{@[2]}'
+              }
             }
           ]
         }
+
+        if (unit === 'hour') {
+          options.yAxis = [
+            {
+              axisLabel: {
+                fontSize: 10,
+                formatter: `{value} ${this.$t('settings.hour')}`
+              }
+            }
+          ]
+        }
+        this.options = options
       }
     }
   },

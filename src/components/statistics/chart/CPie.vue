@@ -50,7 +50,7 @@ export default {
           formatter: '{name}',
           textStyle: {
             fontSize: 10,
-            color: '#fff'
+            color: '#555'
           }
         },
         series: [
@@ -62,14 +62,14 @@ export default {
               formatter: `{b}({c}${this.$t('word.minute')})`,
               position: 'outside',
               fontSize: 10,
-              color: '#fff'
+              color: '#555'
             },
             labelLine: {
               show: true,
               length: 0,
               length2: 15,
               lineStyle: {
-                color: '#fff'
+                color: '#555'
               }
             },
             center: ['50%', '43%'],

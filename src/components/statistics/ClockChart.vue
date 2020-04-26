@@ -54,6 +54,8 @@ export default {
   watch: {
     data: {
       handler (data) {
+        console.log(data)
+
         const time = this.period[0]
         const year = time.getFullYear()
         const month = time.getMonth()
@@ -88,9 +90,9 @@ export default {
             seriesData.push([i, 0, '', ''])
           }
         }
-        if (!data.length) {
-          seriesData[seriesData.length - 1][1] = 10
-        }
+
+        const today = new Date().getDate()
+
         this.options = {
           tooltip: {
             formatter: obj => {
@@ -103,6 +105,12 @@ export default {
               return text + this.$t('todo.not_record')
             }
           },
+          dataZoom: [
+            {
+              startValue: today - 3,
+              endValue: today - 3 + 6
+            }
+          ],
           xAxis: [
             {
               data: xAxisData
