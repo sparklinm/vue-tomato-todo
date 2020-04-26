@@ -46,6 +46,7 @@
 
 <script>
 import screenshot from '@/js/screenshot'
+import config from './config'
 import { mapMutations, mapState } from 'vuex'
 
 export default {
@@ -146,10 +147,16 @@ export default {
     this.setUser()
   },
   mounted () {
+    const theme = config.getTheme()
+
+    this.storeSetCurrentTheme(theme)
   },
   methods: {
     ...mapMutations('user', {
       storeSetUser: 'setUser'
+    }),
+    ...mapMutations('settings', {
+      storeSetCurrentTheme: 'setCurrentTheme'
     }),
     fullScreen () {
       this.$refs.img.requestFullscreen()

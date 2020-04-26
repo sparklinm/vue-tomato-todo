@@ -25,5 +25,8 @@ export default {
 </script>
 
 <style lang="less">
-
+.page-statistics {
+  height: 100%;
+  overflow-y:scroll;
+}
 </style>

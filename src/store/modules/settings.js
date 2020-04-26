@@ -71,6 +71,7 @@ export default {
       autoToMainPage: true
     },
     appearance: {
+      // online,local,mixin
       posterRandomMode: 'online',
       morePoster: false,
       mainPageBackground: '/background/back4.jpg',
@@ -81,10 +82,11 @@ export default {
       timeTextSize: 'normal',
       timeTextStyle: 'normal'
     },
+    // completed
     chart: {
       showClockChart: true,
       showStopChart: true,
-      chartDurationUnit: 'hour',
+      chartDurationUnit: 'minute',
       monthlyStatisticsDisplayRange: 'seven_days'
     },
     language: 'zh',
@@ -115,6 +117,7 @@ export default {
         backgroundImg: '/music/background/back2.jpg'
       }
     ],
+    // urls array
     todoPosters: [],
     modules: [
       {
@@ -191,6 +194,9 @@ export default {
     },
     setNoShowCompletedPlan (state, value) {
       state.noShowCompletedPlan = value
+    },
+    setCurrentTheme (state, value) {
+      state.currentTheme = value
     }
   },
   actions: {}

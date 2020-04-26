@@ -2,6 +2,9 @@ function getNonRepeatRandom (lower, upper) {
   const cache = []
 
   function randomNumber () {
+    if (upper - lower === 0) {
+      return lower
+    }
     const random = Math.floor(Math.random() * (upper - lower + 1) + lower)
 
     if (cache.length === upper - lower + 1) {
@@ -26,6 +29,7 @@ const randomClockBackground = getNonRepeatRandom(0, 3)
 const randomTodoCardBackground = getNonRepeatRandom(0, 7)
 
 export default {
+  creatNonRepeatRandom: getNonRepeatRandom,
   getSentence () {
     const length = 2
     const random = Math.floor(Math.random() * length)
@@ -40,7 +44,7 @@ export default {
   getTodoCardBackground () {
     const random = randomTodoCardBackground()
 
-    return `/background/back${random}.jpg`
+    return `/card/back${random}.jpg`
   },
   showLengthTip (str, length, noMore = true, i18) {
     if (str.length === 'undefined') {
