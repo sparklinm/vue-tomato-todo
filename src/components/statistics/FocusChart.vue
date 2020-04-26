@@ -219,13 +219,5 @@ export default {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
   }
-
-  .custom-radio__inline {
-    width: 0;
-    &:checked + span {
-      background: white;
-      color: black;
-    }
-  }
 }
 </style>

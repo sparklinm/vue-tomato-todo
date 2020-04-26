@@ -55,7 +55,7 @@ export default {
           formatter: () => '',
           textStyle: {
             fontSize: 9,
-            color: '#fff'
+            color: '#555'
           }
         },
         grid: {
@@ -79,8 +79,9 @@ export default {
               alignWithLabel: true
             },
             axisLine: {
+              show: false,
               lineStyle: {
-                color: '#fff'
+                color: '#555'
               }
             }
           }
@@ -93,7 +94,7 @@ export default {
             },
             axisLabel: {
               fontSize: 10,
-              color: '#fff',
+              color: '#555',
               formatter: `{value} ${this.$t('word.minute')}`
             },
             axisTick: {
@@ -101,8 +102,9 @@ export default {
               alignWithLabel: true
             },
             axisLine: {
+              show: false,
               lineStyle: {
-                color: '#fff'
+                color: '#555'
               }
             }
           }
@@ -122,7 +124,7 @@ export default {
           }
         ],
         textStyle: {
-          color: '#fff'
+          color: '#555'
         },
         animationDuration: 2000
       }

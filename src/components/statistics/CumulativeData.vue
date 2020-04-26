@@ -135,12 +135,14 @@
         @next="changeChart(monthlyChart,'add')"
       />
       <ClockChart
+        v-if="chartSettings.showClockChart"
         :data="clockChart.data"
         :period="clockChart.period"
         @previous="changeChart(clockChart,'minus')"
         @next="changeChart(clockChart,'add')"
       />
       <StopChart
+        v-if="chartSettings.showStopChart"
         :data="stopChart.data"
         :period="stopChart.period"
         @previous="changeChart(stopChart,'minus')"
@@ -240,6 +242,9 @@ export default {
   computed: {
     ...mapState('user', {
       clocks: state => state.getUpClocks
+    }),
+    ...mapState('settings', {
+      chartSettings: 'chart'
     })
   },
   watch: {
@@ -609,6 +614,7 @@ export default {
   padding: 0.2rem;
 
   .data-panel {
+    background: #fff;
     margin-bottom: 0.2rem;
   }
 }

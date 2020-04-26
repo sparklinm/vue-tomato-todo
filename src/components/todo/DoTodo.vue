@@ -2,84 +2,96 @@
   <div class="do-todo-wrapper">
     <div
       class="do-todo"
-      :style="{'background-image':`url(${background})`}"
     >
-      <div class="tool">
-        <ComIcon
-          name=""
-          class="tool-btn"
-        />
-        <ComIcon
-          name="share-alt"
-          class="tool-btn"
-        />
-        <ComIcon
-          name="download"
-          class="tool-btn"
-        />
+      <div
+        class="poster-shadow"
+      />
+      <div
+        class="do-todo-poster"
+      >
+        <img
+          ref="poster"
+          alt=""
+        >
       </div>
-      <div class="do-todo-inline">
-        <div class="verse">
-          <span class="quo-marks">
-            “
-          </span>
-          <div class="sentence">
-            {{ sentence }}
-          </div>
-        </div>
-        <div class="todo-info">
-          <ProgressCircle
-            :width="timeClockWidth"
-            :progress="progress"
-            type="arc"
-            :class="{'text-completed':textCompleted}"
-            :text="textCompleted||time"
-            :font-size="timeClockFont"
-            @click.native="editExperience"
+      <div style="position:relative">
+        <div class="tool">
+          <ComIcon
+            name=""
+            class="tool-btn"
           />
-          <div class="name">
-            {{ todo.name }}
+          <ComIcon
+            name="share-alt"
+            class="tool-btn"
+          />
+          <ComIcon
+            name="download"
+            class="tool-btn"
+          />
+        </div>
+        <div class="do-todo-inline">
+          <div class="verse">
+            <span class="quo-marks">
+              “
+            </span>
+            <div class="sentence">
+              {{ sentence }}
+            </div>
           </div>
-          <div class="status">
-            {{ status }} {{ timesLeft }}
+          <div class="todo-info">
+            <ProgressCircle
+              :width="timeClockWidth"
+              :progress="progress"
+              type="arc"
+              :class="{'text-completed':textCompleted}"
+              :text="textCompleted||time"
+              :font-size="timeClockFont"
+              @click.native="editExperience"
+            />
+            <div class="name">
+              {{ todo.name }}
+            </div>
+            <div class="status">
+              {{ status }} {{ timesLeft }}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="options">
-        <div class="options-inline">
-          <span
-            class="btns-group btn-option"
-          >
-            <ComIcon
-              name="music"
-              :class="{'btn_close':isMusicClose}"
-              @click="closeMusic"
-            />
-            <ComIcon
-              name="angle-down"
-              class="icon-down"
-              size="24"
-              @click="showBoxChangeMusic = true"
-            />
-          </span>
+        <div class="options">
+          <div class="options-inline">
+            <span
+              class="btns-group btn-option"
+            >
+              <ComIcon
+                name="music"
+                :class="{'btn_close':isMusicClose}"
+                @click="closeMusic"
+              />
+              <ComIcon
+                name="angle-down"
+                class="icon-down"
+                size="24"
+                @click="showBoxChangeMusic = true"
+              />
+            </span>
 
-          <ComIcon
-            v-if="isDoing"
-            name="pause"
-            class="btn-option"
-            @click.native="pause"
-          />
-          <ComIcon
-            name="circle-o"
-            class="btn-option"
-            :class="{'btn_close':!isLoop}"
-            @click="setLoopTimes"
-          />
-          <ComIcon
-            name="stop"
-            class="btn-option"
-            @click="stop"
-          />
+            <ComIcon
+              v-if="isDoing"
+              name="pause"
+              class="btn-option"
+              @click.native="pause"
+            />
+            <ComIcon
+              name="circle-o"
+              class="btn-option"
+              :class="{'btn_close':!isLoop}"
+              @click="setLoopTimes"
+            />
+            <ComIcon
+              name="stop"
+              class="btn-option"
+              @click="stop"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -275,10 +287,11 @@
 import ProgressCircle from './ProgressCircle'
 import StopChart from '@/components/statistics/StopChart'
 import BoxEditText from './BoxEditText'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import util from '@/js/util.js'
 import todoUtil from '@/js/todo.js'
 import setting from '@/js/setting'
+import { loadImg } from '@/js/loadImg'
 
 export default {
   components: {
@@ -357,12 +370,17 @@ export default {
       timerGoBack: null,
       focusObj: {},
       sentence: '',
-      background: '/clock/back1.jpg'
+      randomLocalBackgroundSeed: null,
+      showPosterShadow: false
     }
   },
   computed: {
     ...mapGetters('todo', {
       getTodoById: 'getTodoById'
+    }),
+    ...mapState('settings', {
+      posters: 'todoPosters',
+      appearance: 'appearance'
     }),
     todo () {
       return this.getTodoById(this.id)
@@ -419,12 +437,18 @@ export default {
   },
   mounted () {
     this.sentence = this.$t(setting.getSentence())
-    this.background = setting.getClockBackground()
     this.currentTodo = _.cloneDeep(this.todo)
     this.initDuration()
     this.setDuration()
     this.initRestDuration()
     this.setTimeClockWidth()
+    this.randomLocalBackgroundSeed = setting.creatNonRepeatRandom(
+      0,
+      this.posters.length - 1
+    )
+    setTimeout(() => {
+      this.setPoster()
+    }, 1000)
     window.addEventListener('resize', this.setTimeClockWidth)
   },
   destroyed () {
@@ -434,6 +458,29 @@ export default {
   },
   methods: {
     ...mapMutations('todo', ['addFocus']),
+    getRandomBackground () {
+      const posterRandomMode = this.appearance.posterRandomMode
+      let img = ''
+
+      if (posterRandomMode === 'online') {
+        img = setting.getClockBackground()
+
+      } else if (posterRandomMode === 'local') {
+        img = this.posters[this.randomLocalBackgroundSeed()]
+      } else {
+        const onlinePoster = setting.getTodoCardBackground()
+        const localPoster = this.posters[this.randomLocalBackgroundSeed()]
+        const random = Math.floor(Math.random() * 2)
+
+        img = random === 0 ? onlinePoster : localPoster
+      }
+      return img
+    },
+    setPoster () {
+      const background = this.getRandomBackground()
+
+      loadImg(this.$refs.poster).setSrc(background)
+    },
     initStopChart () {
       this.stopData = todoUtil.getStopData([this.todo], ...util.getPeriod('month'))
     },
@@ -669,9 +716,25 @@ export default {
   .fixed-full-screen();
   text-align: center;
   // padding: 20px 0.6rem 50px;
-  background: rgb(51, 51, 51);
   background-size: 100% 100%;
   color: white;
+  transition: all 0.3s linear;
+  background-image: linear-gradient(to bottom,rgb(1, 104, 173), rgb(1, 58, 97));
+
+  .do-todo-poster {
+    .fixed-full-screen();
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .poster-shadow {
+      .fixed-full-screen();
+      background: rgba(0, 0, 0, 0.3);
+      position: absolute;
+    }
+  }
 
   .tool {
     text-align: right;

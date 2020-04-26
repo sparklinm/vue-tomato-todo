@@ -132,6 +132,7 @@ export default {
 
 .custom-radio__inline {
   width: 0;
+  height: 0;
   &:checked + span {
     background: rgb(255, 221, 221);
     color: rgb(194, 60, 60);

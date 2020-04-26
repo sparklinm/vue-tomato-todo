@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="time-axis">
     <ev-calendar
       :options="options"
       @select-day="selectDay"
@@ -378,6 +378,11 @@ export default {
 </script>
 
 <style lang="less">
+.time-axis {
+  height: 100%;
+  background: white;
+}
+
 .completed-item {
   padding: 8px 8px 8px 15px;
   background-color: rgb(49, 159, 202);
