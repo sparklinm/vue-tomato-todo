@@ -57,6 +57,7 @@ export default {
         name: 'ding_ding',
         src: '/music/ding_ding.mp3'
       },
+      // same_volume_media,same_volume_system
       toneVolume: 'same_volume_system',
       backgroundMusic: {
         name: 'ding_ding',
@@ -64,6 +65,7 @@ export default {
         backgroundImg: '/music/background/back1.jpg'
       },
       restDuration: 5,
+      // system,custom,mixin
       randomMottoWay: 'system',
       stopUpperLimit: 3,
       fixedSort: false,
@@ -74,7 +76,7 @@ export default {
       // online,local,mixin
       posterRandomMode: 'online',
       morePoster: false,
-      mainPageBackground: '/background/back4.jpg',
+      mainPageBackground: '/page_back/simple/back4.jpg',
       todoCardBackground: 'colorful',
       todoOpacity: 'opaque',
       todoSetCardBackground: 'solid',

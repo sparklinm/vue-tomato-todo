@@ -1,7 +1,6 @@
 <template>
   <div
     id="app"
-    :style="{backgroundImage:`url(${appearance.mainPageBackground})`}"
   >
     <!-- <div
       class="test"
@@ -47,7 +46,7 @@
 <script>
 import screenshot from '@/js/screenshot'
 import config from './config'
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations } from 'vuex'
 
 export default {
   data () {
@@ -56,11 +55,7 @@ export default {
       css: false
     }
   },
-  computed: {
-    ...mapState('settings', {
-      appearance: 'appearance'
-    })
-  },
+
   watch: {
     $route (to, from) {
       if (to.meta.child && from.meta.parent) {

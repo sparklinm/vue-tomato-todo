@@ -638,11 +638,13 @@ export default {
       return new Promise(resolve => {
         setTimeout(() => {
           this.curTodos = _.cloneDeep(this.todos)
+
           if (this.todo) {
             this.todo =
               this.curTodos.find(item => item.id === this.todo.id) ||
               this.curTodos[0]
             this.setBoxHeaderStyle(this.todo)
+            this.setListStyles()
             resolve()
           }
         })
@@ -662,6 +664,9 @@ export default {
       }
     },
     setListStyles () {
+      console.log(this.datas)
+      const list = []
+
       this.datas.forEach(data => {
         let obj = {}
 
@@ -708,8 +713,9 @@ export default {
             }
           }
         }
-        this.listStyles.push(obj)
+        list.push(obj)
       })
+      this.listStyles = list
     },
     start () {
       document.documentElement.requestFullscreen()

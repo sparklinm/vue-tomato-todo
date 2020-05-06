@@ -166,14 +166,11 @@
       @change="handleSettingsChange"
     />
 
-
-    <BoxRadioList
+    <RadioListMusic
       v-model="settings.backgroundMusic"
-      class="box-set-music"
       :show.sync="showBoxMusic"
-      name="todo_music"
-      :data="music"
-      :hide-on-select="false"
+      :data="todoMusic"
+      show-custom
       @change="handleMusicChange"
     />
 
@@ -243,12 +240,14 @@
 import { mapState, mapMutations } from 'vuex'
 import SubNav from '@/components/nav/SubNav'
 import BoxRadioList from '@/components/BoxRadioList'
+import RadioListMusic from '@/components/setting/RadioListMusic'
 import setting from '@/js/setting.js'
 
 export default {
   components: {
     SubNav,
-    BoxRadioList
+    BoxRadioList,
+    RadioListMusic
   },
   data () {
     return {
@@ -299,7 +298,6 @@ export default {
   mounted () {
     Object.assign(this.settings, this.todoSettings)
     this.setRings()
-    this.setMusic()
     this.restDurationText = `${this.settings.restDuration} ${this.$t('word.minute')}`
     this.pauseDurationText = `${this.settings.stopUpperLimit} ${this.$t('word.minute')}`
   },
@@ -309,29 +307,6 @@ export default {
       'storeAddBeep': 'addBeep',
       'storeAddTodoMusic': 'addTodoMusic'
     }),
-    setMusic () {
-      this.music = this.todoMusic.map(item => {
-        const obj = {
-          value: item,
-          text: item.custom ? item.name : this.$t(`music.${item.name}`),
-          src: item.src,
-          backgroundImg: item.backgroundImg
-        }
-
-        if (item.name === this.settings.backgroundMusic.name) {
-
-          obj.text += `(${this.$t('settings.already_selected')})`
-          this.settings.backgroundMusic = item
-        }
-        return obj
-      })
-      this.music.push({
-        value: 'custom',
-        text: this.$t('word.customize'),
-        src: '',
-        backgroundImg: '/music/background/back0.jpg'
-      })
-    },
     setRings () {
       this.rings = this.beeps.map(item => {
         return {
@@ -384,7 +359,6 @@ export default {
       this.storeAddTodoMusic(music)
       this.settings.backgroundMusic = music
       this.handleSettingsChange()
-      this.setMusic()
     },
     handleSettingsChange () {
       this.storeSetTodoSettins(this.settings)
@@ -399,8 +373,10 @@ export default {
     },
     handleMusicChange (val) {
       if (val !== 'custom') {
+        setTimeout(() => {
+        }, 300)
+
         this.handleSettingsChange()
-        this.setMusic()
         return
       }
 
