@@ -162,9 +162,9 @@ export default {
       if (typeof this.max !== 'undefined') {
         this.currentValue = this.currentValue > this.max ? this.max : this.currentValue
       }
-      if (this.type === 'number') {
-        this.currentValue = Number(this.currentValue)
-      }
+      // if (this.type === 'number') {
+      //   this.currentValue = Number(this.currentValue)
+      // }
     },
     focus () {
       this.$refs.input.focus()

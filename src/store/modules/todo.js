@@ -44,7 +44,7 @@ export default {
         taskNotes: '目标目标目标',
         loopTimes: {
           default: 1,
-          custom: 5
+          custom: 2
         },
         restTime: {
           default: 5,
