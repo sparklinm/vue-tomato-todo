@@ -1,3 +1,6 @@
+import { randomSeed } from '@/js/setting.js'
+import config from '@/config.js'
+
 export default {
   namespaced: true,
   state: {
@@ -23,7 +26,7 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        background: '/background/back5.jpg',
+        background: '/card/back5.jpg',
         color: '#0099CC'
       },
       {
@@ -41,7 +44,7 @@ export default {
         taskNotes: '目标目标目标',
         loopTimes: {
           default: 1,
-          custom: ''
+          custom: 5
         },
         restTime: {
           default: 5,
@@ -49,7 +52,7 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        background: '/background/back1.jpg',
+        background: '/card/back1.jpg',
         color: '#996699'
       },
       {
@@ -68,7 +71,7 @@ export default {
         },
         hideAfterComplete: false,
         create: new Date(2019, 8, 24),
-        background: '/background/back6.jpg',
+        background: '/card/back6.jpg',
         color: '#333366'
       },
       {
@@ -93,7 +96,7 @@ export default {
         },
         create: new Date(2019, 10, 24),
         hideAfterComplete: false,
-        background: '/background/back8.jpg',
+        background: '/card/back8.jpg',
         color: '#CC9966'
       }
     ],
@@ -338,7 +341,7 @@ export default {
           days: [1, 2, 3, 4, 5, 6, 7]
         }
       ],
-      background: '/background/back5.jpg'
+      background: '/card/back5.jpg'
     }
   },
   getters: {
@@ -405,10 +408,25 @@ export default {
       state.showBoxSortSet = show
     },
     addTodo (state, todo) {
-      state.todos.push({
+      const obj = {
         id: state.todos[state.todos.length - 1].id + 1,
         ...todo
+      }
+      const imgs = state.todos.map((todo) => {
+        return parseInt(todo.background.match(/\d+/g)[0])
       })
+      const upper = 7
+      const lower = 0
+      let seed = null
+
+      if (upper - lower + 1 <= imgs.length) {
+        seed = new randomSeed(lower, upper)
+      } else {
+        seed = new randomSeed(lower, upper, imgs)
+      }
+      obj.background = `/card/back${seed.do()}.jpg`
+      obj.color = config.colors[state.todos.length % config.colors.length].darken20
+      state.todos.push(obj)
     },
     setTodos (state, todos) {
       state.todos = todos
@@ -450,6 +468,14 @@ export default {
 
       if (todo) {
         _.merge(todo, obj)
+        if (todo.timeWay === 'up') {
+          delete todo.loopTimes
+          delete todo.timeDuration
+        } else if (todo.timeWay === 'none') {
+          delete todo.loopTimes
+          delete todo.restTime
+          delete todo.timeDuration
+        }
       }
     },
     deleteTodo (state, id) {

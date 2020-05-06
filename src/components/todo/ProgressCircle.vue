@@ -100,6 +100,7 @@ export default {
       const endY = this.centreY - Math.cos(angle) * this.radius
       // 决定弧线是大角度还是小角度
       const largeArcFlag = angle > Math.PI ? 1 : 0
+
       if (this.type === 'sector') {
         return `M ${this.centreX} ${this.centreY} L ${this.centreX} 0 A ${this.radius} ${this.radius} 0 ${largeArcFlag} 1 ${endX} ${endY} Z`
       }

@@ -1,19 +1,13 @@
 <template>
   <div class="do-todo-wrapper">
-    <div
-      class="do-todo"
-    >
-      <div
-        class="poster-shadow"
-      />
-      <div
-        class="do-todo-poster"
-      >
+    <div class="do-todo">
+      <div class="do-todo-poster">
         <img
           ref="poster"
           alt=""
         >
       </div>
+      <div class="poster-shadow" />
       <div style="position:relative">
         <div class="tool">
           <ComIcon
@@ -43,8 +37,8 @@
               :width="timeClockWidth"
               :progress="progress"
               type="arc"
-              :class="{'text-completed':textCompleted}"
-              :text="textCompleted||time"
+              :class="{ 'text-completed': textCompleted }"
+              :text="textCompleted || time"
               :font-size="timeClockFont"
               @click.native="editExperience"
             />
@@ -58,12 +52,10 @@
         </div>
         <div class="options">
           <div class="options-inline">
-            <span
-              class="btns-group btn-option"
-            >
+            <span class="btns-group btn-option">
               <ComIcon
                 name="music"
-                :class="{'btn_close':isMusicClose}"
+                :class="{ btn_close: isMusicClose }"
                 @click="closeMusic"
               />
               <ComIcon
@@ -83,7 +75,7 @@
             <ComIcon
               name="circle-o"
               class="btn-option"
-              :class="{'btn_close':!isLoop}"
+              :class="{ btn_close: !isLoop }"
               @click="setLoopTimes"
             />
             <ComIcon
@@ -112,29 +104,18 @@
           class="com-popup__footer-btn"
           @click="continueTime"
         >
-          {{ $t('todo.continue_time') }}
+          {{ $t("todo.continue_time") }}
         </button>
       </template>
     </ComPopup>
 
-    <ComPopup
-      class="box-change-music fade"
+    <RadioListMusic
+      v-model="music"
       :show.sync="showBoxChangeMusic"
-      no-header
-    >
-      <ul>
-        <li
-          v-for="(music, index) in musics"
-          :key="music.name"
-          class="music"
-          :class="{ 'todo-music-default': index === 0 }"
-          :style="{ background: music.cover }"
-          @click="changeMusic"
-        >
-          {{ music.name }}
-        </li>
-      </ul>
-    </ComPopup>
+      :data="todoMusic"
+      :show-custom="false"
+      @change="changeMusic"
+    />
 
     <ComPopup
       class="box-set-loop"
@@ -161,19 +142,19 @@
           class="com-popup__footer-btn com-popup__footer-btn_w-auto"
           @click="infiniteLoop"
         >
-          {{ $t('todo.infinite_loop') }}
+          {{ $t("todo.infinite_loop") }}
         </button>
         <button
           class="com-popup__footer-btn"
           @click="submitSetLoopTimes"
         >
-          {{ $t('action.confirm') }}
+          {{ $t("action.confirm") }}
         </button>
         <button
           class="com-popup__footer-btn"
           @click="cancleSetLoopTimes"
         >
-          {{ $t('action.cancel') }}
+          {{ $t("action.cancel") }}
         </button>
       </template>
     </ComPopup>
@@ -191,7 +172,7 @@
           @click="abandonTime"
         >
           <span class="option-text">
-            {{ $t('todo.abandon_time') }}
+            {{ $t("todo.abandon_time") }}
           </span>
         </li>
         <li
@@ -199,7 +180,7 @@
           @click="completeAdvance"
         >
           <span class="option-text">
-            {{ $t('todo.complete_time_advance') }}
+            {{ $t("todo.complete_time_advance") }}
           </span>
         </li>
         <li
@@ -207,7 +188,7 @@
           @click="cancleSkipTime"
         >
           <span class="option-text">
-            {{ $t('action.cancel') }}
+            {{ $t("action.cancel") }}
           </span>
         </li>
       </ul>
@@ -217,7 +198,7 @@
           @click="skipTime"
         >
           <span class="option-text">
-            {{ $t('todo.skip_rest_time') }}
+            {{ $t("todo.skip_rest_time") }}
           </span>
         </li>
         <li
@@ -235,7 +216,7 @@
           @click="cancleSkipTime"
         >
           <span class="option-text">
-            {{ $t('action.cancel') }}
+            {{ $t("action.cancel") }}
           </span>
         </li>
       </ul>
@@ -253,7 +234,7 @@
             class="confirm"
             @click="submitAbandonTime"
           >
-            {{ $t('common.confirm_abandon') }}
+            {{ $t("common.confirm_abandon") }}
           </span>
           <ComIcon
             name="times"
@@ -280,6 +261,12 @@
       @submit="submitEditExperience"
       @closed="toLastPage"
     />
+
+    <audio
+      ref="music"
+      autoplay
+      loop
+    />
   </div>
 </template>
 
@@ -287,61 +274,45 @@
 import ProgressCircle from './ProgressCircle'
 import StopChart from '@/components/statistics/StopChart'
 import BoxEditText from './BoxEditText'
+import RadioListMusic from '@/components/setting/RadioListMusic'
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import util from '@/js/util.js'
 import todoUtil from '@/js/todo.js'
 import setting from '@/js/setting'
-import { loadImg } from '@/js/loadImg'
+import LoadImg from '@/js/LoadImg'
 
 export default {
   components: {
     ProgressCircle,
     StopChart,
-    BoxEditText
+    BoxEditText,
+    RadioListMusic
   },
   data () {
     return {
       timeClockWidth: 220,
       timeClockFont: 36,
       showBoxPause: false,
-      showBoxChangeMusic: false,
       totalDuration: 0,
       duration: 0,
       isDoing: true,
+      // 当前休息时长
       restDuration: 0,
+      // 单次总共休息时长
       oneRestDuration: 0,
       pauseDuration: 180,
       timer: null,
       timerPause: null,
-      musics: [
-        {
-          name: `${this.$t('music.defalut')}|${this.$t('music.defalut_white_noise')}`,
-          cover: ''
-        },
-        {
-          name: '无声',
-          cover: 'yellow'
-        },
-        {
-          name: '无声2',
-          cover: 'blue'
-        },
-        {
-          name: '无声3',
-          cover: 'red'
-        },
-        {
-          name: '无声4',
-          cover: 'black'
-        }
-      ],
-      isMusicClose: false,
+      showBoxChangeMusic: false,
+      music: {},
+      isMusicClose: true,
       isLoop: false,
       showBoxSetLoop: false,
       currentTodo: {
         loopTimes: {},
         restTime: {}
       },
+      // 最后一次循环结束后的长休息时长
       longRestTime: '',
       error: {
         loopTimes: this.$t('message.loop_times'),
@@ -371,6 +342,7 @@ export default {
       focusObj: {},
       sentence: '',
       randomLocalBackgroundSeed: null,
+      randomCustomMottoSeed: null,
       showPosterShadow: false
     }
   },
@@ -380,7 +352,11 @@ export default {
     }),
     ...mapState('settings', {
       posters: 'todoPosters',
-      appearance: 'appearance'
+      appearance: 'appearance',
+      todoSettings: state => state.todo,
+      beeps: state => state.beeps,
+      todoMusic: state => state.todoMusic,
+      motto: 'motto'
     }),
     todo () {
       return this.getTodoById(this.id)
@@ -402,7 +378,8 @@ export default {
 
       if (customTimes > 0) {
         return this.$t('todo.remain_time', [customTimes])
-      } if (customTimes < 0) {
+      }
+      if (customTimes < 0) {
         return this.$t('todo.infinite_loop')
       }
       return ''
@@ -411,12 +388,21 @@ export default {
       return util.getTimeView(this.pauseDuration)
     },
     status () {
-      return this.isDoing && this.$t('todo.is_doing') || this.$t('todo.is_resting')
+      return (
+        (this.isDoing && this.$t('todo.is_doing')) || this.$t('todo.is_resting')
+      )
     },
     isLastLoop () {
-      const { default: defaultTimes, custom: customTimes } = this.currentTodo.loopTimes
+      const {
+        default: defaultTimes,
+        custom: customTimes
+      } = this.currentTodo.loopTimes
 
-      return customTimes === 0 || customTimes === 1 || customTimes === '' && defaultTimes === 1
+      return (
+        customTimes === 0 ||
+        customTimes === 1 ||
+        (customTimes === '' && defaultTimes === 1)
+      )
     }
   },
   watch: {
@@ -436,7 +422,6 @@ export default {
     }
   },
   mounted () {
-    this.sentence = this.$t(setting.getSentence())
     this.currentTodo = _.cloneDeep(this.todo)
     this.initDuration()
     this.setDuration()
@@ -446,6 +431,12 @@ export default {
       0,
       this.posters.length - 1
     )
+    this.randomCustomMottoSeed = setting.creatNonRepeatRandom(
+      0,
+      this.motto.length - 1
+    )
+    this.getMotto()
+    this.pauseDuration = this.todoSettings.stopUpperLimit * 60
     setTimeout(() => {
       this.setPoster()
     }, 1000)
@@ -458,13 +449,25 @@ export default {
   },
   methods: {
     ...mapMutations('todo', ['addFocus']),
+    getMotto () {
+      if (this.todoSettings.randomMottoWay === 'system') {
+        this.sentence = this.$t(setting.getSentence())
+      } else if (this.todoSettings.randomMottoWay === 'custom') {
+        this.sentence = this.motto[this.randomCustomMottoSeed()]
+      } else {
+        const systemMotto = this.$t(setting.getSentence())
+        const Custom = this.motto[this.randomCustomMottoSeed()]
+        const random = Math.floor(Math.random() * 2)
+
+        this.sentence = random === 0 ? systemMotto : Custom
+      }
+    },
     getRandomBackground () {
       const posterRandomMode = this.appearance.posterRandomMode
       let img = ''
 
       if (posterRandomMode === 'online') {
         img = setting.getClockBackground()
-
       } else if (posterRandomMode === 'local') {
         img = this.posters[this.randomLocalBackgroundSeed()]
       } else {
@@ -479,29 +482,48 @@ export default {
     setPoster () {
       const background = this.getRandomBackground()
 
-      loadImg(this.$refs.poster).setSrc(background)
+      new LoadImg(this.$refs.poster).setSrc(background).then(() => {
+        this.$refs.music.src = this.todoSettings.backgroundMusic.src
+        this.playMusic()
+      })
     },
     initStopChart () {
-      this.stopData = todoUtil.getStopData([this.todo], ...util.getPeriod('month'))
+      this.stopData = todoUtil.getStopData(
+        [this.todo],
+        ...util.getPeriod('month')
+      )
     },
     setTimeClockWidth () {
       this.timeClockWidth = (document.documentElement.clientWidth / 414) * 250
-      this.timeClockWidth = this.timeClockWidth > 300 ? 300 : this.timeClockWidth
-      this.timeClockFont = this.timeClockWidth / 250 * 36
+      this.timeClockWidth =
+        this.timeClockWidth > 300 ? 300 : this.timeClockWidth
+      this.timeClockFont = (this.timeClockWidth / 250) * 36
     },
     initRestDuration () {
       this.restDuration = this.oneRestDuration = this.getRestDuration()
     },
     getRestDuration () {
-      const {
+      let {
         default: defaultTime,
         custom: customTime
       } = this.currentTodo.restTime
 
-      if (this.isLastLoop) {
-        return this.longRestTime * 60
+      console.log(this.currentTodo)
+
+
+      if (this.todoSettings.restDuration) {
+        defaultTime = this.todoSettings.restDuration
       }
-      return typeof customTime === 'number' && customTime >= 0 ? customTime * 60 : defaultTime * 60
+
+
+      const duration = typeof customTime === 'number' && customTime >= 0
+        ? customTime * 60
+        : defaultTime * 60
+
+      if (this.isLastLoop) {
+        return this.longRestTime * 60 || duration
+      }
+      return duration
     },
     setRestDuration () {
       if (this.restDuration <= 0) {
@@ -516,7 +538,7 @@ export default {
     },
     initDuration () {
       switch (this.todo.timeWay) {
-        case 'up' :
+        case 'up':
           this.duration = 0
           break
         case 'down':
@@ -571,11 +593,21 @@ export default {
       this.setDuration()
       clearTimeout(this.timerPause)
     },
+    playMusic () {
+      if (this.isMusicClose) {
+        this.$refs.music.pause()
+      } else {
+        this.$refs.music.play()
+      }
+    },
+    changeMusic (val) {
+      this.$refs.music.src = val.src
+      this.playMusic()
+    },
     closeMusic () {
       this.isMusicClose = !this.isMusicClose
+      this.playMusic()
     },
-    changeMusic () {},
-
     setLoopTimes () {
       this.isLoop = !this.isLoop
       if (this.isLoop === true) {
@@ -591,10 +623,12 @@ export default {
       this.showBoxSetLoop = false
     },
     checkValue (key, { value, max }) {
-      if (!util.checkLess({
-        value,
-        max
-      })) {
+      if (
+        !util.checkLess({
+          value,
+          max
+        })
+      ) {
         this.$message({
           title: this.$t('word.tip'),
           content: this.error[key]
@@ -695,17 +729,19 @@ export default {
         this.timeClockFont = 26
         this.timerGoBack = setTimeout(() => {
           this.addFocus(focus)
-          history.back()
+          this.toLastPage()
         }, 2000)
       } else {
         focus.reason = this.abandonReason
         this.addFocus(focus)
-        history.back()
+        this.toLastPage()
       }
       this.focusObj = focus
     },
     toLastPage () {
-      history.back()
+      if (this.todoSettings.autoToMainPage) {
+        history.back()
+      }
     }
   }
 }
@@ -719,7 +755,11 @@ export default {
   background-size: 100% 100%;
   color: white;
   transition: all 0.3s linear;
-  background-image: linear-gradient(to bottom,rgb(1, 104, 173), rgb(1, 58, 97));
+  background-image: linear-gradient(
+    to bottom,
+    rgb(1, 104, 173),
+    rgb(1, 58, 97)
+  );
 
   .do-todo-poster {
     .fixed-full-screen();
@@ -728,12 +768,12 @@ export default {
       width: 100%;
       height: 100%;
     }
+  }
 
-    .poster-shadow {
-      .fixed-full-screen();
-      background: rgba(0, 0, 0, 0.3);
-      position: absolute;
-    }
+  .poster-shadow {
+    .fixed-full-screen();
+    background: rgba(0, 0, 0, 0.3);
+    position: absolute;
   }
 
   .tool {

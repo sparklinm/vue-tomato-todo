@@ -3,6 +3,9 @@
     class="list-item"
     @click="edit"
   >
+    <div
+      class="list-item-shadow"
+    />
     <div class="left">
       <div class="name">
         {{ name }}
@@ -77,7 +80,16 @@ export default {
   color: white;
   border-radius: 5px;
   box-shadow: 0 0 5px 0px @gray;
+  position: relative;
   .flex(@justify-content: space-between);
+
+  // .list-item-shadow {
+  //   position: absolute;
+  //   background: rgba(0, 0, 0, 0.2);
+  //   width: 100%;
+  //   height: 100%;
+  //   left: 0;
+  // }
 
   .left {
      padding: 12px 0px 8px 20px;
