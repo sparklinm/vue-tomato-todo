@@ -185,7 +185,7 @@ module.exports = {
                 <p>删除->点击删除按钮</p>
                 <p>注意，由于已完成的待办始终排在最后面，若对它们排序，会将它们的状态变为待完成时才生效。</p>`,
     pause_todo: `以上是暂停的限制时间 <br>
-                 同一个代办最多可暂停3分钟，以免打断 <br>
+                 同一个代办最多可暂停{0}分钟，以免打断 <br>
                  番茄工作法流程`,
     loop_times: '不能大于50次',
     long_rest_time: '休息时长不能超过100分钟',
@@ -207,7 +207,8 @@ module.exports = {
     clear_all_data: '即将清除本地所有历史记录，统计数据，是否继续？（仅清除统计数据，待办或待办集不受影响）',
     change_cover: '您可以从本地选择喜欢的封面',
     confirm_exit_account: '确定退出当前账号吗？',
-    not_enable_todo_card_background_img: '没有开启待办卡片背景图片，请前往 <span class="pink">我的-外观设置</span> 开启。'
+    not_enable_todo_card_background_img: '没有开启待办卡片背景图片，请前往 <span class="pink">我的-外观设置</span> 开启。',
+    not_pause_todo: '本次番茄钟暂停时间已经用尽'
   },
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',
@@ -229,7 +230,8 @@ module.exports = {
     no_less_than: '不能少于 {0} 个字符',
     input_no_empty: '输入不能为空',
     sort_limit: '只能在待办或待办集页面排序',
-    changing_background: '正在更换背景图'
+    changing_background: '正在更换背景图',
+    pause_timer_end: '暂停计时结束'
   },
   sentence: {
     0: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。',
