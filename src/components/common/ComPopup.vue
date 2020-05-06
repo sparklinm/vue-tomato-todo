@@ -221,7 +221,7 @@ export default {
     },
     afterLeave () {
       this.$modals.delete(this.$el)
-      this.$emit('closed')
+      this.$emit('closed', this.isSubmit)
       this.showShadowAfterOpen = false
     },
     close () {
@@ -231,18 +231,22 @@ export default {
       if (this.submit) {
         this.submit(() => {
           this.close()
+          this.isSubmit = true
         })
       } else {
         this.close()
+        this.isSubmit = true
       }
     },
     handleCancel () {
       if (this.cancel) {
         this.cancel(() => {
           this.close()
+          this.isSubmit = false
         })
       } else {
         this.close()
+        this.isSubmit = false
       }
     },
     handleCloseOnClickMask () {
@@ -250,9 +254,11 @@ export default {
         if (this.cancel) {
           this.cancel(() => {
             this.close()
+            this.isSubmit = false
           })
         } else {
           this.close()
+          this.isSubmit = false
         }
       }
     }

@@ -14,13 +14,14 @@
             name=""
             class="tool-btn"
           />
-          <ComIcon
+          <!-- <ComIcon
             name="share-alt"
             class="tool-btn"
-          />
+          /> -->
           <ComIcon
             name="download"
             class="tool-btn"
+            @click.native="showBoxFocusClock=true"
           />
         </div>
         <div class="do-todo-inline">
@@ -97,7 +98,7 @@
       </div>
       <div
         class="description"
-        v-html="$t('message.pause_todo')"
+        v-html="$t('message.pause_todo',[this.todoSettings.stopUpperLimit])"
       />
       <template v-slot:footer>
         <button
@@ -121,17 +122,18 @@
       class="box-set-loop"
       no-header
       :show.sync="showBoxSetLoop"
+      @closed="cancleSetLoopTimes"
     >
       <ComInput
-        v-model="loopTimes.value"
-        type="number"
+        v-model.number="loopTimes.value"
+        type="positiveInteger"
         :placeholder="$t('todo.input_loop_times')"
         autofocus
         :min="0"
       />
       <ComInput
-        v-model="restTimeLong.value"
-        type="number"
+        v-model.number="restTimeLong.value"
+        type="positiveInteger"
         :placeholder="$t('todo.loop_end_rest_time')"
         autofocus
         :min="0"
@@ -152,7 +154,7 @@
         </button>
         <button
           class="com-popup__footer-btn"
-          @click="cancleSetLoopTimes"
+          @click="doCancleSetLoopTimes"
         >
           {{ $t("action.cancel") }}
         </button>
@@ -262,6 +264,8 @@
       @closed="toLastPage"
     />
 
+    <ClockFocus :show.sync="showBoxFocusClock" />
+
     <audio
       ref="music"
       autoplay
@@ -275,6 +279,7 @@ import ProgressCircle from './ProgressCircle'
 import StopChart from '@/components/statistics/StopChart'
 import BoxEditText from './BoxEditText'
 import RadioListMusic from '@/components/setting/RadioListMusic'
+import ClockFocus from '@/components/ClockFocus'
 import { mapState, mapGetters, mapMutations } from 'vuex'
 import util from '@/js/util.js'
 import todoUtil from '@/js/todo.js'
@@ -286,7 +291,8 @@ export default {
     ProgressCircle,
     StopChart,
     BoxEditText,
-    RadioListMusic
+    RadioListMusic,
+    ClockFocus
   },
   data () {
     return {
@@ -343,7 +349,8 @@ export default {
       sentence: '',
       randomLocalBackgroundSeed: null,
       randomCustomMottoSeed: null,
-      showPosterShadow: false
+      showPosterShadow: false,
+      showBoxFocusClock: false
     }
   },
   computed: {
@@ -407,8 +414,9 @@ export default {
   },
   watch: {
     isDoing (val) {
-      if (this.isLastLoop) {
+      if (this.isLastLoop && val) {
         this.skipAllTime()
+        return
       }
       clearTimeout(this.timer)
       if (val) {
@@ -483,7 +491,8 @@ export default {
       const background = this.getRandomBackground()
 
       new LoadImg(this.$refs.poster).setSrc(background).then(() => {
-        this.$refs.music.src = this.todoSettings.backgroundMusic.src
+        this.music = this.todoSettings.backgroundMusic
+        this.$refs.music.src = this.music.src
         this.playMusic()
       })
     },
@@ -508,9 +517,6 @@ export default {
         custom: customTime
       } = this.currentTodo.restTime
 
-      console.log(this.currentTodo)
-
-
       if (this.todoSettings.restDuration) {
         defaultTime = this.todoSettings.restDuration
       }
@@ -526,13 +532,13 @@ export default {
       return duration
     },
     setRestDuration () {
-      if (this.restDuration <= 0) {
-        this.isDoing = true
-        return
-      }
-      this.totalDuration++
-      this.restDuration--
       this.timer = setTimeout(() => {
+        if (this.restDuration <= 0) {
+          this.isDoing = true
+          return
+        }
+        this.totalDuration++
+        this.restDuration--
         this.setRestDuration()
       }, 1000)
     },
@@ -575,6 +581,8 @@ export default {
     },
     setPauseDuration () {
       if (this.pauseDuration <= 0) {
+        this.showBoxPause = false
+        this.$tips(this.$t('tips.pause_timer_end'))
         return
       }
       this.totalDuration++
@@ -584,6 +592,12 @@ export default {
       }, 1000)
     },
     pause () {
+      if (this.pauseDuration <= 0) {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('message.not_pause_todo')
+        })
+      }
       this.showBoxPause = true
       clearTimeout(this.timer)
       this.setPauseDuration()
@@ -609,10 +623,10 @@ export default {
       this.playMusic()
     },
     setLoopTimes () {
-      this.isLoop = !this.isLoop
-      if (this.isLoop === true) {
+      if (this.isLoop === false) {
         this.showBoxSetLoop = true
       } else {
+        this.isLoop = false
         this.currentTodo.loopTimes.custom = ''
         this.longRestTime = ''
         this.showBoxSetLoop = false
@@ -620,6 +634,7 @@ export default {
     },
     infiniteLoop () {
       this.currentTodo.loopTimes.custom = -1
+      this.isLoop = true
       this.showBoxSetLoop = false
     },
     checkValue (key, { value, max }) {
@@ -647,11 +662,22 @@ export default {
         return
       }
 
-      loopTimes.custom = this.loopTimes.value
-      this.longRestTime = this.restTimeLong.value
+      if (this.loopTimes.value !== '') {
+        this.isLoop = true
+        loopTimes.custom = this.loopTimes.value
+      }
+      if (this.restTimeLong.value !== '') {
+        this.longRestTime = this.restTimeLong.value
+      }
       this.showBoxSetLoop = false
     },
-    cancleSetLoopTimes () {
+    cancleSetLoopTimes (val) {
+      if (!val) {
+        this.doCancleSetLoopTimes()
+      }
+    },
+    doCancleSetLoopTimes () {
+      this.isLoop = false
       this.loopTimes.value = ''
       this.restTimeLong.value = ''
       this.showBoxSetLoop = false
@@ -675,11 +701,12 @@ export default {
     submitSkipTime () {
       if (this.isSkipTime) {
         this.isDoing = !this.isDoing
+        this.isSkipTime = false
       }
     },
     completeAdvance () {
       this.showBoxSkipTime = false
-      this.skipAllTime()
+      this.isSkipTime = true
     },
     abandonTime () {
       this.showBoxAbandonReason = true

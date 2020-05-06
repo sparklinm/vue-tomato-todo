@@ -30,7 +30,7 @@ c
     </div>
     <CPie
       ref="pie"
-      :options="options"
+      :options="chartOptions"
     />
   </DataPanel>
 </template>
@@ -57,13 +57,17 @@ export default {
     topBtn: {
       type: Boolean,
       default: true
+    },
+    options: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
     return {
       filterValue: 'day',
       chart: null,
-      options: {}
+      chartOptions: {}
     }
   },
   computed: {
@@ -111,7 +115,7 @@ export default {
         const ave = this.getAveDuration(total)
         const chart = this.$refs.pie
 
-        this.options = {
+        this.chartOptions = {
           legend: {
             data: legend,
             formatter: name => {
@@ -138,7 +142,7 @@ export default {
         }
 
         if (this.filterValue !== 'day') {
-          this.options.graphic = {
+          this.chartOptions.graphic = {
             id: 'text',
             type: 'text',
             z: 100,
@@ -154,17 +158,21 @@ export default {
             }
           }
         } else {
-          this.options.graphic = {
+          this.chartOptions.graphic = {
             id: 'text',
             $action: 'remove'
           }
         }
         chart.setHeight()
       }
+    },
+    options (val) {
+      this.chartOptions = val
     }
   },
   mounted () {
     this.chart = this.$refs.pie.$refs.chart
+    this.chartOptions = this.options
   },
   methods: {
     handleFilterChange (filter) {
