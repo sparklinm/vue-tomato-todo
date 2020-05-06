@@ -188,7 +188,7 @@ export default {
   position: relative;
   padding: 4px 0;
   flex: 1;
-  .flex(@align-items: center);
+  .flex();
 }
 
 .com-input__placeholder {

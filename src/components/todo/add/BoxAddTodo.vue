@@ -8,6 +8,7 @@
       :before-open="beforeBoxAddTodoOpen"
       :z-index="2010"
       :class="customClass"
+      :close-on-click-mask="false"
       @closed="$emit('update:show', false)"
     >
       <ComInput
@@ -455,12 +456,30 @@ export default {
     this.todoCommon = template.todoCommon
     this.todoGoal = template.todoGoal
     this.todoHabit = template.todoHabit
-    this.todo = this.data || this.todoCommon
-    if (this.todo.timeDuration !== 25 && this.todo.timeDuration !== 35) {
+    this.todo = _.cloneDeep(this.data || this.todoCommon)
+
+    if (!this.todo.loopTimes) {
+      this.todo.loopTimes = {
+        value: 1,
+        custom: ''
+      }
+    }
+    if (!this.todo.timeDuration) {
+      this.todo.timeDuration = 25
+    }
+    if (!this.todo.restTime) {
+      this.todo.timeDuration = {
+        value: 5,
+        custom: ''
+      }
+    }
+
+    if (this.todo.timeDuration >= 0 && this.todo.timeDuration !== 25 && this.todo.timeDuration !== 35) {
       this.todoTimeDuration[2].text = this.todo.timeDuration + '分钟'
       this.todoTimeDuration[2].value = this.todo.timeDuration
       this.customTimeDuration.value = this.todo.timeDuration
     }
+
     this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
     this.setChecked(this.todoTimeWay, this.todo.timeWay)
     this.setChecked(this.todoType, this.todo.type)
@@ -499,7 +518,7 @@ export default {
     },
     setAdvancedSettings () {
       for (const [key, setting] of Object.entries(this.advancedSettings)) {
-        if (this.todo[key]) {
+        if (this.todo[key] !== undefined) {
           if (key === 'loopTimes' || key === 'restTime') {
             setting.value = setting.default = this.todo[key].custom
           } else {
@@ -535,7 +554,7 @@ export default {
         this.todoType[index].value.slice(0, 1).toUpperCase() +
         this.todoType[index].value.slice(1)
 
-      this.todo = this['todo' + type]
+      this.todo = Object.assign({}, this.data, this['todo' + type])
 
       this.setChecked(this.todoTimeWay, this.todo.timeWay)
       this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
@@ -621,7 +640,7 @@ export default {
         return
       }
 
-      if (this.todo.timeWay === 'down') {
+      if (this.todo.timeWay === 'up') {
         delete this.todo.loopTimes
         delete this.todo.timeDuration
       } else if (this.todo.timeWay === 'none') {
@@ -632,6 +651,7 @@ export default {
       if (!this.data) {
         this.todo.creat = new Date()
       }
+
       this.$emit('submit', this.todo)
       done()
     }

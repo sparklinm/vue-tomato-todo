@@ -108,12 +108,14 @@ export default {
   },
   computed: {
     ...mapState('settings', {
-      motto: state => state.motto
+      motto: state => state.motto,
+      todo: 'todo'
     })
   },
 
   mounted () {
     this.allMotto = this.motto
+    this.randomMottoWay = this.todo.randomMottoWay
     console.log(this.allMotto)
   },
   methods: {

@@ -18,6 +18,8 @@ import VueI18n from 'vue-i18n'
 import ECharts from 'vue-echarts'
 import 'echarts'
 import roma from './roma'
+console.log(roma)
+
 
 import './components/plugins/calendar/style.less'
 import Calendar from './components/plugins/calendar'
