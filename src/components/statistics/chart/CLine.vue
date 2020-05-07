@@ -22,6 +22,10 @@ export default {
     options: {
       type: Object,
       default: null
+    },
+    notMerge: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -111,7 +115,8 @@ export default {
             xAxisIndex: [0],
             start: 0, // 数据窗口范围的起始百分比,
             endValue: 6,
-            zoomLock: true
+            zoomLock: true,
+            filterMode: 'empty'
           }
         ],
         series: [
@@ -169,6 +174,10 @@ export default {
   watch: {
     options (val) {
       if (!_.isEmpty(val)) {
+        if (!this.notMerge) {
+          this.chartOptions = val
+          return
+        }
         Object.assign(this.chartOptions, val)
       }
     }

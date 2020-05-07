@@ -54,8 +54,6 @@ export default {
   watch: {
     data: {
       handler (data) {
-        console.log(data)
-
         const time = this.period[0]
         const year = time.getFullYear()
         const month = time.getMonth()
