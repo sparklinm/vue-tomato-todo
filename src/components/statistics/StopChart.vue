@@ -19,6 +19,7 @@
 import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import CPie from './chart/CPie'
+
 export default {
   components: {
     DataPanel,
@@ -67,6 +68,7 @@ export default {
         const legend = []
         const seriesData = []
         const reasonStats = {}
+
         data.forEach(item => {
           if (reasonStats[item.reason]) {
             reasonStats[item.reason]++
@@ -82,11 +84,13 @@ export default {
           })
         }
         const chart = this.$refs.pie
+
         this.options = {
           legend: {
             data: legend,
             formatter: name => {
               let cname = name
+
               if (cname.length > 8) {
                 cname = name.slice(0, 8) + '...'
               }

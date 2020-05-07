@@ -135,6 +135,7 @@ export default {
       if (!_.isEmpty(val)) {
         if (!this.notMerge) {
           this.chartOptions = val
+          return
         }
         Object.assign(this.chartOptions, val)
       }

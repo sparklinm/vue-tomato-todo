@@ -76,6 +76,7 @@ module.exports = {
     history_record_time_axis: '历史记录时间轴',
     data_analysis: '数据分析',
     cumulative_data: '累计数据',
+    today_data: '当日数据',
     focus_times: '专注次数',
     focus_duration: '专注时长',
     everyday_focus: '日均专注',

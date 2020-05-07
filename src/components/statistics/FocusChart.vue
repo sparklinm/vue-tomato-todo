@@ -135,8 +135,7 @@ export default {
           },
           series: [
             {
-              data: data,
-              type: 'pie'
+              data: data
             }
           ]
         }
