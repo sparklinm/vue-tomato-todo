@@ -12,6 +12,7 @@
 import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import CBar from './chart/CBar'
+
 export default {
   components: {
     DataPanel,
@@ -53,6 +54,7 @@ export default {
 
         clocks.sort((a, b) => a - b)
         const dtime = clocks[clocks.length - 1] - clocks[0]
+
         for (let i = 0; i <= dtime; i++) {
           clocks[i] = parseInt(clocks[0]) + i
         }
@@ -60,10 +62,12 @@ export default {
 
         const legendData = []
         const series = []
+
         Object.entries(data).forEach((item, index) => {
           const seriesName = `${item[0]}${this.$t(
             'word.oclock'
           )}<br>` + this.$t('todo.focus_duration')
+
           series[index] = {
             name: seriesName,
             type: 'bar',

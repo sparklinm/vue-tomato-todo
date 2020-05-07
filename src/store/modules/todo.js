@@ -11,7 +11,7 @@ export default {
       {
         id: 0,
         sid: 0,
-        name: '普通',
+        name: '运动半小时-普通',
         type: 'common',
         timeWay: 'down',
         taskNotes: '普通普通普通',
@@ -31,12 +31,12 @@ export default {
       },
       {
         id: 1,
-        name: '目标3',
+        name: '看书100页-目标',
         type: 'goal',
         timeWay: 'down',
         timeDuration: 25,
         goal: {
-          deadline: new Date(2019, 8, 28),
+          deadline: new Date(2019, 9, 28),
           total: 360,
           complete: 100,
           customUnit: '页'
@@ -51,13 +51,13 @@ export default {
           custom: ''
         },
         hideAfterComplete: false,
-        create: new Date(2019, 8, 24),
+        create: new Date(2019, 10, 24),
         background: '/card/back1.jpg',
         color: '#996699'
       },
       {
         id: 2,
-        name: '普通5',
+        name: '听力20分钟-普通',
         type: 'common',
         timeWay: 'up',
         taskNotes: '普通普通普通',
@@ -70,13 +70,13 @@ export default {
           custom: ''
         },
         hideAfterComplete: false,
-        create: new Date(2019, 8, 24),
+        create: new Date(2019, 11, 24),
         background: '/card/back6.jpg',
         color: '#333366'
       },
       {
         id: 3,
-        name: '习惯',
+        name: '每天学习3小时-习惯',
         type: 'habit',
         timeWay: 'down',
         timeDuration: 25,
@@ -94,7 +94,7 @@ export default {
           value: 5,
           custom: ''
         },
-        create: new Date(2019, 10, 24),
+        create: new Date(2019, 12, 24),
         hideAfterComplete: false,
         background: '/card/back8.jpg',
         color: '#CC9966'
@@ -136,46 +136,49 @@ export default {
       {
         id: 0,
         tid: 0,
+        // 今日
         start: new Date(new Date().getTime() - 20 * 60 * 1000),
         end: new Date(),
         status: 'completed',
-        experience: '非常好',
+        experience: '心得1',
         duration: 20
       },
       {
         id: 1,
         tid: 0,
-        start: new Date(2020, 0, 2, 10, 20),
-        end: new Date(2020, 0, 2, 10, 45),
+        // 一天前
+        start: new Date(new Date().getTime() - 25 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() - 24.5 * 60 * 60 * 1000),
         status: 'stopped',
-        experience: '等待下一次',
-        reason: '临时有事',
+        reason: '来客人了',
         duration: 25
       },
       {
         id: 3,
         tid: 1,
-        start: new Date(2020, 0, 2, 4, 30),
-        end: new Date(2020, 0, 2, 5, 30),
+        // 2天前
+        start: new Date(new Date().getTime() - 52 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() - 51.3 * 60 * 60 * 1000),
         status: 'completed',
-        experience: '心得3',
+        experience: '心得2',
         duration: 30
       },
       {
         id: 4,
         tid: 1,
-        start: new Date(2020, 0, 2, 4, 30),
-        end: new Date(2020, 0, 2, 5, 30),
+        // 一周前
+        start: new Date(new Date().getTime() - 7.3 * 24 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() - 7.2 * 24 * 60 * 60 * 1000),
         status: 'stopped',
-        experience: '心得4',
-        reason: '临时有事',
+        reason: '同学叫帮忙',
         duration: 10
       },
       {
         id: 5,
         tid: 2,
-        start: new Date(2019, 11, 20, 4, 30),
-        end: new Date(2019, 11, 20, 6, 21),
+        // 一周前
+        start: new Date(new Date().getTime() - 7.5 * 24 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() - 7.45 * 24 * 60 * 60 * 1000),
         status: 'completed',
         experience: '心得5',
         duration: 12
@@ -183,18 +186,19 @@ export default {
       {
         id: 6,
         tid: 2,
-        start: new Date(2019, 11, 26, 10, 30),
-        end: new Date(2019, 11, 26, 11, 21),
+        // 一月前
+        start: new Date(new Date().getTime() - 32 * 24 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() - 32.1 * 24 * 60 * 60 * 1000),
         status: 'stopped',
-        experience: '心得6',
-        reason: '临时有事',
+        reason: '想偷懒，休息一会',
         duration: 23
       },
       {
         id: 7,
         tid: 3,
-        start: new Date(2019, 11, 28, 16, 30),
-        end: new Date(2019, 11, 20, 17, 21),
+        // 一月前
+        start: new Date(new Date().getTime() - 32.4 * 24 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() - 32.35 * 24 * 60 * 60 * 1000),
         status: 'completed',
         experience: '心得7',
         duration: 68
@@ -202,11 +206,12 @@ export default {
       {
         id: 8,
         tid: 3,
-        start: new Date(new Date().getTime() + 20 * 60 * 1000),
-        end: new Date(new Date().getTime() + 50 * 60 * 1000),
+        // 今天
+        start: new Date(new Date().getTime() - 2 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() - 1 * 60 * 60 * 1000),
         status: 'stopped',
         experience: '心得8',
-        reason: '临时有事',
+        reason: '没心思了，听会歌',
         duration: 26
       }
     ],

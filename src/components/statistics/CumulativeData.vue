@@ -77,7 +77,7 @@
       </DataPanel>
 
       <DataPanel
-        :title="$t('todo.cumulative_data')"
+        :title="$t('todo.today_data')"
         class="focus-data"
         :top-btn="false"
       >
@@ -161,6 +161,7 @@
 <script>
 import { mapState } from 'vuex'
 import util from '@/js/util.js'
+import todoUtil from '@/js/todo.js'
 import DataPanel from './DataPanel'
 import FocusChart from './FocusChart'
 import WorkTimeChart from './WorkTimeChart'
@@ -245,7 +246,17 @@ export default {
     }),
     ...mapState('settings', {
       chartSettings: 'chart'
-    })
+    }),
+    focus () {
+      const focus = []
+
+      this.todos.forEach(todo => {
+        if (todo.focus) {
+          focus.push(...todo.focus)
+        }
+      })
+      return focus
+    }
   },
   watch: {
     todos () {
@@ -335,17 +346,7 @@ export default {
       return focusData
     },
     getAllFocus (start = new Date(2000), end = new Date()) {
-      let focusData = []
-
-      this.todos.forEach(todo => {
-        if (todo.focus && todo.focus.length) {
-          focusData = todo.focus.filter(item => {
-            return item.start >= start && item.start <= end
-          })
-          return focusData
-        }
-      })
-      return focusData
+      return todoUtil.getFocusByTime(this.focus, start, end)
     },
     getFocusStatistics (data, unit) {
       const result = {}
