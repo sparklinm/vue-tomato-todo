@@ -1,17 +1,26 @@
+const myDate = new Date()
+const year = myDate.getFullYear()
+const month = myDate.getMonth()
+const date = myDate.getDate()
+
 export default {
   namespaced: true,
   state: {
     getUpClocks: [
-      new Date(2019, 11, 2, 5, 10),
-      new Date(2019, 11, 3, 10, 10),
-      new Date(2019, 11, 5, 7, 33),
-      new Date(2019, 11, 16, 8, 42)
+      new Date(year, month, date, 5, 10),
+      new Date(year, month, date - 1, 9, 10),
+      new Date(year, month, date - 2, 8, 34),
+      new Date(year, month - 1, date, 7, 33),
+      new Date(year, month - 1, date + 1, 8, 42),
+      new Date(year, month - 1, date + 2, 7, 15)
     ],
     sleepClocks: [
-      new Date(2019, 11, 2, 20, 10),
-      new Date(2019, 11, 3, 21, 10),
-      new Date(2019, 11, 4, 22, 33),
-      new Date(2019, 11, 16, 2, 42)
+      new Date(year, month, date, 23, 10),
+      new Date(year, month, date - 1, 22, 55),
+      new Date(year, month, date - 2, 21, 23),
+      new Date(year, month - 1, date, 24, 33),
+      new Date(year, month - 1, date + 1, 1, 42),
+      new Date(year, month - 1, date + 2, 3, 42)
     ],
     user: {
       headIcon: require('../../assets/user/head.jpg'),
