@@ -232,7 +232,12 @@ module.exports = {
     input_no_empty: '输入不能为空',
     sort_limit: '只能在待办或待办集页面排序',
     changing_background: '正在更换背景图',
-    pause_timer_end: '暂停计时结束'
+    pause_timer_end: '暂停计时结束',
+    timer_end: '计时结束',
+    enabled_loop: '循环模式已开启',
+    closed_loop: '循环模式已关闭',
+    up_time_not_enable_loop: '正向计时不允许中途开启循环',
+    none_time_not_enable_loop: '不计时计时不允许中途开启循环'
   },
   sentence: {
     0: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。',
