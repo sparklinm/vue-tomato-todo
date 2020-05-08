@@ -7,8 +7,16 @@ function creatTipsPlugin (Vue, options) {
 
   instance.$mount(document.createElement('div'))
   document.body.appendChild(instance.$el)
-  Vue.prototype.$tips = function (message) {
+  Vue.prototype.$tips = function (message, options = {}) {
     instance.message = message
+    const obj = Object.assign(
+      {
+        style: {}
+      },
+      options
+    )
+
+    Object.assign(instance, obj)
     instance.show = true
     setTimeout(() => {
       instance.show = false

@@ -61,10 +61,6 @@ export default {
         type: 'common',
         timeWay: 'up',
         taskNotes: '普通普通普通',
-        loopTimes: {
-          default: 1,
-          custom: ''
-        },
         restTime: {
           default: 5,
           custom: ''
@@ -98,6 +94,22 @@ export default {
         hideAfterComplete: false,
         background: '/card/back8.jpg',
         color: '#CC9966'
+      },
+      {
+        id: 4,
+        name: '打台球-不计时',
+        type: 'habit',
+        timeWay: 'none',
+        habit: {
+          frequency: 1,
+          piece: 10,
+          complete: 0
+        },
+        taskNotes: '',
+        create: new Date(2019, 12, 29),
+        hideAfterComplete: false,
+        background: '/card/back3.jpg',
+        color: '#CC9996'
       }
     ],
     reminders: [

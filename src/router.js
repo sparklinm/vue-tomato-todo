@@ -83,14 +83,16 @@ const router = new Router({
       path: '/statistics/:id',
       component: StatisticsOne,
       meta: {
-        child: true
+        child: true,
+        keepAlive: true
       }
     },
     {
       path: '/time_axis/:id',
       component: TimeAxisOne,
       meta: {
-        child: true
+        child: true,
+        keepAlive: true
       }
     },
     {

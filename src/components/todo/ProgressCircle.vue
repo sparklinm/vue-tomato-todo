@@ -5,6 +5,7 @@
   >
     <svg>
       <circle
+        v-if="showCircle"
         :cx="centreX"
         :cy="centreY"
         :r="radius"
@@ -69,6 +70,10 @@ export default {
     fontSize: {
       type: Number,
       default: -1
+    },
+    showCircle: {
+      type: Boolean,
+      default: true
     }
   },
   data () {

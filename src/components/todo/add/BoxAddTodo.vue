@@ -360,6 +360,9 @@ export default {
     }
   },
   computed: {
+    ...mapState('settings', {
+      todoSettings: 'todo'
+    }),
     showTimeDuration () {
       return this.todo.timeWay === 'down'
     },
@@ -407,7 +410,7 @@ export default {
           value: 5,
           custom: ''
         },
-        hideAfterComplete: false
+        hideAfterComplete: this.todoSettings.hideAfterComplete
       },
       todoGoal: {
         name: '',
@@ -428,7 +431,7 @@ export default {
           value: 5,
           custom: ''
         },
-        hideAfterComplete: false
+        hideAfterComplete: this.todoSettings.hideAfterComplete
       },
       todoHabit: {
         name: '',
@@ -449,7 +452,7 @@ export default {
           value: 5,
           custom: ''
         },
-        hideAfterComplete: false
+        hideAfterComplete: this.todoSettings.hideAfterComplete
       }
     }
 
