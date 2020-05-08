@@ -7,8 +7,17 @@
       class="list-item-shadow"
     />
     <div class="left">
-      <div class="name">
-        {{ name }}
+      <div
+        class="name"
+        style=""
+      >
+        <span class="name-inline">
+          {{ name }}
+          <div
+            v-if="completedTime"
+            class="line-through"
+          />
+        </span>
       </div>
       <div class="card">
         <span class="description">{{ description }}</span>
@@ -55,6 +64,10 @@ export default {
     content: {
       type: String,
       default: ''
+    },
+    completedTime: {
+      type: Date,
+      default: null
     }
   },
   data () {
@@ -90,6 +103,11 @@ export default {
   //   height: 100%;
   //   left: 0;
   // }
+
+  .name-inline {
+    display: inline-block;
+    position: relative;
+  }
 
   .left {
      padding: 12px 0px 8px 20px;

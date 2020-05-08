@@ -35,6 +35,7 @@
           </div>
           <div class="todo-info">
             <ProgressCircle
+              v-if="Boolean(todo.timeDuration) || !isDoing"
               :width="timeClockWidth"
               :progress="progress"
               type="arc"
@@ -43,6 +44,13 @@
               :font-size="timeClockFont"
               @click.native="editExperience"
             />
+            <div
+              v-else
+              class="time-text"
+              :style="{width:timeClockWidth+'px',height:timeClockWidth+'px',fontSize:timeClockFont+'px'}"
+            >
+              {{ textCompleted || time }}
+            </div>
             <div class="name">
               {{ todo.name }}
             </div>
@@ -122,7 +130,7 @@
       class="box-set-loop"
       no-header
       :show.sync="showBoxSetLoop"
-      @closed="cancleSetLoopTimes"
+      @cancel="cancleSetLoopTimes"
     >
       <ComInput
         v-model.number="loopTimes.value"
@@ -271,6 +279,10 @@
       autoplay
       loop
     />
+    <audio
+      ref="tone"
+      :src="todoSettings.tone.src"
+    />
   </div>
 </template>
 
@@ -300,7 +312,10 @@ export default {
       timeClockFont: 36,
       showBoxPause: false,
       totalDuration: 0,
+      // 计时时长，用于计算进度条
+      timeDuration: 0,
       duration: 0,
+      toState: '',
       isDoing: true,
       // 当前休息时长
       restDuration: 0,
@@ -350,7 +365,10 @@ export default {
       randomLocalBackgroundSeed: null,
       randomCustomMottoSeed: null,
       showPosterShadow: false,
-      showBoxFocusClock: false
+      showBoxFocusClock: false,
+      tone: {
+        src: ''
+      }
     }
   },
   computed: {
@@ -370,15 +388,15 @@ export default {
     },
     progress () {
       if (this.isDoing) {
-        return (this.duration / (this.todo.timeDuration * 60)) * 100
+        if (!this.todo.timeDuration) {
+          return 0
+        }
+        return (this.timeDuration / (this.todo.timeDuration * 60)) * 100
       }
-      return (this.restDuration / this.oneRestDuration) * 100
+      return (this.timeDuration / this.oneRestDuration) * 100
     },
     time () {
-      if (this.isDoing) {
-        return util.getTimeView(this.duration)
-      }
-      return util.getTimeView(this.restDuration)
+      return util.getTimeView(this.timeDuration)
     },
     timesLeft () {
       const { custom: customTimes } = this.currentTodo.loopTimes
@@ -395,9 +413,10 @@ export default {
       return util.getTimeView(this.pauseDuration)
     },
     status () {
-      return (
-        (this.isDoing && this.$t('todo.is_doing')) || this.$t('todo.is_resting')
-      )
+      if (this.currentTodo.loopTimes && this.currentTodo.loopTimes.custom === 0) {
+        return this.$t('tips.timer_end')
+      }
+      return (this.isDoing && this.$t('todo.is_doing')) || this.$t('todo.is_resting')
     },
     isLastLoop () {
       const {
@@ -420,20 +439,19 @@ export default {
       }
       clearTimeout(this.timer)
       if (val) {
-        this.currentTodo.loopTimes.custom--
-        this.initDuration()
-        this.setDuration()
+        this.currentTodo.loopTimes && this.currentTodo.loopTimes.custom--
+        this.startDoingTime()
       } else {
-        this.initRestDuration()
-        this.setRestDuration()
+        this.playTone()
+        this.startRestTime()
       }
     }
   },
   mounted () {
     this.currentTodo = _.cloneDeep(this.todo)
-    this.initDuration()
-    this.setDuration()
-    this.initRestDuration()
+    setTimeout(() => {
+      this.startDoingTime()
+    }, 400)
     this.setTimeClockWidth()
     this.randomLocalBackgroundSeed = setting.creatNonRepeatRandom(
       0,
@@ -444,6 +462,9 @@ export default {
       this.motto.length - 1
     )
     this.getMotto()
+    if (this.currentTodo.loopTimes && this.currentTodo.loopTimes.custom > 1) {
+      this.isLoop = true
+    }
     this.pauseDuration = this.todoSettings.stopUpperLimit * 60
     setTimeout(() => {
       this.setPoster()
@@ -508,8 +529,46 @@ export default {
         this.timeClockWidth > 300 ? 300 : this.timeClockWidth
       this.timeClockFont = (this.timeClockWidth / 250) * 36
     },
-    initRestDuration () {
-      this.restDuration = this.oneRestDuration = this.getRestDuration()
+    timeFast (val, duration = 0) {
+      return new Promise((resolve) => {
+        clearTimeout(this.timer)
+        const total = 300
+
+        if (val === 'end') {
+          const d = Math.ceil(4 * this.timeDuration / total)
+          const doTime = (() => {
+            this.timer = setTimeout(() => {
+              if (this.timeDuration <= duration) {
+                this.timeDuration = duration
+                clearTimeout(this.timer)
+                resolve()
+                return
+              }
+              this.timeDuration -= d
+              doTime()
+            }, 4)
+          })
+
+          doTime()
+        } else {
+          const d = Math.ceil(4 * duration / total)
+          const doTime = (() => {
+            this.timer = setTimeout(() => {
+              if (this.timeDuration >= duration) {
+                this.timeDuration = duration
+                clearTimeout(this.timer)
+                resolve()
+                return
+              }
+
+              this.timeDuration += d
+              doTime()
+            }, 4)
+          })
+
+          doTime()
+        }
+      })
     },
     getRestDuration () {
       let {
@@ -531,16 +590,33 @@ export default {
       }
       return duration
     },
+    startRestTime () {
+      this.timeDuration = 0
+      this.initRestDuration()
+      this.timeFast('start', this.oneRestDuration).then(() => {
+        this.setRestDuration()
+      })
+    },
+    initRestDuration () {
+      this.oneRestDuration = this.getRestDuration()
+    },
     setRestDuration () {
       this.timer = setTimeout(() => {
-        if (this.restDuration <= 0) {
+        if (this.timeDuration <= 0) {
           this.isDoing = true
           return
         }
         this.totalDuration++
-        this.restDuration--
+        this.timeDuration--
         this.setRestDuration()
       }, 1000)
+    },
+    startDoingTime () {
+      this.timeDuration = 0
+      this.initDuration()
+      this.timeFast('start', this.duration).then(() => {
+        this.setDuration()
+      })
     },
     initDuration () {
       switch (this.todo.timeWay) {
@@ -560,15 +636,15 @@ export default {
         this.start = this.start || new Date()
         switch (this.todo.timeWay) {
           case 'up':
-            this.duration++
-            if (this.duration >= this.currentTodo.timeDuration * 60) {
+            this.timeDuration++
+            if (this.timeDuration >= this.currentTodo.timeDuration * 60) {
               this.isDoing = false
               return
             }
             break
           case 'down':
-            this.duration--
-            if (this.duration <= 0) {
+            this.timeDuration--
+            if (this.timeDuration <= 0) {
               this.isDoing = false
               return
             }
@@ -618,14 +694,43 @@ export default {
       this.$refs.music.src = val.src
       this.playMusic()
     },
+    playTone () {
+      if (this.todoSettings.beep) {
+        this.$refs.tone.play()
+        setTimeout(() => {
+          this.$refs.tone.pause()
+        }, 2000)
+      }
+    },
     closeMusic () {
       this.isMusicClose = !this.isMusicClose
       this.playMusic()
     },
     setLoopTimes () {
+      if (this.currentTodo.type === 'up') {
+        this.$tips(this.$t('tips.up_time_not_enable_loop'), {
+          style: {
+            bottom: '100px'
+          }
+        })
+        return
+      }
+      if (this.currentTodo.type === 'none') {
+        this.$tips(this.$t('tips.none_time_not_enable_loop'), {
+          style: {
+            bottom: '100px'
+          }
+        })
+        return
+      }
       if (this.isLoop === false) {
         this.showBoxSetLoop = true
       } else {
+        this.$tips(this.$t('tips.closed_loop'), {
+          style: {
+            bottom: '100px'
+          }
+        })
         this.isLoop = false
         this.currentTodo.loopTimes.custom = ''
         this.longRestTime = ''
@@ -635,6 +740,11 @@ export default {
     infiniteLoop () {
       this.currentTodo.loopTimes.custom = -1
       this.isLoop = true
+      this.$tips(this.$t('tips.enabled_loop'), {
+        style: {
+          bottom: '100px'
+        }
+      })
       this.showBoxSetLoop = false
     },
     checkValue (key, { value, max }) {
@@ -664,6 +774,11 @@ export default {
 
       if (this.loopTimes.value !== '') {
         this.isLoop = true
+        this.$tips(this.$t('tips.enabled_loop'), {
+          style: {
+            bottom: '100px'
+          }
+        })
         loopTimes.custom = this.loopTimes.value
       }
       if (this.restTimeLong.value !== '') {
@@ -700,7 +815,9 @@ export default {
     },
     submitSkipTime () {
       if (this.isSkipTime) {
-        this.isDoing = !this.isDoing
+        this.timeFast('end').then(() => {
+          this.isDoing = !this.isDoing
+        })
         this.isSkipTime = false
       }
     },
@@ -715,7 +832,9 @@ export default {
     // 放弃计时
     submitAbandonTime () {
       this.showBoxAbandonReason = false
-      this.skipAllTime()
+      setTimeout(() => {
+        history.back()
+      }, 1000)
     },
     cancelAbandonTime () {
       this.showBoxAbandonReason = false
@@ -734,6 +853,10 @@ export default {
     },
     // 跳过所有计时
     skipAllTime () {
+      clearTimeout(this.timer)
+      if (this.currentTodo.loopTimes) {
+        this.currentTodo.loopTimes.custom = 0
+      }
       this.showBoxSkipTime = false
       this.end = new Date(this.start)
       this.end.setSeconds(this.totalDuration)
@@ -851,6 +974,16 @@ export default {
     top: 50%;
     transform: translate(-50%, -40%);
 
+    .time-text {
+      text-align: center;
+      &::after{
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+      }
+    }
+
     .name {
       margin-top: 30px;
       font-size: 18px;
@@ -875,7 +1008,7 @@ export default {
     width: 100%;
     box-sizing: border-box;
     position: fixed;
-    bottom: 50px;
+    bottom: 30px;
     text-align: center;
 
     .btns-group {

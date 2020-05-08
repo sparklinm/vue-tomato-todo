@@ -241,10 +241,12 @@ export default {
     handleCancel () {
       if (this.cancel) {
         this.cancel(() => {
+          this.$emit('cancel')
           this.close()
           this.isSubmit = false
         })
       } else {
+        this.$emit('cancel')
         this.close()
         this.isSubmit = false
       }
@@ -253,10 +255,12 @@ export default {
       if (this.closeOnClickMask) {
         if (this.cancel) {
           this.cancel(() => {
+            this.$emit('cancel')
             this.close()
             this.isSubmit = false
           })
         } else {
+          this.$emit('cancel')
           this.close()
           this.isSubmit = false
         }

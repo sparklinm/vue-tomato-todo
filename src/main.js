@@ -18,8 +18,6 @@ import VueI18n from 'vue-i18n'
 import ECharts from 'vue-echarts'
 import 'echarts'
 import roma from './roma'
-console.log(roma)
-
 
 import './components/plugins/calendar/style.less'
 import Calendar from './components/plugins/calendar'
@@ -61,7 +59,7 @@ Vue.use(Calendar, {
 
 Vue.mixin({
   beforeRouteLeave (to, from, next) {
-    if (from.meta.keepAlive || to.meta.keepAlive) {
+    if (from.meta.keepAlive && to.meta.keepAlive) {
       this.$root.keepAlive = ['Main']
     } else {
       this.$root.keepAlive = ['None']

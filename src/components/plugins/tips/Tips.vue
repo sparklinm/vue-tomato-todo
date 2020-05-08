@@ -1,8 +1,9 @@
 <template>
-  <PopUp>
+  <transition name="plu-tips">
     <div
       v-if="show"
       class="plu-tips-wrap"
+      :style="style"
     >
       <div class="plu-tips">
         <div class="box-background" />
@@ -11,7 +12,7 @@
         </div>
       </div>
     </div>
-  </PopUp>
+  </transition>
 </template>
 
 <script>
@@ -19,7 +20,8 @@ export default {
   data () {
     return {
       message: '',
-      show: false
+      show: false,
+      style: {}
     }
   },
   mounted () {},
@@ -45,7 +47,7 @@ export default {
     position: relative;
 
     .text {
-      padding: 15px;
+      padding: 10px 15px;
     }
 
     .box-background {
@@ -58,5 +60,17 @@ export default {
       z-index: -1;
     }
   }
+}
+
+.plu-tips-enter-active,
+.plu-tips-leave-active {
+  transition: all 0.15s ease-out;
+  transform-origin: center bottom;
+}
+
+.plu-tips-enter,
+.plu-tips-leave-to {
+  opacity: 0;
+  transform: scale(0.2);
 }
 </style>

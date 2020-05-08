@@ -69,7 +69,7 @@ export default {
       randomMottoWay: 'system',
       stopUpperLimit: 3,
       fixedSort: false,
-      hideAfterComplete: false,
+      hideAfterComplete: true,
       autoToMainPage: true
     },
     appearance: {

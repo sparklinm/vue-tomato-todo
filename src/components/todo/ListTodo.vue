@@ -539,7 +539,8 @@ export default {
           deadline: deadline,
           progressBar: progressBar,
           img: todo.background,
-          color: todo.color
+          color: todo.color,
+          completedTime: todo.completedTime || null
         }
       })
     },
@@ -616,9 +617,7 @@ export default {
     }
   },
   mounted () {
-    this.getData().then(() => {
-      this.setListStyles()
-    })
+    this.getData()
   },
   methods: {
     ...mapMutations('todo', {
@@ -637,8 +636,7 @@ export default {
     getData () {
       return new Promise(resolve => {
         setTimeout(() => {
-          this.curTodos = _.cloneDeep(this.todos)
-
+          this.curTodos = this.getTodosByCompletedTime(this.todos)
           if (this.todo) {
             this.todo =
               this.curTodos.find(item => item.id === this.todo.id) ||
@@ -649,6 +647,32 @@ export default {
           }
         })
       })
+    },
+    // 已完成的待办在最后
+    getTodosByCompletedTime (todos) {
+      const sortedTodos = []
+      const completedTodos = []
+      const date = new Date()
+      const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+      todos.forEach(todo => {
+        const focus = todo.focus.find(data => {
+          return data.end <= new Date() && data.end >= today
+        })
+
+        if (focus) {
+          completedTodos.push({
+            ...todo,
+            completedTime: focus.end
+          })
+        } else {
+          sortedTodos.push(todo)
+        }
+      })
+      completedTodos.sort((a, b) => {
+        return a.completedTime - b.completedTime
+      })
+      return sortedTodos.concat(completedTodos)
     },
     setBoxHeaderStyle (todo) {
       if (this.appearance.todoCardBackground === 'colorful') {
@@ -664,7 +688,6 @@ export default {
       }
     },
     setListStyles () {
-      console.log(this.datas)
       const list = []
 
       this.datas.forEach(data => {
@@ -717,7 +740,8 @@ export default {
       })
       this.listStyles = list
     },
-    start () {
+    start (index) {
+      this.todo = this.curTodos[index]
       document.documentElement.requestFullscreen()
       this.$router.push({
         path: `/do/${this.todo.id}`
