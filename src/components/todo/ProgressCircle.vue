@@ -26,6 +26,7 @@
         :d="path"
         :stroke-width="strokeWidth"
         stroke-linecap="round"
+        class="progress-bar-track"
         :class="{
           'progress-bar__sector': type === 'sector',
           'progress-bar__arc': type === 'arc'
@@ -36,9 +37,9 @@
         :y="centreY"
         fill="white"
         class="progress-bar__text"
-        :style="{fontSize:fontSize+'px'}"
+        :style="{ fontSize: fontSize + 'px' }"
       >
-        {{ text || progress + '%' }}
+        {{ text || progress + "%" }}
       </text>
     </svg>
   </div>

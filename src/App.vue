@@ -46,7 +46,7 @@
 <script>
 import screenshot from '@/js/screenshot'
 import config from './config'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState, mapGetters } from 'vuex'
 
 export default {
   data () {
@@ -55,6 +55,7 @@ export default {
       css: false
     }
   },
+  computed: {},
 
   watch: {
     $route (to, from) {

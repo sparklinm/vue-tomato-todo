@@ -413,7 +413,7 @@ import BoxSortTodo from '@/components/todo/BoxSortTodo'
 import DatePicker from '../DatePicker'
 import AnimatedInteger from '../AnimatedInteger'
 import util from '@/js/util.js'
-import todo from '@/js/todo.js'
+import todoUtil from '@/js/todo.js'
 import setting from '@/js/setting.js'
 import { mapState, mapMutations } from 'vuex'
 
@@ -489,12 +489,15 @@ export default {
       showBoxSortTodo: 'showBoxSortTodo'
     }),
     ...mapState('settings', {
-      appearance: 'appearance'
+      appearance: 'appearance',
+      todoSettings: 'todo'
     }),
     datas () {
       if (!this.curTodos.length) {
         return []
       }
+      const date = new Date()
+      const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
 
       return this.curTodos.map(todo => {
         let description = ''
@@ -532,6 +535,17 @@ export default {
           progressBar = this.getProgress(todo.habit.complete, todo.habit.piece)
         }
 
+        let completedTimes = todoUtil.getCompletedFocus(todo.focus, today).length
+
+        if (completedTimes) {
+          if (todo.timeWay !== 'none') {
+            completedTimes = this.$t('todo.today_focused', [completedTimes])
+          } else {
+            completedTimes = this.$t('todo.today_completed', [completedTimes])
+          }
+        }
+
+
         return {
           name: todo.name,
           description: description,
@@ -540,7 +554,8 @@ export default {
           progressBar: progressBar,
           img: todo.background,
           color: todo.color,
-          completedTime: todo.completedTime || null
+          completedTime: todo.completedTime || null,
+          completedTimes: completedTimes || ''
         }
       })
     },
@@ -631,12 +646,18 @@ export default {
       storeSetShowStatistics: 'setShowStatistics',
       storeSetTarget: 'setTarget',
       storeSetIsGetTodos: 'setIsGetTodos',
-      storeSetShowBoxSortTodo: 'setShowBoxSortTodo'
+      storeSetShowBoxSortTodo: 'setShowBoxSortTodo',
+      storeAddFocus: 'addFocus'
     }),
     getData () {
       return new Promise(resolve => {
         setTimeout(() => {
-          this.curTodos = this.getTodosByCompletedTime(this.todos)
+          if (this.todoSettings.fixedSort) {
+            this.curTodos = this.setCompletedTime(this.todos)
+          } else {
+            this.curTodos = this.sortTodosByCompletedTime(this.todos)
+          }
+          this.hideTodos(this.todos)
           if (this.todo) {
             this.todo =
               this.curTodos.find(item => item.id === this.todo.id) ||
@@ -648,8 +669,54 @@ export default {
         })
       })
     },
+    hideTodos (todos) {
+      const curTodos = []
+      const date = new Date()
+      const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+      const yesterday = new Date(today).setDate(date.getDate() - 1)
+
+      todos.forEach(todo => {
+        if (todo.hideAfterComplete) {
+          const focus = todo.focus.find(data => {
+            return data.end <= today && data.end >= yesterday && data.status === 'completed'
+          })
+
+          if (focus) {
+            return
+          }
+        }
+        curTodos.push({
+          ...todo
+        })
+      })
+      console.log(curTodos)
+
+    },
+    setCompletedTime (todos) {
+      const curTodos = []
+      const date = new Date()
+      const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+      todos.forEach(todo => {
+        const focus = todo.focus.find(data => {
+          return data.end <= new Date() && data.end >= today && data.status === 'completed'
+        })
+
+        if (focus) {
+          curTodos.push({
+            ...todo,
+            completedTime: focus.end
+          })
+        } else {
+          curTodos.push({
+            ...todo
+          })
+        }
+      })
+      return curTodos
+    },
     // 已完成的待办在最后
-    getTodosByCompletedTime (todos) {
+    sortTodosByCompletedTime (todos) {
       const sortedTodos = []
       const completedTodos = []
       const date = new Date()
@@ -657,7 +724,7 @@ export default {
 
       todos.forEach(todo => {
         const focus = todo.focus.find(data => {
-          return data.end <= new Date() && data.end >= today
+          return data.end <= new Date() && data.end >= today && data.status === 'completed'
         })
 
         if (focus) {
@@ -742,6 +809,26 @@ export default {
     },
     start (index) {
       this.todo = this.curTodos[index]
+      if (this.todo.timeWay === 'none') {
+        this.$message({
+          title: '',
+          content: this.$t('message.completed_none_todo'),
+          options: {
+            showCancel: true
+          }
+        }).then(() => {
+          this.storeAddFocus({
+            tid: this.todo.id,
+            start: new Date(),
+            end: new Date(),
+            status: 'completed',
+            experience: '',
+            duration: 0
+          })
+          this.getData()
+        })
+        return
+      }
       document.documentElement.requestFullscreen()
       this.$router.push({
         path: `/do/${this.todo.id}`
@@ -751,7 +838,7 @@ export default {
       return Math.ceil((complete / total) * 100)
     },
     getFocusDays () {
-      return todo.formatFocus(this.todo.focus)
+      return todoUtil.formatFocus(this.todo.focus)
     },
     edit (index) {
       this.todo = this.curTodos[index]
