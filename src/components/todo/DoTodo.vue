@@ -47,6 +47,7 @@
             <div
               v-else
               class="time-text"
+              :class="{ 'ani-text-completed': textCompleted }"
               :style="{width:timeClockWidth+'px',height:timeClockWidth+'px',fontSize:timeClockFont+'px'}"
             >
               {{ textCompleted || time }}
@@ -311,6 +312,7 @@ export default {
       timeClockWidth: 220,
       timeClockFont: 36,
       showBoxPause: false,
+      totalLoopTimes: 1,
       totalDuration: 0,
       // 计时时长，用于计算进度条
       timeDuration: 0,
@@ -399,12 +401,10 @@ export default {
       return util.getTimeView(this.timeDuration)
     },
     timesLeft () {
-      const { custom: customTimes } = this.currentTodo.loopTimes
-
-      if (customTimes > 0) {
-        return this.$t('todo.remain_time', [customTimes])
+      if (this.totalLoopTimes > 0 && this.isLoop) {
+        return this.$t('todo.remain_time', [this.totalLoopTimes])
       }
-      if (customTimes < 0) {
+      if (this.totalLoopTimes < 0 && this.isLoop) {
         return this.$t('todo.infinite_loop')
       }
       return ''
@@ -413,22 +413,13 @@ export default {
       return util.getTimeView(this.pauseDuration)
     },
     status () {
-      if (this.currentTodo.loopTimes && this.currentTodo.loopTimes.custom === 0) {
+      if (this.totalLoopTimes === 0) {
         return this.$t('tips.timer_end')
       }
       return (this.isDoing && this.$t('todo.is_doing')) || this.$t('todo.is_resting')
     },
     isLastLoop () {
-      const {
-        default: defaultTimes,
-        custom: customTimes
-      } = this.currentTodo.loopTimes
-
-      return (
-        customTimes === 0 ||
-        customTimes === 1 ||
-        (customTimes === '' && defaultTimes === 1)
-      )
+      return this.totalLoopTimes === 1
     }
   },
   watch: {
@@ -439,7 +430,7 @@ export default {
       }
       clearTimeout(this.timer)
       if (val) {
-        this.currentTodo.loopTimes && this.currentTodo.loopTimes.custom--
+        this.totalLoopTimes--
         this.startDoingTime()
       } else {
         this.playTone()
@@ -462,7 +453,8 @@ export default {
       this.motto.length - 1
     )
     this.getMotto()
-    if (this.currentTodo.loopTimes && this.currentTodo.loopTimes.custom > 1) {
+    this.totalLoopTimes = this.getLoopTimes()
+    if (this.currentTodo.loopTimes && this.currentTodo.loopTimes.custom > 0) {
       this.isLoop = true
     }
     this.pauseDuration = this.todoSettings.stopUpperLimit * 60
@@ -569,6 +561,17 @@ export default {
           doTime()
         }
       })
+    },
+    getLoopTimes () {
+      if (!this.currentTodo.loopTimes) {
+        return 1
+      }
+      const {
+        default: defaultTimes,
+        custom: customTimes
+      } = this.currentTodo.loopTimes
+
+      return customTimes || defaultTimes
     },
     getRestDuration () {
       let {
@@ -707,7 +710,7 @@ export default {
       this.playMusic()
     },
     setLoopTimes () {
-      if (this.currentTodo.type === 'up') {
+      if (this.currentTodo.timeWay === 'up') {
         this.$tips(this.$t('tips.up_time_not_enable_loop'), {
           style: {
             bottom: '100px'
@@ -715,7 +718,7 @@ export default {
         })
         return
       }
-      if (this.currentTodo.type === 'none') {
+      if (this.currentTodo.timeWay === 'none') {
         this.$tips(this.$t('tips.none_time_not_enable_loop'), {
           style: {
             bottom: '100px'
@@ -732,13 +735,13 @@ export default {
           }
         })
         this.isLoop = false
-        this.currentTodo.loopTimes.custom = ''
+        this.totalLoopTimes = 1
         this.longRestTime = ''
         this.showBoxSetLoop = false
       }
     },
     infiniteLoop () {
-      this.currentTodo.loopTimes.custom = -1
+      this.totalLoopTimes = -1
       this.isLoop = true
       this.$tips(this.$t('tips.enabled_loop'), {
         style: {
@@ -763,8 +766,6 @@ export default {
       return true
     },
     submitSetLoopTimes () {
-      const { loopTimes } = this.currentTodo
-
       if (!this.checkValue('loopTimes', this.loopTimes)) {
         return
       }
@@ -779,7 +780,7 @@ export default {
             bottom: '100px'
           }
         })
-        loopTimes.custom = this.loopTimes.value
+        this.totalLoopTimes = this.loopTimes.value
       }
       if (this.restTimeLong.value !== '') {
         this.longRestTime = this.restTimeLong.value
@@ -854,9 +855,8 @@ export default {
     // 跳过所有计时
     skipAllTime () {
       clearTimeout(this.timer)
-      if (this.currentTodo.loopTimes) {
-        this.currentTodo.loopTimes.custom = 0
-      }
+      this.timeDuration = 999999
+      this.totalLoopTimes = 0
       this.showBoxSkipTime = false
       this.end = new Date(this.start)
       this.end.setSeconds(this.totalDuration)
@@ -1001,6 +1001,15 @@ export default {
     .progress-bar__text {
       animation: flash 0.6s ease 0s infinite alternate;
     }
+
+    .progress-bar-track {
+      animation: flash 0.6s linear 0s infinite alternate;
+      transform-origin: 50% 50%;
+    }
+  }
+
+  .ani-text-completed {
+    animation: flash 0.6s ease 0s infinite alternate;
   }
 
   .options {

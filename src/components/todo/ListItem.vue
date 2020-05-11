@@ -38,6 +38,7 @@
         class="btn-start"
         @click="$emit('start')"
       >{{ $t('action.start') }}</span>
+      <span class="completed-times">{{ completedTimes }}</span>
     </div>
   </div>
 </template>
@@ -62,6 +63,10 @@ export default {
       default: ''
     },
     content: {
+      type: String,
+      default: ''
+    },
+    completedTimes: {
       type: String,
       default: ''
     },
@@ -170,6 +175,16 @@ export default {
       left: 50%;
       padding: 5px;
       transform: translate(-50%, -50%);
+      white-space: nowrap;
+    }
+
+    .completed-times {
+      position: absolute;
+      left: 50%;
+      bottom: 5px;
+      transform: translateX(-50%);
+      font-size: 10px;
+      letter-spacing: 0px;
       white-space: nowrap;
     }
   }
