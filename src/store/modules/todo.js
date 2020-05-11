@@ -7,6 +7,7 @@ export default {
     isGetTodos: false,
     showBoxSortTodo: false,
     showBoxSortSet: false,
+    // up 无loopTimes、timeDuration，none 无loopTimes、restTime、timeDuration
     todos: [
       {
         id: 0,
@@ -83,11 +84,11 @@ export default {
         },
         taskNotes: '',
         loopTimes: {
-          value: 1,
+          default: 1,
           custom: ''
         },
         restTime: {
-          value: 5,
+          default: 5,
           custom: ''
         },
         create: new Date(2019, 12, 24),
@@ -107,7 +108,7 @@ export default {
         },
         taskNotes: '',
         create: new Date(2019, 12, 29),
-        hideAfterComplete: false,
+        hideAfterComplete: true,
         background: '/card/back3.jpg',
         color: '#CC9996'
       }
@@ -222,9 +223,18 @@ export default {
         start: new Date(new Date().getTime() - 2 * 60 * 60 * 1000),
         end: new Date(new Date().getTime() - 1 * 60 * 60 * 1000),
         status: 'stopped',
-        experience: '心得8',
         reason: '没心思了，听会歌',
         duration: 26
+      },
+      {
+        id: 9,
+        tid: 4,
+        // 今天
+        start: new Date(new Date().getTime() - 25 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+        status: 'completed',
+        experience: '',
+        duration: 0
       }
     ],
     template: {

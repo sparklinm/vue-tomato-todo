@@ -136,7 +136,9 @@ module.exports = {
     total_focus_0_days: '共专注{0}天',
     continue_focus_0_days: '连续专注{0}天',
     today_focus: '当日专注',
-    tomato_time_axis: '番茄时间轴'
+    tomato_time_axis: '番茄时间轴',
+    today_completed: '今日已完成 {0} 次',
+    today_focused: '今日已专注 {0} 次'
   },
   plan: {
     future_plan: '未来计划',
@@ -209,7 +211,8 @@ module.exports = {
     change_cover: '您可以从本地选择喜欢的封面',
     confirm_exit_account: '确定退出当前账号吗？',
     not_enable_todo_card_background_img: '没有开启待办卡片背景图片，请前往 <span class="pink">我的-外观设置</span> 开启。',
-    not_pause_todo: '本次番茄钟暂停时间已经用尽'
+    not_pause_todo: '本次番茄钟暂停时间已经用尽',
+    completed_none_todo: '<p>该待办为不计时待办，点击确认完成即可完成一次。</p><p>确定要完成一次吗？</p>'
   },
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',

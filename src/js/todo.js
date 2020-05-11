@@ -29,7 +29,7 @@ export default {
     let focusData = []
 
     if (todo.focus && todo.focus.length) {
-      focusData = this.filterFocus(todo.focus, startDate, endDate)
+      focusData = this.getFocusByTime(todo.focus, startDate, endDate)
     }
     if (focusData.length) {
       currentTodo = _.cloneDeep(todo)
@@ -50,11 +50,11 @@ export default {
     })
     return currentTodos
   },
-  filterFocus (focus, startDate, endDate) {
+  getCompletedFocus (focus, start = new Date(2000), end = new Date()) {
     let focusData = []
 
     focusData = focus.filter(item => {
-      return item.start >= startDate && item.start <= endDate && item.duration > 0
+      return item.start >= start && item.start <= end && item.status === 'completed'
     })
     return focusData
   },
@@ -62,7 +62,7 @@ export default {
     let focusData = []
 
     focusData = focus.filter(item => {
-      return item.start >= start && item.start <= end
+      return item.start >= start && item.start <= end && item.duration > 0
     })
     return focusData
   },
