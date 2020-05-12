@@ -6,6 +6,7 @@ import settings from './modules/settings'
 import plan from './modules/plan'
 
 Vue.use(Vuex)
+
 export default new Vuex.Store({
   modules: {
     todo,

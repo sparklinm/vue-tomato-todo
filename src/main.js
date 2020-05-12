@@ -15,15 +15,10 @@ import MyPlugins from './components/plugins'
 
 import VueI18n from 'vue-i18n'
 
-import ECharts from 'vue-echarts'
-import 'echarts'
-import roma from './roma'
+import './echart'
 
 import './components/plugins/calendar/style.less'
 import Calendar from './components/plugins/calendar'
-
-ECharts.registerTheme('roma', roma.theme)
-
 
 // 自动化全局注册common目录下的组件
 const requireComponent = require.context('./components/common', true, /\.vue$/)
@@ -51,7 +46,6 @@ const i18n = new VueI18n({
 })
 
 Vue.use(MyPlugins)
-Vue.component('v-chart', ECharts)
 Vue.use(Calendar, {
   locale: 'zh',
   color: '#f29543'

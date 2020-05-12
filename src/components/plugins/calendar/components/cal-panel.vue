@@ -191,7 +191,7 @@ export default {
     today () {
       this.$emit('to-month', new Date())
       this.$nextTick(() => {
-        this.broadcast.reInit()
+        this.broadcast.init()
         this.broadcast.toItem(1, false)
       })
     },
