@@ -86,7 +86,7 @@ button {
     }
   }
 
-  .statistical  {
+  .statistical {
     .data-panel {
       color: @theme-base-color-1-20;
     }
@@ -197,6 +197,65 @@ button {
 
   .page-statistics {
     background-image: linear-gradient(to bottom, @theme-base-color-1, #fff);
+  }
+}
+
+.cm-list-item {
+  padding: 8px 8px 8px 15px;
+  background-color: rgb(49, 159, 202);
+  color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 5px 0px @gray;
+  font-size: 12px;
+  .flex(@justify-content: space-between);
+
+  .left {
+    .flex(@flex-direction: column);
+
+    .hd {
+      font-size: 13px;
+    }
+
+    .bd {
+      margin-top: 10px;
+      max-width: 4.2rem;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .ft {
+      margin-top: 10px;
+    }
+
+    .right {
+      flex: none;
+    }
+  }
+
+  .right {
+    text-align: right;
+    .flex(@justify-content: space-between; @flex-direction: column);
+    flex-shrink: 0;
+
+    .hd-description {
+      max-width: 80px;
+    }
+
+    .ft {
+      margin-top: 10px;
+    }
+  }
+
+  .progress-bar-circle {
+    display: inline-block;
+  }
+
+  .progress-bar__sector {
+    display: none;
+  }
+
+  .progress-bar__text {
+    font-size: 6px;
   }
 }
 
@@ -326,8 +385,6 @@ ul {
   }
 }
 
-
-
 .main {
   box-sizing: border-box;
   height: calc(100% - 112px);
@@ -348,7 +405,6 @@ ul {
   background: white;
   // transition: right 0.3s ease;
 }
-
 
 .right-page.statistical {
   position: fixed;

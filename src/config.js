@@ -37,7 +37,9 @@ export default {
     if (storedTheme) {
       return JSON.parse(storedTheme)
     }
-    localStorage.setItem('theme', JSON.stringify(this.colors[0]))
     return this.colors[0]
+  },
+  setTheme (theme) {
+    localStorage.setItem('theme', JSON.stringify(theme))
   }
 }

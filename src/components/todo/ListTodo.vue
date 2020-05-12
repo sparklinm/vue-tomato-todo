@@ -657,7 +657,7 @@ export default {
           } else {
             this.curTodos = this.sortTodosByCompletedTime(this.todos)
           }
-          this.hideTodos(this.todos)
+          // this.hideTodos(this.todos)
           if (this.todo) {
             this.todo =
               this.curTodos.find(item => item.id === this.todo.id) ||
@@ -669,48 +669,45 @@ export default {
         })
       })
     },
-    hideTodos (todos) {
-      const curTodos = []
-      const date = new Date()
-      const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-      const yesterday = new Date(today).setDate(date.getDate() - 1)
-
-      todos.forEach(todo => {
-        if (todo.hideAfterComplete) {
-          const focus = todo.focus.find(data => {
-            return data.end <= today && data.end >= yesterday && data.status === 'completed'
-          })
-
-          if (focus) {
-            return
-          }
-        }
-        curTodos.push({
-          ...todo
+    hideTodo (todo, start, end) {
+      if (todo.hideAfterComplete) {
+        const focus = todo.focus.find(data => {
+          return data.end <= end && data.end >= start && data.status === 'completed'
         })
-      })
-      console.log(curTodos)
 
+        if (focus) {
+          return true
+        }
+        return false
+      }
+      return false
     },
     setCompletedTime (todos) {
       const curTodos = []
       const date = new Date()
       const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+      const yesterday = new Date(today)
+
+      yesterday.setDate(date.getDate() - 1)
 
       todos.forEach(todo => {
         const focus = todo.focus.find(data => {
           return data.end <= new Date() && data.end >= today && data.status === 'completed'
         })
 
-        if (focus) {
-          curTodos.push({
-            ...todo,
-            completedTime: focus.end
-          })
-        } else {
-          curTodos.push({
-            ...todo
-          })
+        const isHide = this.hideTodo(todo, yesterday, today)
+
+        if (!isHide) {
+          if (focus) {
+            curTodos.push({
+              ...todo,
+              completedTime: focus.end
+            })
+          } else {
+            curTodos.push({
+              ...todo
+            })
+          }
         }
       })
       return curTodos
@@ -721,19 +718,28 @@ export default {
       const completedTodos = []
       const date = new Date()
       const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+      const yesterday = new Date(today)
+
+      yesterday.setDate(date.getDate() - 1)
 
       todos.forEach(todo => {
         const focus = todo.focus.find(data => {
           return data.end <= new Date() && data.end >= today && data.status === 'completed'
         })
 
-        if (focus) {
-          completedTodos.push({
-            ...todo,
-            completedTime: focus.end
-          })
-        } else {
-          sortedTodos.push(todo)
+        const isHide = this.hideTodo(todo, yesterday, today)
+
+        if (!isHide) {
+          if (focus) {
+            completedTodos.push({
+              ...todo,
+              completedTime: focus.end
+            })
+          } else {
+            sortedTodos.push({
+              ...todo
+            })
+          }
         }
       })
       completedTodos.sort((a, b) => {

@@ -24,6 +24,7 @@
 
 <script>
 import util from '../tools.js'
+
 export default {
   inject: ['options'],
   props: {
@@ -47,8 +48,13 @@ export default {
     }
   },
   computed: {
-    fullTime () {
-      const curDate = this.date
+    curMonth () {
+      const curDate = new Date(
+        this.date.getFullYear(),
+        this.date.getMonth(),
+        1
+      )
+
       return {
         year: curDate.getFullYear(),
         month: curDate.getMonth(),
@@ -58,32 +64,38 @@ export default {
     },
     today () {
       const date = new Date()
+
       return new Date(date.getFullYear(), date.getMonth(), date.getDate())
     },
     customColor () {
       return this.options.color
     },
     dayList () {
-      const day = this.fullTime.day
+      const day = this.curMonth.day
       const result = []
       // 上一个月
       const preMonth = util.getPreMonth(this.date)
       const preMonthDays = util.getMonthDays(preMonth)
+
       for (let i = day - 1; i >= 0; i--) {
         const iDate = new Date(preMonth)
+
         iDate.setDate(preMonthDays - i)
         const obj = {
           value: preMonthDays - i,
           date: iDate,
           status: 'pre'
         }
+
         result.push(obj)
       }
 
       // 本月
       const monthDays = util.getMonthDays(this.date)
+
       for (let i = 0; i < monthDays; i++) {
         const iDate = new Date(this.date)
+
         iDate.setDate(i + 1)
         const obj = {
           value: i + 1,
@@ -121,14 +133,17 @@ export default {
       // 下月
       const newxMonth = util.getNextMonth(this.date)
       const lastDay = result[result.length - 1].date.getDay()
+
       for (let i = 0; i < 6 - lastDay; i++) {
         const iDate = new Date(newxMonth)
+
         iDate.setDate(i + 1)
         const obj = {
           value: i + 1,
           date: iDate,
           status: 'nex'
         }
+
         result.push(obj)
       }
       return result

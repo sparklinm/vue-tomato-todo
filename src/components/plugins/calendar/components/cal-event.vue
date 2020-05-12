@@ -39,8 +39,6 @@ export default {
   },
   computed: {
     locale () {
-      console.log(this.options)
-
       return this.options.locale
     },
     color () {

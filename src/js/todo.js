@@ -88,6 +88,7 @@ export default {
         time.getMonth(),
         time.getDate()
       )
+
       const thisTime = thisDate.getTime()
 
       result[thisTime] = result[thisTime] || 0
@@ -95,7 +96,7 @@ export default {
         const cduraion = (24 - hours) * 60
 
         result[thisTime] += (24 - hours) * 60
-        const nextDate = thisDate.setDate(date + 1)
+        const nextDate = new Date(thisDate.setDate(date + 1))
 
         result[nextDate.getTime()] = duration - cduraion
       } else {

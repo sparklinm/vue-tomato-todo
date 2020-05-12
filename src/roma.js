@@ -1,8 +1,12 @@
 
 import config from './config'
 
-const colorPalette = [
-  ...Object.values(config.getTheme())
+function getTheme () {
+  const curTheme = Object.values(config.getTheme())
+
+  curTheme.shift()
+  const colorPalette = [
+    ...curTheme
   // '#E01F54',
   // '#001852',
   // '#f5e8c8',
@@ -23,64 +27,67 @@ const colorPalette = [
   // '#3cb371',
   // '#d5b158',
   // '#38b6b6'
-]
+  ]
 
-const theme = {
-  color: colorPalette,
+  const theme = {
+    color: colorPalette,
 
-  visualMap: {
-    color: [
-      '#e01f54',
-      '#e7dbc3'
-    ],
-    textStyle: {
-      color: '#333'
-    }
-  },
+    visualMap: {
+      color: [
+        '#e01f54',
+        '#e7dbc3'
+      ],
+      textStyle: {
+        color: '#333'
+      }
+    },
 
-  candlestick: {
-    itemStyle: {
-      normal: {
-        color: '#e01f54',
-        color0: '#001852',
+    candlestick: {
+      itemStyle: {
+        normal: {
+          color: '#e01f54',
+          color0: '#001852',
+          lineStyle: {
+            width: 1,
+            color: '#f5e8c8',
+            color0: '#b8d2c7'
+          }
+        }
+      }
+    },
+
+    graph: {
+      color: colorPalette
+    },
+
+    gauge: {
+      axisLine: {
         lineStyle: {
-          width: 1,
-          color: '#f5e8c8',
-          color0: '#b8d2c7'
+          color: [
+            [
+              0.2,
+              '#E01F54'
+            ],
+            [
+              0.8,
+              '#b8d2c7'
+            ],
+            [
+              1,
+              '#001852'
+            ]
+          ],
+          width: 8
         }
       }
     }
-  },
-
-  graph: {
-    color: colorPalette
-  },
-
-  gauge: {
-    axisLine: {
-      lineStyle: {
-        color: [
-          [
-            0.2,
-            '#E01F54'
-          ],
-          [
-            0.8,
-            '#b8d2c7'
-          ],
-          [
-            1,
-            '#001852'
-          ]
-        ],
-        width: 8
-      }
-    }
   }
+
+  return theme
 }
 
 
-
 export default {
-  theme
+  theme: getTheme(),
+  getTheme
 }

@@ -88,6 +88,7 @@ export default {
   created () {
     this.initSelectedDayEvents()
     const date = new Date()
+
     this.curDate = new Date(date.getFullYear(), date.getMonth())
     this.initDate()
   },
@@ -119,6 +120,7 @@ export default {
     getPreMonthDate (dateObj) {
       const allTime = this.getAllTime(dateObj)
       let { year, month } = allTime
+
       if (month > 0) {
         month--
       } else {
@@ -130,6 +132,7 @@ export default {
     getNextMonthDate (dateObj) {
       const allTime = this.getAllTime(dateObj)
       let { year, month } = allTime
+
       if (month < 11) {
         month++
       } else {
@@ -141,11 +144,13 @@ export default {
     getPreYearDate (dateObj) {
       const allTime = this.getAllTime(dateObj)
       const { year, month } = allTime
+
       return new Date(year - 1, month, 1)
     },
     getNextYearDate (dateObj) {
       const allTime = this.getAllTime(dateObj)
       const { year, month } = allTime
+
       return new Date(year + 1, month, 1)
     },
     initDate () {
