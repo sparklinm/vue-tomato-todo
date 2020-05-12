@@ -19,7 +19,7 @@
           :event="{ date: todo.start }"
         >
           <div
-            class="completed-item list-item"
+            class="cm-list-item"
             @click="edit(index)"
           >
             <div class="left">
@@ -141,9 +141,10 @@
       :z-index="3100"
       no-header
       append-to-body
+      @closed="focusDuration = ''"
     >
       <ComInput
-        v-model="focusDuration"
+        v-model.number="focusDuration"
         type="number"
         :placeholder="$t('todo.modify_focus_duration')"
         autofocus
@@ -167,33 +168,6 @@
         </button>
       </template>
     </ComPopup>
-
-    <!-- <ComPopup
-      class="box-edit-text"
-      :show.sync="showBoxText"
-      :z-index="3100"
-      :title="$t('word.experience')"
-      append-to-body
-    >
-      <template v-slot:header-icon>
-        <ComIcon
-          name="pencil"
-          @click="changeCanEdit"
-        />
-        <ComIcon
-          name="check"
-          @click="submitEditExperience"
-        />
-      </template>
-      <ComInput
-        ref="inputExperience"
-        v-model="experience"
-        type="textarea"
-        :disabled="disableEditExperience"
-        :placeholder="inputExperiencePlaceHolder"
-        autofocus
-      />
-    </ComPopup> -->
     <BoxEditText
       v-model="experience"
       :show.sync="showBoxText"
@@ -381,50 +355,6 @@ export default {
 .time-axis {
   height: 100%;
   background: white;
-}
-
-.completed-item {
-  padding: 8px 8px 8px 15px;
-  background-color: rgb(49, 159, 202);
-  color: white;
-  border-radius: 5px;
-  box-shadow: 0 0 5px 0px @gray;
-  font-size: 12px;
-  .flex(@justify-content: space-between);
-
-  .left {
-    .flex(@flex-direction: column);
-
-    .bd {
-      margin-top: 10px;
-      font-size: 12px;
-      opacity: 0.8;
-    }
-
-    .ft {
-      margin-top: 10px;
-    }
-    .right {
-      flex: none;
-    }
-  }
-
-  .right {
-    text-align: right;
-    .flex(@justify-content: space-between; @flex-direction: column);
-  }
-
-  .progress-bar-circle {
-    display: inline-block;
-  }
-
-  .progress-bar__sector {
-    display: none;
-  }
-
-  .progress-bar__text {
-    font-size: 6px;
-  }
 }
 
 .box-edit-completed {

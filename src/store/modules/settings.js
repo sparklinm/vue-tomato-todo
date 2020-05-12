@@ -1,47 +1,78 @@
+import config from '@/config'
+import echart from '@/echart'
+
 export default {
   namespaced: true,
   state: {
     themes: [
       {
         class: 'theme-1',
-        color: '#798CBF'
+        base: '#6acfac',
+        darken10: '#5caf92',
+        darken20: '#4c947b',
+        lighter10: '#76ecc3'
       },
       {
         class: 'theme-2',
-        color: '#37A5E5'
+        base: '#37A5E5',
+        darken10: '#338bbe',
+        darken20: '#2776a3',
+        lighter10: '#43abe7'
       },
       {
         class: 'theme-3',
-        color: '#FAA3C1'
+        base: '#FAA3C1',
+        darken10: '#cf89a1',
+        darken20: '#ac667e',
+        lighter10: '#ff88b1'
       },
       {
         class: 'theme-4',
-        color: '#78C9C2'
-      },
-      {
-        class: 'theme-5',
-        color: '#9E87CE'
-      },
-      {
-        class: 'theme-6',
-        color: '#F55449'
-      },
-      {
-        class: 'theme-7',
-        color: '#C68D65'
-      },
-      {
-        class: 'theme-8',
-        color: '#707F8F'
-      },
-      {
-        class: 'theme-9',
-        color: '#D57F93'
-      },
-      {
-        class: 'theme-10',
-        color: '#4F88C6'
+        base: '#78C9C2',
+        darken10: '#54b4ac',
+        darken20: '#34928a',
+        lighter10: '#5fdacf'
       }
+      // {
+      //   class: 'theme-1',
+      //   color: '#798CBF'
+      // },
+      // {
+      //   class: 'theme-2',
+      //   color: '#37A5E5'
+      // },
+      // {
+      //   class: 'theme-3',
+      //   color: '#FAA3C1'
+      // },
+      // {
+      //   class: 'theme-4',
+      //   color: '#78C9C2'
+      // },
+      // {
+      //   class: 'theme-5',
+      //   color: '#9E87CE'
+      // },
+      // {
+      //   class: 'theme-6',
+      //   color: '#F55449'
+      // },
+      // {
+      //   class: 'theme-7',
+      //   color: '#C68D65'
+      // },
+      // {
+      //   class: 'theme-8',
+      //   color: '#707F8F'
+      // },
+      // {
+      //   class: 'theme-9',
+      //   color: '#D57F93'
+      // },
+      // {
+      //   class: 'theme-10',
+      //   color: '#4F88C6'
+      // }
     ],
     currentTheme: {
       base: '#6acfac',
@@ -199,6 +230,9 @@ export default {
     },
     setCurrentTheme (state, value) {
       state.currentTheme = value
+      config.setTheme(value)
+      document.body.className = value.class
+      echart.registerTheme()
     }
   },
   actions: {}

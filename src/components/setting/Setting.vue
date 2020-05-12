@@ -148,7 +148,7 @@
         >
           <div
             class="color-sample"
-            :style="{background:theme.color}"
+            :style="{background:theme.base}"
             @click="setTheme(theme)"
           />
         </div>
@@ -203,7 +203,8 @@ export default {
       storeModifyUser: 'modifyUser'
     }),
     ...mapMutations('settings', {
-      storeSetModules: 'setModules'
+      storeSetModules: 'setModules',
+      storeSetCurrentTheme: 'setCurrentTheme'
     }),
     setAllModule () {
       this.allModules = _.cloneDeep(this.modules)
@@ -257,7 +258,7 @@ export default {
       }).then(() => {
         this.shoBoxTheme = false
         this.$loading.show(2000).then(() => {
-          document.body.className = theme.class
+          this.storeSetCurrentTheme(theme)
           this.$tips(this.$t('tips.set_successfully'))
         })
       })

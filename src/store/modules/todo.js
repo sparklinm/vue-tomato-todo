@@ -153,7 +153,7 @@ export default {
         start: new Date(new Date().getTime() - 20 * 60 * 1000),
         end: new Date(),
         status: 'completed',
-        experience: '心得1',
+        experience: '对于事物的每一种运动形式，必须注意它和其他各种运动形式的共同点。但是，尤其重要的是，成为我们认识事物的基础的东西，则是必须注意它的特殊点的，就是说，注意它和其他运动形式的质的区别',
         duration: 20
       },
       {
@@ -224,14 +224,15 @@ export default {
         end: new Date(new Date().getTime() - 1 * 60 * 60 * 1000),
         status: 'stopped',
         reason: '没心思了，听会歌',
+        experience: '',
         duration: 26
       },
       {
         id: 9,
         tid: 4,
         // 今天
-        start: new Date(new Date().getTime() - 25 * 60 * 60 * 1000),
-        end: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+        start: new Date(new Date().getTime() - 2 * 60 * 60 * 1000),
+        end: new Date(new Date().getTime() - 2 * 60 * 60 * 1000),
         status: 'completed',
         experience: '',
         duration: 0
