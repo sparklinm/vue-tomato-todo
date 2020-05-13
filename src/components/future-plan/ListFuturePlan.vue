@@ -12,9 +12,15 @@
             class="hd"
             :class="{'have-completed':plan.completed}"
           >
-            {{ plan.name }}
+            <span
+              v-marquee
+              class="hd-inline"
+            >{{ plan.name }}</span>
           </div>
-          <div class="bd">
+          <div
+            v-ellipsis
+            class="bd"
+          >
             {{ plan.description }}
             <span v-if="plan.completed">({{ $t('word.completed') }})</span>
           </div>
@@ -194,6 +200,7 @@ export default {
 
   .left {
     .flex(@flex-direction: column);
+    margin-right: 0.5rem;
 
     .hd {
       font-size: 16px;

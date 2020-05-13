@@ -73,12 +73,15 @@ export default {
   },
   created () {
     window.addEventListener('resize', () => {
-      const rootFont = (document.documentElement.clientWidth / 414) * 50 + 'px'
+      let rootFont = (document.body.clientWidth / 414) * 50
 
-      document.documentElement.style.fontSize = rootFont
+      if (rootFont > 90) {
+        rootFont = 90
+      }
+      document.documentElement.style.fontSize = rootFont + 'px'
     })
     document.documentElement.style.fontSize =
-      (document.documentElement.clientWidth / 414) * 50 + 'px'
+      (document.body.clientWidth / 414) * 50 + 'px'
     document.body.className = 'theme-1'
 
     // document.documentElement.addEventListener('transitionend', () => {

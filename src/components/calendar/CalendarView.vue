@@ -23,10 +23,16 @@
             @click="edit(index)"
           >
             <div class="left">
-              <div class="hd">
+              <div
+                v-ellipsis="15"
+                class="hd"
+              >
                 {{ todo.name }}
               </div>
-              <div class="bd">
+              <div
+                v-ellipsis="60"
+                class="bd"
+              >
                 {{ todo.experience }}
               </div>
               <div
@@ -46,6 +52,7 @@
                 </div>
                 <div
                   v-if="todo.reason"
+                  v-ellipsis="10"
                   class="hd-description"
                 >
                   {{ todo.reason }}
@@ -107,15 +114,18 @@
               <div class="title">
                 <span>{{ $t("todo.focus_time") }}</span>
               </div>
-              <span>{{ curTodo.duration }}</span>
+              <span>{{ curTodo.duration || $t('todo.not_record') }}</span>
             </div>
             <div class="row">
               <div class="title">
                 <span>{{ $t("todo.time_status") }}</span>
               </div>
-              <div>
+              <div class="time-status">
                 <span>{{ curTodo.status }}</span>
-                <div v-if="curTodo.reason">
+                <div
+                  v-if="curTodo.reason"
+                  class="abandon-reason"
+                >
                   {{ curTodo.reason }}
                 </div>
               </div>
@@ -123,13 +133,24 @@
           </div>
         </div>
 
-        <div class="cell">
-          <div class="cell-bd">
+        <div class="cell btn">
+          <div
+            v-if="curTodo.data.experience"
+            class="cell-footer experience"
+          >
             <span
-              class="btn btn-big"
+              class=""
               @click="editExperience"
             >
               {{ curTodo.experience }}
+            </span>
+          </div>
+          <div
+            v-else
+            class="cell-footer fill-experience"
+          >
+            <span @click="editExperience">
+              {{ $t('todo.click_fill_in_experience'), }}
             </span>
           </div>
         </div>
@@ -197,7 +218,9 @@ export default {
     },
     todos: {
       type: Array,
-      default: () => {[]}
+      default: () => {
+        []
+      }
     }
   },
   data () {
@@ -209,7 +232,9 @@ export default {
       timePattern: 'yyyy-MM-dd hh:mm',
       selectedDay: new Date(),
       showBoxInfo: false,
-      curTodo: {},
+      curTodo: {
+        data: {}
+      },
       showBoxDuration: false,
       focusDuration: '',
       showBoxText: false,
@@ -360,10 +385,6 @@ export default {
 .box-edit-completed {
   font-size: 12px;
   .cell {
-    .cell-bd {
-      padding: 0;
-    }
-
     .row {
       width: auto;
 
@@ -372,13 +393,38 @@ export default {
       }
     }
 
-    .cell-footer {
-      padding: 8px;
-    }
-
     .time {
       letter-spacing: 0;
     }
+  }
+
+  .cell-bd {
+    padding: 0;
+  }
+
+  .cell-footer {
+    padding: 8px;
+  }
+
+  .time-status {
+    text-align: right;
+    max-width: 3rem;
+  }
+
+  .abandon-reason {
+    margin-top: 5px;
+  }
+
+  .experience {
+    padding: 10px;
+    text-align: left;
+    line-height: 1.5;
+    font-size: 12px;
+  }
+
+  .fill-experience {
+    padding: 20px 10px;
+    text-align: center;
   }
 }
 
