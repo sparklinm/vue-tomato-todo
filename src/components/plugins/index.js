@@ -20,9 +20,6 @@ const MyPlugins = {
     creatToolTip(Vue, options)
     creatLoadingPlugin(Vue, options)
 
-
-
-
     // Vue.directive('focus', {
     //   update (el) {
     //     console.log('up')
@@ -80,6 +77,13 @@ const MyPlugins = {
       inserted: function (el, binding) {
         const opt = binding.value || {}
         const visibleWidth = opt.width || el.parentNode.offsetWidth || 200
+
+        Object.assign(el.style, {
+          whiteSpace: 'nowrap'
+        })
+        Object.assign(el.parentNode.style, {
+          overflow: 'hidden'
+        })
         const gapWidth = opt.gap || visibleWidth / 3
         const width = el.offsetWidth
         const maxTranslateX = -(width + gapWidth)
@@ -140,6 +144,65 @@ const MyPlugins = {
         }
 
         marquee()
+      }
+    })
+
+    function getTextLength (str) {
+      let realLength = 0
+      let charCode = -1
+
+      for (let i = 0; i < str.length; i++) {
+        charCode = str.charCodeAt(i)
+        if (charCode >= 0 && charCode <= 128) {
+          // 占一个宽度的字符
+          realLength += 1
+        } else {
+          // 占两个宽度的字符，例如：汉字
+          realLength += 2
+        }
+      }
+      return realLength
+    }
+
+    function getIndexByTextLength (str, length) {
+      let realLength = 0
+      let charCode = -1
+      let index = 0
+
+      for (let i = 0; i < str.length; i++) {
+        charCode = str.charCodeAt(i)
+        if (charCode >= 0 && charCode <= 128) {
+          // 占一个宽度的字符
+          realLength += 1
+        } else {
+          // 占两个宽度的字符，例如：汉字
+          realLength += 2
+        }
+        if (realLength / 2 > length) {
+          index = i
+          break
+        }
+      }
+      return index
+    }
+
+    function addEllipses (el, binding) {
+      const text = el.innerText
+      // 中文字符长度
+      const length = binding.value || 40
+      const index = getIndexByTextLength(text, length)
+
+      if (index > length - 1) {
+        el.innerText = text.slice(0, index) + '...'
+      }
+    }
+
+    Vue.directive('ellipsis', {
+      inserted: function (el, binding) {
+        addEllipses(el, binding)
+      },
+      componentUpdated: function (el, binding) {
+        addEllipses(el, binding)
       }
     })
   }
