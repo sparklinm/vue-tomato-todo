@@ -223,7 +223,8 @@ export default {
         start: new Date(new Date().getTime() - 2 * 60 * 60 * 1000),
         end: new Date(new Date().getTime() - 1 * 60 * 60 * 1000),
         status: 'stopped',
-        reason: '没心思了，听会歌',
+        reason: '没心思了，听会歌，看会电视，下午继续',
+        // reason: 'Sorry, I can not focus. I need to rest and sleep.',
         experience: '',
         duration: 26
       },

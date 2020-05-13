@@ -5,6 +5,11 @@ body {
     'Hiragino Sans GB', '黑体', Arial, sans-serif;
   font-size: 12px;
   letter-spacing: 0.5px;
+  margin: 0 auto;
+}
+
+.nav,.tab-bar,body {
+  max-width: 700px;
 }
 
 button {
@@ -210,7 +215,8 @@ button {
   .flex(@justify-content: space-between);
 
   .left {
-    .flex(@flex-direction: column);
+    .flex(@flex-direction: column;@justify-content: space-between;);
+    max-width: 4.2rem;
 
     .hd {
       font-size: 13px;
@@ -218,9 +224,10 @@ button {
 
     .bd {
       margin-top: 10px;
-      max-width: 4.2rem;
       font-size: 12px;
       opacity: 0.8;
+      line-height: 14px;
+      word-wrap: break-word;
     }
 
     .ft {
@@ -238,7 +245,8 @@ button {
     flex-shrink: 0;
 
     .hd-description {
-      max-width: 80px;
+      max-width: 1.6rem;
+      word-wrap: break-word;
     }
 
     .ft {

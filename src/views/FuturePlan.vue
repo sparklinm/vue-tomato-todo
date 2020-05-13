@@ -1,5 +1,5 @@
 <template>
-  <div class="future-plan main">
+  <div class="future-plan">
     <ListFuturePlan />
   </div>
 </template>
