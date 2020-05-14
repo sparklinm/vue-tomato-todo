@@ -27,33 +27,33 @@ export default {
     return {
       tabBars: [
         {
-          icon: 'clock-o',
+          icon: 'bars',
           text: this.$t('word.todo'),
           path: ''
         },
         {
-          icon: 'clock-o',
+          icon: 'tasks',
           text: this.$t('word.todo_set'),
           path: 'set'
         },
         {
-          icon: 'clock-o',
+          icon: 'pie-chart',
           text: this.$t('word.statistics'),
           path: 'statistics'
         },
         {
-          icon: 'clock-o',
+          icon: 'sliders',
           text: this.$t('word.time_axis'),
           path: 'time_axis'
         },
         {
-          icon: 'clock-o',
+          icon: 'space-shuttle',
           text: this.$t('word.future_plan'),
           path: 'future_plan'
         },
         {
-          icon: 'clock-o',
-          text: this.$t('word.setting'),
+          icon: 'user',
+          text: this.$t('menu.my'),
           path: 'me'
         }
       ]

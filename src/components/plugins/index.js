@@ -103,7 +103,9 @@ const MyPlugins = {
         container.appendChild(div1)
         container.appendChild(div2)
 
-        el.removeChild(...el.childNodes)
+        for (let i = 0; i < el.childNodes.length;) {
+          el.removeChild(el.childNodes[i])
+        }
         el.appendChild(container)
 
         Object.assign(div1.style, {
