@@ -120,6 +120,7 @@ export default {
       showClockChart: true,
       showStopChart: true,
       chartDurationUnit: 'minute',
+      // seven_days,whole_month
       monthlyStatisticsDisplayRange: 'seven_days'
     },
     language: 'zh',

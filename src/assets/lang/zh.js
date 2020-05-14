@@ -143,6 +143,7 @@ module.exports = {
   plan: {
     future_plan: '未来计划',
     add_future_plan: '增加未来计划',
+    edit_future_plan: '编辑未来计划',
     plan_name: '计划名称',
     plan_description: '计划描述',
     have_passed_days: '已过去{0}天',
@@ -240,7 +241,9 @@ module.exports = {
     enabled_loop: '循环模式已开启',
     closed_loop: '循环模式已关闭',
     up_time_not_enable_loop: '正向计时不允许中途开启循环',
-    none_time_not_enable_loop: '不计时计时不允许中途开启循环'
+    none_time_not_enable_loop: '不计时计时不允许中途开启循环',
+    please_input_quantifier: '请输入量词',
+    please_input_correct_quantifier: '请输入正确的量词'
   },
   sentence: {
     0: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。',

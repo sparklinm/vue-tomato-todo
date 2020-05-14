@@ -56,19 +56,21 @@
             <div class="row">
               一共完成
               <input
-                type="text"
+                v-model.number="todo.goal.total"
+                type="number"
                 class="key-input goal-key goal-input"
                 placeholder="填写完成量"
               >
-              <select>
-                <option value="小时">
-                  小时
-                </option>
-                <option value="小时">
-                  分钟
-                </option>
-                <option value="小时">
-                  次
+              <select
+                v-model="unit"
+                @change="handleUnitChange"
+              >
+                <option
+                  v-for="item in selUnits"
+                  :key="item.value"
+                  :value="item.value"
+                >
+                  {{ item.text }}
                 </option>
               </select>
             </div>
@@ -80,27 +82,37 @@
             <div class="row">
               我想
               <select
-                id
-                name
+                v-model="todo.habit.frequency"
               >
-                <option value="每天">
+                <option value="1">
                   每天
+                </option>
+                <option value="7">
+                  每周
+                </option>
+                <option value="month">
+                  每月
                 </option>
               </select>
             </div>
             <div class="row">
               完成
               <input
-                type="text"
+                v-model.number="todo.habit.piece"
+                type="number"
                 class="key-input habit-key habit-input"
                 placeholder="填写完成量"
               >
               <select
-                id
-                name
+                v-model="unit"
+                @change="handleUnitChange"
               >
-                <option value="小时">
-                  小时
+                <option
+                  v-for="item in selUnits"
+                  :key="item.value"
+                  :value="item.value"
+                >
+                  {{ item.text }}
                 </option>
               </select>
             </div>
@@ -214,6 +226,39 @@
         />
       </div>
     </ComPopup>
+
+
+    <ComPopup
+      class="box-input-quantifier fade"
+      no-header
+      :show.sync="showBoxQuantifier"
+      :close-on-click-mask="false"
+      :z-index="2050"
+      @open="initQuantifier"
+      @opened="$refs.inputQuantifier.focus()"
+    >
+      <ComInput
+        ref="inputQuantifier"
+        v-model="quantifier"
+        :placeholder="$t('tips.please_input_quantifier')"
+        autofocus
+      />
+
+      <template v-slot:footer>
+        <button
+          class="com-popup__footer-btn"
+          @click="addUnit"
+        >
+          {{ $t("action.confirm") }}
+        </button>
+        <button
+          class="com-popup__footer-btn"
+          @click="showBoxQuantifier=false"
+        >
+          {{ $t("action.cancel") }}
+        </button>
+      </template>
+    </ComPopup>
   </div>
 </template>
 
@@ -242,11 +287,28 @@ export default {
         name: '',
         type: 'common',
         timeWay: 'down',
-        timeDuration: 25
+        timeDuration: 25,
+        taskNotes: '',
+        goal: {
+          deadline: new Date(2019, 9, 2),
+          total: 10,
+          complete: 0
+        },
+        habit: {
+          frequency: 1,
+          piece: 10,
+          complete: 0
+        },
+        loopTimes: {
+          value: 1,
+          custom: ''
+        },
+        restTime: {
+          value: 5,
+          custom: ''
+        }
       },
       todoCommon: {},
-      todoGoal: {},
-      todoHabit: {},
       todoType: [
         {
           value: 'common',
@@ -332,6 +394,27 @@ export default {
           max: 50
         }
       },
+      unit: 'hour',
+      selUnits: [
+        {
+          value: 'hour',
+          text: this.$t('settings.hour')
+        },
+        {
+          value: 'minute',
+          text: this.$t('word.minute')
+        },
+        {
+          value: 'times',
+          text: this.$t('word.times')
+        },
+        {
+          value: 'custom',
+          text: this.$t('word.customize')
+        }
+      ],
+      showBoxQuantifier: false,
+      quantifier: '',
       showBoxCustomTime: false,
       showBoxAdvancedSettings: false,
       btnAdvancedSettings: '展开更多高级设置',
@@ -367,10 +450,10 @@ export default {
       return this.todo.timeWay === 'down'
     },
     showConfigGoal () {
-      return this.todo.type === this.todoGoal.type
+      return this.todo.type === 'goal'
     },
     showConfigHabit () {
-      return this.todo.type === this.todoHabit.type
+      return this.todo.type === 'habit'
     },
     showInputLoopTimes () {
       return this.todo.timeWay === 'down'
@@ -391,75 +474,39 @@ export default {
       }
     },
     'todo.name' (val) {
-      this.todoCommon.name = this.todoGoal.name = this.todoHabit.name = val
+      this.todoCommon.name = val
     }
   },
   mounted () {
-    const template = {
-      todoCommon: {
-        name: '',
-        type: 'common',
-        timeWay: 'down',
-        timeDuration: 25,
-        taskNotes: '',
-        loopTimes: {
-          value: 1,
-          custom: ''
-        },
-        restTime: {
-          value: 5,
-          custom: ''
-        },
-        hideAfterComplete: this.todoSettings.hideAfterComplete
+    this.todoCommon = {
+      name: '',
+      type: 'common',
+      timeWay: 'down',
+      timeDuration: 25,
+      taskNotes: '',
+      goal: {
+        deadline: new Date(2019, 9, 2),
+        total: '',
+        complete: 0,
+        unit: 'hour'
       },
-      todoGoal: {
-        name: '',
-        type: 'goal',
-        timeWay: 'down',
-        timeDuration: 25,
-        goal: {
-          deadline: new Date(2019, 9, 2),
-          total: 10,
-          complete: 0
-        },
-        taskNotes: '',
-        loopTimes: {
-          value: 1,
-          custom: ''
-        },
-        restTime: {
-          value: 5,
-          custom: ''
-        },
-        hideAfterComplete: this.todoSettings.hideAfterComplete
+      habit: {
+        frequency: 1,
+        piece: '',
+        complete: 0,
+        unit: 'hour'
       },
-      todoHabit: {
-        name: '',
-        type: 'habit',
-        timeWay: 'down',
-        timeDuration: 25,
-        habit: {
-          frequency: 1,
-          piece: 10,
-          complete: 0
-        },
-        taskNotes: '',
-        loopTimes: {
-          value: 1,
-          custom: ''
-        },
-        restTime: {
-          value: 5,
-          custom: ''
-        },
-        hideAfterComplete: this.todoSettings.hideAfterComplete
-      }
+      loopTimes: {
+        value: 1,
+        custom: ''
+      },
+      restTime: {
+        value: 5,
+        custom: ''
+      },
+      hideAfterComplete: this.todoSettings.hideAfterComplete
     }
-
-    this.todoCommon = template.todoCommon
-    this.todoGoal = template.todoGoal
-    this.todoHabit = template.todoHabit
-    this.todo = _.cloneDeep(this.data || this.todoCommon)
+    this.todo = _.cloneDeep(Object.assign({}, this.todoCommon, this.data))
 
     if (!this.todo.loopTimes) {
       this.todo.loopTimes = {
@@ -488,6 +535,7 @@ export default {
     this.setChecked(this.todoType, this.todo.type)
     this.setAdvancedSettings()
     this.setBtnAdvancedSettings()
+    this.initUnits()
   },
   methods: {
     ...mapMutations('todo', ['addTodo', 'toggleBoxAddTodo']),
@@ -530,6 +578,29 @@ export default {
         }
       }
     },
+    initUnits () {
+      const defaultUnits = ['hour', 'minute', 'times']
+
+      if (this.todo.type === 'common') {
+        return
+      }
+      const { [this.todo.type]: obj } = this.todo
+
+      if (!defaultUnits.includes(obj.unit)) {
+        this.selUnits.pop()
+        this.selUnits.push({
+          value: obj.unit,
+          text: obj.unit
+        })
+      } else {
+        this.selUnits.pop()
+        this.selUnits.push({
+          value: 'custom',
+          text: this.$t('word.customize')
+        })
+      }
+      this.unit = obj.unit
+    },
     submitCustomTimeDuration (done) {
       const { value } = this.customTimeDuration
 
@@ -553,12 +624,16 @@ export default {
       this.$refs['input-name'].focus()
     },
     onTypeClick (index) {
-      const type =
-        this.todoType[index].value.slice(0, 1).toUpperCase() +
-        this.todoType[index].value.slice(1)
+      const type = this.todoType[index].value
 
-      this.todo = Object.assign({}, this.data, this['todo' + type])
+      if (this.data && type === this.data.type) {
+        this.todo = _.cloneDeep(Object.assign({}, this.todoCommon, this.data))
+      } else {
+        this.todo = _.cloneDeep(Object.assign({}, this.data, this.todoCommon))
+      }
 
+      this.todo.type = type
+      this.initUnits()
       this.setChecked(this.todoTimeWay, this.todo.timeWay)
       this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
       this.setAdvancedSettings()
@@ -632,6 +707,27 @@ export default {
         done()
       })
     },
+    handleUnitChange () {
+      if (this.unit === 'custom') {
+        this.showBoxQuantifier = true
+      }
+    },
+    initQuantifier () {
+      this.quantifier = ''
+    },
+    addUnit () {
+      if (this.quantifier === '') {
+        this.$tips(this.$t('tips.please_input_correct_quantifier'))
+        return
+      }
+      this.selUnits.pop()
+      this.selUnits.push({
+        value: 'quantifier',
+        text: this.quantifier
+      })
+      this.unit = 'quantifier'
+      this.showBoxQuantifier = false
+    },
     submitAddTodo (done) {
       const { name } = this.todo
 
@@ -651,6 +747,16 @@ export default {
         delete this.todo.restTime
         delete this.todo.timeDuration
       }
+
+      if (this.todo.type === 'goal') {
+        delete this.todo.habit
+      } else if (this.todo.type === 'habit') {
+        delete this.todo.goal
+      } else {
+        delete this.todo.habit
+        delete this.todo.goal
+      }
+
       if (!this.data) {
         this.todo.creat = new Date()
       }

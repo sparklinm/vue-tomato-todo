@@ -20,6 +20,7 @@
         >
           <div
             class="cm-list-item"
+            :class="{'abandon-record':todo.reason}"
             @click="edit(index)"
           >
             <div class="left">
