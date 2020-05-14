@@ -10,18 +10,24 @@
         <div class="left">
           <div
             class="hd"
-            :class="{'have-completed':plan.completed}"
+            :class="{'have-completed' : plan.completed}"
           >
             <span
               v-marquee
               class="hd-inline"
-            >{{ plan.name }}</span>
+            >
+              {{ plan.name }}
+              <div class="line-through" />
+            </span>
           </div>
           <div
-            v-ellipsis
             class="bd"
           >
-            {{ plan.description }}
+            <span
+              v-marquee
+            >
+              {{ plan.description }}
+            </span>
             <span v-if="plan.completed">({{ $t('word.completed') }})</span>
           </div>
         </div>
@@ -34,7 +40,9 @@
               v-html="getPlanStatus(plan.creat)"
             />
           </div>
-          <div class="bd">
+          <div
+            class="bd"
+          >
             {{ dateFormatter(plan.creat,timePattern) }}
           </div>
         </div>
@@ -151,14 +159,14 @@ export default {
       this.showBoxInfo = true
     },
     markCompleted () {
-      this.editPlan({
+      this.storeEditPlan({
         id: this.curPlan.id,
         completed: true
       })
       this.showBoxInfo = false
     },
     markIncomplete () {
-      this.editPlan({
+      this.storeEditPlan({
         id: this.curPlan.id,
         completed: false
       })
@@ -191,12 +199,17 @@ export default {
 .future-plan-item {
   padding: 12px 10px 12px 15px;
   margin-bottom: 10px;
-  background-color: rgb(49, 159, 202);
-  color: white;
+  background: white;
+  color: black;
   border-radius: 5px;
   box-shadow: 0 0 5px 0px @gray;
   font-size: 12px;
   .flex(@justify-content: space-between);
+
+  .line-through {
+    box-shadow: none;
+    transform: scaleY(0.7);
+  }
 
   .left {
     .flex(@flex-direction: column);
@@ -206,9 +219,14 @@ export default {
       font-size: 16px;
     }
 
+    .hd-inline {
+      position: relative;
+    }
+
     .bd {
       margin-top: 10px;
       font-size: 12px;
+      color: @gray-d;
     }
   }
 
@@ -216,7 +234,7 @@ export default {
     text-align: right;
     .flex(@justify-content: space-between; @flex-direction: column);
     flex: none;
-
+    color: @gray-d;
     .hd {
       line-height: 1;
     }

@@ -40,7 +40,7 @@ export default {
           deadline: new Date(2019, 9, 28),
           total: 360,
           complete: 100,
-          customUnit: '页'
+          unit: '页'
         },
         taskNotes: '目标目标目标',
         loopTimes: {
@@ -78,9 +78,10 @@ export default {
         timeWay: 'down',
         timeDuration: 25,
         habit: {
-          frequency: 1,
-          piece: 10,
-          complete: 0
+          frequency: 7,
+          piece: 180,
+          complete: 0,
+          unit: 'minute'
         },
         taskNotes: '',
         loopTimes: {

@@ -522,16 +522,40 @@ export default {
           description += `-${type2text[todo.type]}`
         }
 
+        const handleUnit = (unit, duration) => {
+          let unitText = ''
+          let cduration = duration
+
+          if (unit === 'hour') {
+            cduration *= 60
+          }
+          if (['hour', 'minute'].includes(unit)) {
+            unitText = this.$t('word.minute')
+          } else if (unit === 'times') {
+            unitText = this.$t('word.times')
+          } else {
+            unitText = unit
+          }
+          return {
+            duration: cduration,
+            unitText
+          }
+        }
+
         if (todo.goal) {
-          progress += `${todo.goal.complete}/${todo.goal.total} ${todo.goal
-            .customUnit || this.$t('word.minute')}`
+          const unit = todo.goal.unit
+          const { duration, unitText } = handleUnit(unit, todo.goal.total)
+
+          progress += `${todo.goal.complete}/${duration} ${unitText}`
           progressBar = this.getProgress(todo.goal.complete, todo.goal.total)
           deadline = this.$t('todo.time_remain_end_plan', [Math.ceil((todo.goal.deadline - new Date()) / (1000 * 60 * 60 * 24))])
         } else if (todo.habit) {
-          progress += `${this.$t('word.today')}:${todo.habit.complete}/${
-            todo.habit.piece
-          } ${todo.habit.customUnit || this.$t('word.minute')}`
+          const unit = todo.habit.unit
+          const { duration, unitText } = handleUnit(unit, todo.habit.piece)
 
+          progress += `${this.$t('word.today')}:${todo.habit.complete}/${
+            duration
+          } ${unitText}`
           progressBar = this.getProgress(todo.habit.complete, todo.habit.piece)
         }
 

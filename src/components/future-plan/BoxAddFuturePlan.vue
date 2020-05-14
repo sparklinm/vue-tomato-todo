@@ -1,7 +1,7 @@
 <template>
   <ComPopup
     class="box-add-plan"
-    :title="$t('plan.add_future_plan')"
+    :title="data ? $t('plan.edit_future_plan') : $t('plan.add_future_plan')"
     :show="show"
     :submit="submitAddPlan"
     top-btn
