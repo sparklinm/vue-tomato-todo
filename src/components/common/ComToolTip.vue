@@ -50,6 +50,9 @@ export default {
     }
   },
   methods: {
+    remove () {
+      this.curShow = false
+    },
     creatContent () {
     // 创建content组件
       const Content = Vue.extend({

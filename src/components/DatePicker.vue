@@ -1,39 +1,37 @@
 <template>
-  <div class="date-picker">
-    <ComPopup
-      :title="$t('common.choose_time')"
-      class="box-date-picker"
-      :show.sync="curShow"
-      top-btn
-      v-bind="boxAttrs"
-      v-on="boxListeners"
-      @closed="$emit('update:show',false)"
+  <ComPopup
+    :title="$t('common.choose_time')"
+    class="box-date-picker fade"
+    :show.sync="curShow"
+    top-btn
+    v-bind="boxAttrs"
+    v-on="boxListeners"
+    @closed="$emit('update:show',false)"
+  >
+    <div
+      v-if="isRange"
+      class="date-picker__start-title"
     >
-      <div
-        v-if="isRange"
-        class="date-picker__start-title"
-      >
-        {{ $t('todo.start_time')+':' }}
-      </div>
-      <ComCascader
-        v-model="curStartVal"
-        :data="startData"
-        @change="handleChange"
-      />
-      <div
-        v-if="isRange"
-        class="date-picker__end-title"
-      >
-        {{ $t('todo.end_time')+':' }}
-      </div>
-      <ComCascader
-        v-if="isRange"
-        v-model="curEndVal"
-        :data="endData"
-        @change="handleChange"
-      />
-    </ComPopup>
-  </div>
+      {{ $t('todo.start_time')+':' }}
+    </div>
+    <ComCascader
+      v-model="curStartVal"
+      :data="startData"
+      @change="handleChange"
+    />
+    <div
+      v-if="isRange"
+      class="date-picker__end-title"
+    >
+      {{ $t('todo.end_time')+':' }}
+    </div>
+    <ComCascader
+      v-if="isRange"
+      v-model="curEndVal"
+      :data="endData"
+      @change="handleChange"
+    />
+  </ComPopup>
 </template>
 
 <script>

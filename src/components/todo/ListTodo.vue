@@ -1024,12 +1024,18 @@ export default {
     },
     toTimeAxis () {
       this.$router.push({
-        path: `/time_axis/${this.todo.id}`
+        path: `/time_axis/${this.todo.id}`,
+        query: {
+          type: 'todo'
+        }
       })
     },
     toStatistics () {
       this.$router.push({
-        path: `/statistics/${this.todo.id}`
+        path: `/statistics/${this.todo.id}`,
+        query: {
+          type: 'todo'
+        }
       })
     }
   }

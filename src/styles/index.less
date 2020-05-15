@@ -8,7 +8,9 @@ body {
   margin: 0 auto;
 }
 
-.nav,.tab-bar,body {
+.nav,
+.tab-bar,
+body {
   max-width: 700px;
 }
 
@@ -207,7 +209,7 @@ button {
   .cm-list-item {
     background: @theme-base-color-1-10;
   }
-  
+
   .cm-list-item.abandon-record {
     background: @theme-base-color-1;
   }
@@ -223,7 +225,7 @@ button {
   .flex(@justify-content: space-between);
 
   .left {
-    .flex(@flex-direction: column;@justify-content: space-between;);
+    .flex(@flex-direction: column; @justify-content: space-between; );
     max-width: 4.2rem;
 
     .hd {
@@ -412,6 +414,12 @@ ul {
   transition: transform 0.3s ease;
 }
 
+.sub-main {
+  box-sizing: border-box;
+  height: calc(100% - 50px);
+  overflow-y: scroll;
+}
+
 .right-page {
   position: fixed;
   width: 100%;
@@ -554,13 +562,12 @@ ul {
 
 .tip-text {
   color: gray;
-  font-size: 10px;
-  ;
+  .scale-font(0.9);
+  line-height: 1.5;
 }
 
 .tip-text_dark {
   color: rgb(77, 77, 77);
-  ;
 }
 
 .lightblue {
@@ -569,7 +576,6 @@ ul {
 
 .pink {
   color: rgb(255, 92, 119);
-  ;
 }
 
 .orange {

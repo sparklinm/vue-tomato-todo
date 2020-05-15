@@ -1,7 +1,7 @@
 <template>
   <div
     class="ev-calendar"
-    :style="{borderBottom:`1px solid ${options.color}`}"
+    :style="containerStyle"
   >
     <div
       class="ev-calendar__header"
@@ -48,7 +48,7 @@
         :style="{color:options.color}"
       >
         <span
-          v-for="(dayName, dayIndex) in i18n[$EventCalendar.locale].dayNames"
+          v-for="(dayName, dayIndex) in i18n[options.locale].dayNames"
           :key="dayIndex"
           class="ev-calendar__weeks-item"
         >
@@ -62,6 +62,7 @@
           class="ev-calendar__main"
         >
           <cal-dates
+            v-if="calendar.preDate"
             ref="pre"
             :events="events"
             :date="calendar.preDate"
@@ -76,6 +77,7 @@
             @select-day="selectDay"
           />
           <cal-dates
+            v-if="calendar.nextDate"
             ref="next"
             :events="events"
             :date="calendar.nextDate"
@@ -110,53 +112,45 @@ export default {
     },
     selectedDay: {
       type: [Date, String],
-      required: false
+      default: () => (new Date())
     }
   },
   data () {
     return {
       i18n,
-      curSelectedDay: new Date(),
+      curSelectedDay: this.selectedDay,
       broadcast: null
     }
   },
   computed: {
-    fullTime () {
-      const curDate = this.curSelectedDay
-
-      return {
-        year: curDate.getFullYear(),
-        month: curDate.getMonth(),
-        date: curDate.getDate(),
-        day: curDate.getDay()
-      }
-    },
     curSelectedDayView () {
       return dateTimeFormatter(
         this.curSelectedDay,
-        this.i18n[this.$EventCalendar.locale].month_dates
+        this.i18n[this.options.locale].month_dates
       )
     },
     curSelectedYear () {
       return this.curSelectedDay.getFullYear()
+    },
+    containerStyle () {
+      if (this.events.length) {
+        return {
+          borderBottom: `1px solid ${this.options.color}`
+        }
+      }
+      return {}
     }
   },
   watch: {
-    calendar: {
-      handler (obj) {
-        if (util.isEqualDateFuzzy(obj.curDate, new Date(), 'date')) {
-          this.curSelectedDay = new Date()
-          return
-        }
-        this.curSelectedDay = obj.curDate
-      }
-    },
     options: {
       handler (val) {
         console.log(val)
 
       },
       deep: true
+    },
+    selectedDay (val) {
+      this.curSelectedDay = val
     }
   },
   mounted () {
@@ -164,20 +158,17 @@ export default {
       loop: false,
       timingHeight: true
     })
-    this.broadcast.init()
-    this.broadcast.toItem(1, false)
+    this.initCard()
     this.broadcast.on('onFirstItem', () => {
       this.$emit('pre-month')
       this.$nextTick(() => {
-        this.broadcast.init()
-        this.broadcast.toItem(1, false)
+        this.initCard()
       })
     })
     this.broadcast.on('onLastItem', () => {
       this.$emit('next-month')
       this.$nextTick(() => {
-        this.broadcast.init()
-        this.broadcast.toItem(1, false)
+        this.initCard()
       })
     })
   },
@@ -198,6 +189,15 @@ export default {
     selectDay (date) {
       this.curSelectedDay = date
       this.$emit('select-day', date)
+    },
+    initCard () {
+      if (this.broadcast) {
+        this.broadcast.destroy()
+      }
+      this.broadcast.init()
+      if (this.calendar.preDate) {
+        this.broadcast.toItem(1, false)
+      }
     }
   }
 }
