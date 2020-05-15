@@ -94,11 +94,13 @@ export default {
 <style lang="less">
 .list-item {
   background-color: rgb(49, 159, 202);
+  background-image: url('');
   background-size: 100% 100%;
   color: white;
   border-radius: 5px;
   box-shadow: 0 0 5px 0px @gray;
   position: relative;
+  transition: background-color 0.2s ease, background-image 0.2s ease;
   .flex(@justify-content: space-between);
 
   // .list-item-shadow {

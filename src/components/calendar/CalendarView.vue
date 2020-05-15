@@ -12,7 +12,7 @@
           @click="$emit('return')"
         />
       </template>
-      <template #events="scope">
+      <template #events>
         <ev-event
           v-for="(todo, index) in completedTodos"
           :key="index"

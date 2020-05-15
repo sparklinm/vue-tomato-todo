@@ -425,6 +425,17 @@ export default {
         }
       })
       return data
+    },
+    getSetById: (state, getters) => (id) => {
+      const set = state.todoSets.find(set => set.id === id)
+
+      if (set) {
+        const todos = getters.getTodosBySet(set.id)
+
+        set.todos = todos
+        return set
+      }
+      return {}
     }
   },
   mutations: {

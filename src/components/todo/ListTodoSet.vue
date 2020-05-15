@@ -28,7 +28,7 @@
             class="btn-option"
             @click="setShowTodos(index, false)"
           />
-          <ComToolTip>
+          <ComToolTip ref="listStatistics">
             <ComIcon
               name="pie-chart"
               class="btn-option"
@@ -36,10 +36,10 @@
             <template v-slot:content>
               <div class="drop-list_simple">
                 <ul>
-                  <li>
+                  <li @click="toStatistics(item,index)">
                     {{ $t('todo.view_todo_set_statistics') }}
                   </li>
-                  <li>
+                  <li @click="toStatistics('all',index)">
                     {{ $t('todo.view_all_statistics') }}
                   </li>
                 </ul>
@@ -206,6 +206,24 @@ export default {
     },
     submitSort (data) {
       this.setTodoSets(data)
+    },
+    toStatistics (item, index) {
+      this.$refs.listStatistics[index].remove()
+      if (item === 'all') {
+        this.$router.push({
+          path: '/statistics/all',
+          query: {
+            type: 'todo'
+          }
+        })
+        return
+      }
+      this.$router.push({
+        path: `/statistics/${item.id}`,
+        query: {
+          type: 'set'
+        }
+      })
     }
   }
 }

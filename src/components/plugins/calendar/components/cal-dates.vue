@@ -14,7 +14,7 @@
         class="ev-calendar__dates-value"
         :style="item.style"
         :class="{'ev-calendar__dates-value_gray':item.status!=='cur'}"
-        @click="selectDay(item.date)"
+        @click="selectDay(item)"
       >
         {{ item.value }}
       </span>
@@ -32,18 +32,19 @@ export default {
       type: Array,
       required: true
     },
+    // 显示月份中的任何一天
     date: {
       type: Date,
       required: true
     },
     selectedDay: {
       type: [Date, String],
-      required: false
+      default: () => (new Date())
     }
   },
   data () {
     return {
-      curSelectedDay: new Date(),
+      curSelectedDay: this.selectedDay,
       util: util
     }
   },
@@ -61,6 +62,26 @@ export default {
         date: curDate.getDate(),
         day: curDate.getDay()
       }
+    },
+    min () {
+      const min = this.options.min
+
+      if (min) {
+        const minDay = new Date(min.getFullYear(), min.getMonth(), min.getDate())
+
+        return minDay
+      }
+      return ''
+    },
+    max () {
+      const max = this.options.max
+
+      if (max) {
+        const maxDay = new Date(max.getFullYear(), max.getMonth(), max.getDate())
+
+        return maxDay
+      }
+      return ''
     },
     today () {
       const date = new Date()
@@ -94,7 +115,7 @@ export default {
       const monthDays = util.getMonthDays(this.date)
 
       for (let i = 0; i < monthDays; i++) {
-        const iDate = new Date(this.date)
+        const iDate = new Date(this.date.getFullYear(), this.date.getMonth())
 
         iDate.setDate(i + 1)
         const obj = {
@@ -104,7 +125,13 @@ export default {
           customClass: []
         }
 
+        if (this.min && obj.date < this.min) {
+          obj.status = 'non'
+        }
 
+        if (this.max && obj.date > this.max) {
+          obj.status = 'non'
+        }
 
         this.events.forEach(event => {
           if (util.isEqualDateFuzzy(obj.date, event.date, 'hour')) {
@@ -151,16 +178,18 @@ export default {
   },
   watch: {
     selectedDay (val) {
-      this.selectDay(val)
+      this.curSelectedDay = val
     }
   },
   mounted () {
-    this.curSelectedDay = this.today
   },
   methods: {
-    selectDay (date) {
-      this.curSelectedDay = date
-      this.$emit('select-day', date)
+    selectDay (item) {
+      if (item.status !== 'cur') {
+        return
+      }
+      this.curSelectedDay = item.date
+      this.$emit('select-day', item.date)
     }
   }
 }
