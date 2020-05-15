@@ -48,8 +48,11 @@
           >
             <div class="row">
               我想在
-              <span class="goal-key">
-                设定目标日期
+              <span
+                class="goal-key"
+                @click="showBoxPickDate=true"
+              >
+                {{ goalDeadlineView }}
               </span>
               之前
             </div>
@@ -240,9 +243,16 @@
       <ComInput
         ref="inputQuantifier"
         v-model="quantifier"
+        class="input-quantifier"
         :placeholder="$t('tips.please_input_quantifier')"
         autofocus
       />
+
+      <div
+        class="tip-text"
+        v-html="$t('message.input_quantifier')"
+      />
+
 
       <template v-slot:footer>
         <button
@@ -253,7 +263,38 @@
         </button>
         <button
           class="com-popup__footer-btn"
-          @click="showBoxQuantifier=false"
+          @click=" cancelAddUnit"
+        >
+          {{ $t("action.cancel") }}
+        </button>
+      </template>
+    </ComPopup>
+
+    <ComPopup
+      class="box-pick-date fade"
+      no-header
+      :show.sync="showBoxPickDate"
+      :close-on-click-mask="false"
+      :z-index="2060"
+      @open="showCalendar = true"
+      @closed="showCalendar = false"
+    >
+      <ev-calendar
+        v-if="showCalendar"
+        v-model="goalDate"
+        :options="calendarOptions"
+      />
+
+      <template v-slot:footer>
+        <button
+          class="com-popup__footer-btn"
+          @click="setGoalDeadline"
+        >
+          {{ $t("action.confirm") }}
+        </button>
+        <button
+          class="com-popup__footer-btn"
+          @click="cancelSetGoalDeadline"
         >
           {{ $t("action.cancel") }}
         </button>
@@ -415,6 +456,13 @@ export default {
       ],
       showBoxQuantifier: false,
       quantifier: '',
+      showBoxPickDate: false,
+      showCalendar: false,
+      goalDate: new Date(),
+      calendarOptions: {
+        color: '',
+        min: ''
+      },
       showBoxCustomTime: false,
       showBoxAdvancedSettings: false,
       btnAdvancedSettings: '展开更多高级设置',
@@ -444,7 +492,8 @@ export default {
   },
   computed: {
     ...mapState('settings', {
-      todoSettings: 'todo'
+      todoSettings: 'todo',
+      theme: 'currentTheme'
     }),
     showTimeDuration () {
       return this.todo.timeWay === 'down'
@@ -465,6 +514,9 @@ export default {
       return this.todoTimeWay.find(item => {
         return item.value === this.todo.timeWay
       }).description
+    },
+    goalDeadlineView () {
+      return util.dateFormatter(this.todo.goal.deadline, 'yyyy-MM-dd') || this.$t('todo.set_goal_deadline')
     }
   },
   watch: {
@@ -485,7 +537,7 @@ export default {
       timeDuration: 25,
       taskNotes: '',
       goal: {
-        deadline: new Date(2019, 9, 2),
+        deadline: '',
         total: '',
         complete: 0,
         unit: 'hour'
@@ -506,36 +558,17 @@ export default {
       },
       hideAfterComplete: this.todoSettings.hideAfterComplete
     }
-    this.todo = _.cloneDeep(Object.assign({}, this.todoCommon, this.data))
-
-    if (!this.todo.loopTimes) {
-      this.todo.loopTimes = {
-        value: 1,
-        custom: ''
-      }
-    }
-    if (!this.todo.timeDuration) {
-      this.todo.timeDuration = 25
-    }
-    if (!this.todo.restTime) {
-      this.todo.timeDuration = {
-        value: 5,
-        custom: ''
-      }
+    if (this.data) {
+      this.init(this.data.type)
+    } else {
+      this.init()
     }
 
-    if (this.todo.timeDuration >= 0 && this.todo.timeDuration !== 25 && this.todo.timeDuration !== 35) {
-      this.todoTimeDuration[2].text = this.todo.timeDuration + '分钟'
-      this.todoTimeDuration[2].value = this.todo.timeDuration
-      this.customTimeDuration.value = this.todo.timeDuration
-    }
+    const myDate = new Date()
+    const tomorrow = new Date(myDate.getFullYear(), myDate.getMonth(), myDate.getDate() + 1)
 
-    this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
-    this.setChecked(this.todoTimeWay, this.todo.timeWay)
-    this.setChecked(this.todoType, this.todo.type)
-    this.setAdvancedSettings()
-    this.setBtnAdvancedSettings()
-    this.initUnits()
+    this.calendarOptions.color = this.theme.darken10
+    this.calendarOptions.min = tomorrow
   },
   methods: {
     ...mapMutations('todo', ['addTodo', 'toggleBoxAddTodo']),
@@ -576,6 +609,34 @@ export default {
             setting.value = setting.default = this.todo[key]
           }
         }
+      }
+    },
+    init (type = 'common') {
+      if (this.data && type === this.data.type) {
+        this.todo = _.cloneDeep(Object.assign({}, this.todoCommon, this.data))
+      } else {
+        this.todo = _.cloneDeep(Object.assign({}, this.data, this.todoCommon))
+        this.todo.type = type
+      }
+
+      if (this.todo.timeDuration >= 0 && this.todo.timeDuration !== 25 && this.todo.timeDuration !== 35) {
+        this.todoTimeDuration[2].text = this.todo.timeDuration + '分钟'
+        this.todoTimeDuration[2].value = this.todo.timeDuration
+        this.customTimeDuration.value = this.todo.timeDuration
+      } else {
+        this.todoTimeDuration[2].text = '自定义'
+        this.todoTimeDuration[2].value = -1
+        this.customTimeDuration.value = ''
+      }
+
+      this.setChecked(this.todoType, this.todo.type)
+      this.setChecked(this.todoTimeWay, this.todo.timeWay)
+      this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
+      this.setAdvancedSettings()
+      this.setBtnAdvancedSettings()
+      this.initUnits()
+      if (this.todo.type === 'goal') {
+        this.goalDate = this.todo.goal.deadline || new Date()
       }
     },
     initUnits () {
@@ -626,18 +687,7 @@ export default {
     onTypeClick (index) {
       const type = this.todoType[index].value
 
-      if (this.data && type === this.data.type) {
-        this.todo = _.cloneDeep(Object.assign({}, this.todoCommon, this.data))
-      } else {
-        this.todo = _.cloneDeep(Object.assign({}, this.data, this.todoCommon))
-      }
-
-      this.todo.type = type
-      this.initUnits()
-      this.setChecked(this.todoTimeWay, this.todo.timeWay)
-      this.setChecked(this.todoTimeDuration, this.todo.timeDuration)
-      this.setAdvancedSettings()
-      this.setBtnAdvancedSettings()
+      this.init(type)
     },
     onTimeWayClick (obj) {
       this.setChecked(this.todoTimeWay, obj.value)
@@ -722,11 +772,25 @@ export default {
       }
       this.selUnits.pop()
       this.selUnits.push({
-        value: 'quantifier',
+        value: this.quantifier,
         text: this.quantifier
       })
-      this.unit = 'quantifier'
+      this.unit = this.quantifier
       this.showBoxQuantifier = false
+    },
+    cancelAddUnit () {
+      this.showBoxQuantifier = false
+      this.unit = 'hour'
+    },
+    setGoalDeadline () {
+      this.todo.goal.deadline = this.goalDate
+      this.showBoxPickDate = false
+    },
+    cancelSetGoalDeadline () {
+      this.showBoxPickDate = false
+      setTimeout(() => {
+        this.goalDate = this.todo.goal.deadline || new Date()
+      }, 300)
     },
     submitAddTodo (done) {
       const { name } = this.todo
@@ -749,8 +813,10 @@ export default {
       }
 
       if (this.todo.type === 'goal') {
+        this.todo.goal.unit = this.unit
         delete this.todo.habit
       } else if (this.todo.type === 'habit') {
+        this.todo.habit.unit = this.unit
         delete this.todo.goal
       } else {
         delete this.todo.habit
@@ -963,6 +1029,42 @@ export default {
         transform: translateX(100%);
       }
     }
+  }
+}
+
+.box-input-quantifier {
+  .com-popup__content .com-input.input-quantifier {
+    margin-bottom: 12px;
+  }
+}
+
+.box-pick-date {
+  .com-popup {
+    width: 6rem;
+  }
+
+  .com-popup__content {
+    padding: 0;
+  }
+
+  .com-popup__footer {
+    padding: 0 20px;
+    text-align: right;
+  }
+
+  .com-popup__footer-btn {
+    font-size: 12px;
+    width: 23%;
+    color: black;
+    margin-left: 12px;
+  }
+
+  .ev-calendar__header {
+    padding: 15px 20px;
+  }
+
+  .ev-calendar__body {
+    padding: 10px 20px;
   }
 }
 </style>

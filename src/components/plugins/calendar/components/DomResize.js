@@ -23,6 +23,7 @@ class FrameCounter {
 }
 
 import Events from './Events'
+
 export default class extends Events {
   width = 20000;
   oldWidth = 0;
@@ -45,12 +46,14 @@ export default class extends Events {
   createNode () {
     // 监听变大的DOM
     const insideBig = document.createElement('div')
+
     insideBig.style =
       'position: absolute;top:0;left: 0;bottom: 0;right: 0;overflow: hidden;visibility: hidden;z-index:-1'
     insideBig.innerHTML = `<div style="width:${this.width}px;height:${this.width}px"></div>`
 
     // 监听变小的DOM
     const insideSmall = document.createElement('div')
+
     insideSmall.style =
       'position: absolute;top:0;left: 0;bottom: 0;right: 0;overflow: hidden;visibility: hidden;z-index:-1'
     insideSmall.innerHTML = '<div style="width:300%;height:300%"></div>'
@@ -108,6 +111,7 @@ export default class extends Events {
           return true
         }
       })
+
       window.addEventListener('testPassive', null, opts)
       window.removeEventListener('testPassive', null, opts)
     } catch (e) {

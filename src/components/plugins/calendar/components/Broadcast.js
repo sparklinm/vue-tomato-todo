@@ -31,6 +31,7 @@ import Events from './Events'
 export default class extends Events {
   // 当前轮播的元素索引
   currentIndex = 0;
+  oldCurrentIndex =0;
   // 与当前元素交互的元素索引
   nextIndex = 0;
   // 父元素偏移量（transform:translateX）
@@ -63,9 +64,10 @@ export default class extends Events {
     this.width = curOptions.width
 
     this.addlistener()
-    const domResize = new DomResize(this.parentNode)
+    this.domResize = new DomResize(this.parentNode)
 
-    domResize.on('domResize', () => {
+    this.domResize.on('domResize', () => {
+
 
       this.init()
       // 在滑动过程中改变dom大小时，不能直接修正到正常位置
@@ -107,6 +109,13 @@ export default class extends Events {
     this.el.addEventListener('slide', this.throttle(this._slide))
     // this.el.addEventListener('slide', this._slide)
     this.el.addEventListener('slidend', this._slidend)
+  }
+
+  removeListener () {
+    this.el.removeEventListener('slidestart', this._slidestart)
+    this.el.removeEventListener('slide', this.throttle(this._slide))
+    // this.el.addEventListener('slide', this._slide)
+    this.el.removeEventListener('slidend', this._slidend)
   }
 
   throttle (fn) {
@@ -162,13 +171,15 @@ export default class extends Events {
       'animationend',
       () => {
         // loop模式下在滑动到首尾后跳转
-        if (this.currentIndex === 0 && this.nextIndex === this.length - 1) {
-          this.toLast()
-        } else if (
-          this.currentIndex === this.length - 1 &&
+        if (this.loop) {
+          if (this.currentIndex === 0 && this.nextIndex === this.length - 1) {
+            this.toLast()
+          } else if (
+            this.currentIndex === this.length - 1 &&
           this.nextIndex === 0
-        ) {
-          this.toFirst()
+          ) {
+            this.toFirst()
+          }
         }
         this.setCurrentIndex()
         this.emit('slidend')
@@ -360,9 +371,14 @@ export default class extends Events {
 
   setConSize () {
     const style = window.getComputedStyle(this.parentNode)
+    let styleWidth = style.width
+
+    if (!styleWidth.includes('px')) {
+      styleWidth = 300
+    }
 
     this.size = {
-      width: this.width || parseFloat(style.width),
+      width: this.width || parseFloat(styleWidth),
       height: parseFloat(style.height)
     }
   }
@@ -375,6 +391,7 @@ export default class extends Events {
 
   setNodes () {
     const children = this.el.children
+
     const nodes = []
 
     for (let i = 0; i < children.length; i++) {
@@ -501,10 +518,13 @@ export default class extends Events {
 
   setCurrentIndex () {
     this.currentIndex = this.getIndexByPos(this.translateX)
-    if (this.currentIndex === 0) {
-      this.emit('onFirstItem')
-    } else if (this.currentIndex === this.length - 1) {
-      this.emit('onLastItem')
+    if (this.currentIndex !== this.oldCurrentIndex) {
+      if (this.currentIndex === 0) {
+        this.emit('onFirstItem')
+      } else if (this.currentIndex === this.length - 1) {
+        this.emit('onLastItem')
+      }
+      this.oldCurrentIndex = this.currentIndex
     }
 
     // currentIndex变化时，设置容器高度
@@ -527,6 +547,11 @@ export default class extends Events {
     if (this.timingHeight) {
       this.setConHeightTiming()
     }
+  }
+
+  destroy () {
+    // this.removeListener()
+    // this.domResize.destroy()
   }
 
   style (el, obj) {

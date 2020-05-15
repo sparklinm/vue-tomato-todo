@@ -1,22 +1,5 @@
 <template>
   <div class="statistical">
-    <div
-      v-if="showHeader"
-      class="statistical-hd-con"
-    >
-      <div
-        class="statistical-hd"
-      >
-        <div class="statistical-hd__left">
-          <ComIcon
-            class="calendar-return-btn"
-            name="arrow-left"
-            @click="$emit('return')"
-          />
-          <span>{{ name }}</span>
-        </div>
-      </div>
-    </div>
     <div class="statistical-data">
       <DataPanel
         :title="$t('todo.cumulative_data')"

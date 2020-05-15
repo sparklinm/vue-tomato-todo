@@ -1,48 +1,3 @@
-@media screen and (min-width: 768px) {
-  .ev-calendar-wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .ev-calendar {
-    width: 50%;
-  }
-
-  .ev-calendar__dates-value {
-    line-height: 50px;
-  }
-
-  .ev-calendar-wrapper .events-wrapper {
-    width: 50%;
-    background-color: #f29543;
-    color: #fff;
-    padding: 40px 45px;
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .ev-calendar {
-    width: 100%;
-  }
-
-  .ev-calendar__dates-value {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-    margin-bottom: 8px;
-  }
-
-  .ev-calendar-wrapper .events-wrapper {
-    width: 100%;
-    padding: 10px;
-  }
-}
-
 .ev-calendar-wrapper {
   position: relative;
   overflow: hidden;
@@ -147,6 +102,11 @@
 }
 
 .ev-calendar__dates-value {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  margin-bottom: 8px;
   font-size: 12px;
   position: relative;
   z-index: 3;

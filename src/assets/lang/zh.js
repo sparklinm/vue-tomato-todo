@@ -138,7 +138,8 @@ module.exports = {
     today_focus: '当日专注',
     tomato_time_axis: '番茄时间轴',
     today_completed: '今日已完成 {0} 次',
-    today_focused: '今日已专注 {0} 次'
+    today_focused: '今日已专注 {0} 次',
+    set_goal_deadline: '设定目标日期'
   },
   plan: {
     future_plan: '未来计划',
@@ -182,7 +183,8 @@ module.exports = {
     pomodoro_setting: '番茄钟设置 ',
     custom_pomodoro_motto: '自定义番茄格言',
     poster_and_appearce_setting: '海报背景和外观设置',
-    other_settings: '其他设置'
+    other_settings: '其他设置',
+    statistics_by_all_sets: '统计数据 — 按待办集名称分类的全部数据'
   },
   message: {
     sort_todo: `<p>排序->长按并拖动</p>
@@ -213,7 +215,11 @@ module.exports = {
     confirm_exit_account: '确定退出当前账号吗？',
     not_enable_todo_card_background_img: '没有开启待办卡片背景图片，请前往 <span class="pink">我的-外观设置</span> 开启。',
     not_pause_todo: '本次番茄钟暂停时间已经用尽',
-    completed_none_todo: '<p>该待办为不计时待办，点击确认完成即可完成一次。</p><p>确定要完成一次吗？</p>'
+    completed_none_todo: '<p>该待办为不计时待办，点击确认完成即可完成一次。</p><p>确定要完成一次吗？</p>',
+    input_quantifier: `<div>您可以自定义事项的量词,如页、章、公里等等。</div>
+                       <div>需要注意的是，在自定义量词后，美当您完成一个番茄钟，系统会主动询问您完成了多少量，而不是自动记录。</div>
+                       <div>如果您仅需要记录时间，请选择系统默认量词分钟。</div>
+                       `
   },
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',

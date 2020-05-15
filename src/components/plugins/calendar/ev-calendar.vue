@@ -40,16 +40,36 @@ export default {
     'cal-panel': calPanel
   },
   props: {
+    // locale: 'zh',
+    // color: '#f29543'
+    // width:''(暂无用)
+    // events
     options: {
       type: Object,
-      required: true,
+      required: false,
       default: () => ({})
+    },
+    // 初始选择的日期，只需要年、月、日匹配
+    value: {
+      type: Date,
+      default: () => (new Date())
     }
   },
   data () {
+    const defaultOptions = {
+      locale: 'zh',
+      color: '#f29543',
+      events: [],
+      // 可选日期最小值
+      min: '',
+      // 可选日期最大值
+      max: ''
+    }
+
     return {
       selectedDayEvents: {
-        events: this.events || [] // default show all event
+        events: this.events || [],
+        date: this.value
       },
       curDate: new Date(),
       nextDate: null,
@@ -59,10 +79,11 @@ export default {
   },
   computed: {
     events () {
-      return this.options.events
+      return this.options.events || []
     },
     calendarOptions () {
       return {
+        // 月份中的任何一天
         curDate: this.curDate,
         preDate: this.preDate,
         nextDate: this.nextDate,
@@ -71,26 +92,28 @@ export default {
     }
   },
   watch: {
-    events () {
-      this.selectedDayEvents = {
-        date: 'all',
-        events: this.events || []
-      }
-    },
     options: {
       handler (val) {
         Object.assign(this.curOptions, val)
       },
       deep: true,
       immediate: true
+    },
+    value (val) {
+      this.setSelectedDayEvents(val)
     }
   },
   created () {
-    this.initSelectedDayEvents()
-    const date = new Date()
+    const date = this.value
 
-    this.curDate = new Date(date.getFullYear(), date.getMonth())
+    // 初始化
+    if (this.options.min && this.value < this.options.min) {
+      this.curDate = new Date(this.options.min.getFullYear(), this.options.min.getMonth())
+    } else {
+      this.curDate = new Date(date.getFullYear(), date.getMonth())
+    }
     this.initDate()
+    this.setSelectedDayEvents(this.value)
   },
   methods: {
     initSelectedDayEvents () {
@@ -99,16 +122,26 @@ export default {
         events: this.events || []
       }
     },
-    selectDay (date) {
+    setSelectedDayEvents (date) {
+      let selectedDay = date
+
+      // 选择日期不能低于最小值
+      if (date < this.options.min) {
+        selectedDay = this.options.min
+      }
       const events = this.events.filter(function (event) {
-        return util.isEqualDateFuzzy(date, event.date, 'hour')
+        return util.isEqualDateFuzzy(selectedDay, event.date, 'hour')
       })
 
       this.selectedDayEvents = {
-        date: date,
+        date: selectedDay,
         events: events
       }
-      this.$emit('select-day', date)
+    },
+    selectDay (date) {
+      this.setSelectedDayEvents(date)
+      this.$emit('input', this.selectedDayEvents.date)
+      this.$emit('select-day', this.selectedDayEvents.date)
     },
     getAllTime (dateObj) {
       return {
@@ -154,20 +187,41 @@ export default {
       return new Date(year + 1, month, 1)
     },
     initDate () {
-      this.preDate = this.getPreMonthDate(this.curDate)
-      this.nextDate = this.getNextMonthDate(this.curDate)
+      const fisrtDay = new Date(this.curDate.getFullYear(), this.curDate.getMonth())
+      const lastDay = new Date(fisrtDay)
+
+      lastDay.setMonth(lastDay.getMonth() + 1)
+      if (this.options.min && this.options.min >= fisrtDay && this.options.min < lastDay) {
+        this.preDate = null
+        this.nextDate = this.getNextMonthDate(this.curDate)
+      } else {
+        this.preDate = this.getPreMonthDate(this.curDate)
+        this.nextDate = this.getNextMonthDate(this.curDate)
+      }
+    },
+    autoSelectDay () {
+      // 如果显示的这个月与今天在同一月，自动选择今天
+      if (util.isEqualDateFuzzy(this.curDate, new Date(), 'date')) {
+        this.selectDay(new Date())
+        return
+      }
+      // 否则，选择那个月的第一天
+      this.selectDay(this.curDate)
     },
     nextMonth () {
       this.curDate = this.getNextMonthDate(this.curDate)
       this.initDate()
+      this.autoSelectDay()
     },
     preMonth () {
       this.curDate = this.getPreMonthDate(this.curDate)
       this.initDate()
+      this.autoSelectDay()
     },
     toMonth (date) {
       this.curDate = date
       this.initDate()
+      this.autoSelectDay()
     }
   }
 }
