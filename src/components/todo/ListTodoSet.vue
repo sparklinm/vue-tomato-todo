@@ -1,14 +1,16 @@
 <template>
   <ComList
     id="container"
+    ref="container"
     class="list-todo-set"
   >
     <div
       v-for="(item, index) in sets"
-      :key="item.name"
+      :key="index"
       class="todo-set"
     >
       <ComCell
+        ref="todoSets"
         :title="item.name"
         class="todo-set-inner"
         :class="setClass"
@@ -56,11 +58,27 @@
             class="btn-option"
             @click="showBox('showBoxAddTodo',index)"
           />
+          <div class="set-btn-groups">
+            <div class="btn-pencil color-btn">
+              <ComIcon
+                name="pencil"
+                class="color-btn-inner"
+                @click="editSet(item)"
+              />
+            </div>
+            <div class="btn-delete color-btn">
+              <ComIcon
+                name="trash"
+                class="color-btn-inner"
+                @click="deleteSet(item)"
+              />
+            </div>
+          </div>
         </template>
       </ComCell>
       <ListTodo
         v-show="showTodos[index]"
-        :todos="getTodosBySet(item.id)"
+        :todos="setTodos[index]"
         class="list-set-todo"
         in-set
       />
@@ -77,13 +95,13 @@
     >
       <ComInput
         v-model="currentSet.resetTimeSingle"
-        type="number"
+        type="positiveInteger"
         :placeholder="$t('todo.set_complete_one_restime')"
         autofocus
       />
       <ComInput
         v-model="currentSet.resetTimeAll"
-        type="number"
+        type="positiveInteger"
         :placeholder="$t('todo.set_complete_all_restime')"
         autofocus
       />
@@ -113,11 +131,15 @@
         </button>
       </template>
     </ComPopup>
-
     <BoxSortTodo
       :data="sets"
       :show.sync="showBoxSort"
       @submit="submitSort"
+    />
+
+    <BoxAddTodoSet
+      :show.sync="showBoxEditSet"
+      :data="currentSet"
     />
   </ComList>
 </template>
@@ -126,25 +148,32 @@
 import ListTodo from './ListTodo'
 import BoxAddTodo from './add/BoxAddTodo'
 import BoxSortTodo from '@/components/todo/BoxSortTodo'
+import BoxAddTodoSet from '@/components/todo/add/BoxAddTodoSet'
 import { mapState, mapGetters, mapMutations } from 'vuex'
+import Touch from '@/js/Touch.js'
 
 export default {
   components: {
     ListTodo,
     BoxAddTodo,
-    BoxSortTodo
+    BoxSortTodo,
+    BoxAddTodoSet
   },
   data () {
     return {
       showTodos: [false, false],
       showBoxAddTodo: false,
       showBoxModifySet: false,
-      currentSet: {},
-      currentSetIndex: 0,
+      currentSet: {
+        name: 'default'
+      },
       showBoxSort: false,
       setClass: {
         'todo-set_opaque': true
-      }
+      },
+      showBoxEditSet: false,
+      translateX: [],
+      touchs: []
     }
   },
   computed: {
@@ -157,7 +186,12 @@ export default {
     }),
     ...mapGetters('todo', {
       getTodosBySet: 'getTodosBySet'
-    })
+    }),
+    setTodos () {
+      return this.sets.map(set => {
+        return this.getTodosBySet(set.id)
+      })
+    }
   },
   watch: {
     showBoxSortSet (val) {
@@ -165,9 +199,13 @@ export default {
     },
     showBoxSort (val) {
       this.setShowBoxSortSet(val)
+    },
+    sets () {
+      this.addEvent()
     }
   },
   mounted () {
+    this.currentSet = _.cloneDeep(this.sets[0])
     if (this.appearance.todoSetOpacity === 'opaque') {
       this.setClass = {
         'todo-set_opaque': true
@@ -177,9 +215,17 @@ export default {
         'todo-set_translucent': true
       }
     }
+
+    this.addEvent()
   },
   methods: {
-    ...mapMutations('todo', ['modifyTodoSet', 'setTodoSets', 'setShowBoxSortSet']),
+    ...mapMutations('todo', [
+      'modifyTodoSet',
+      'setTodoSets',
+      'setShowBoxSortSet',
+      'deleteTodoSet',
+      'addTodo'
+    ]),
     setShowTodos (index, isShow) {
       if (typeof isShow === 'undefined') {
         this.showTodos[index] = !this.showTodos[index]
@@ -187,22 +233,83 @@ export default {
         this.showTodos[index] = isShow
       }
       this.showTodos = Object.assign([], this.showTodos)
+      this.resetPos()
+    },
+    addEvent () {
+      this.$nextTick(() => {
+        this.resetPos()
+        this.translateX.length = this.touchs.length = this.$refs.todoSets.length
+        this.$refs.todoSets.forEach((item, index) => {
+          const el = item.$el
+
+          if (this.touchs[index]) {
+            if (this.touchs[index].event) {
+              this.touchs[index].event.destroy()
+            }
+            el.removeEventListener('slidemove', this.touchs[index].moveFun)
+            el.removeEventListener('slideend', this.touchs[index].endFun)
+          }
+
+          this.touchs[index] = {}
+          this.touchs[index].event = new Touch(el)
+          this.translateX[index] = 0
+
+          const move = (e) => {
+            const dx = e.detail.dx
+
+            this.translateX[index] += dx
+            if (this.translateX[index] > 0) {
+              this.translateX[index] = 0
+            }
+            if (this.translateX[index] < -92) {
+              this.translateX[index] = -92
+            }
+            el.style.transform = `translateX(${this.translateX[index]}px)`
+          }
+          const end = () => {
+            if (this.translateX[index] > -92) {
+              el.style.transform = `translateX(${0}px)`
+              el.style.transition = 'transform 0.2s ease'
+
+              setTimeout(() => {
+                el.style.transition = 'none'
+                this.translateX[index] = 0
+              }, 200)
+            }
+          }
+
+          this.touchs[index].moveFun = move
+          this.touchs[index].endFun = end
+
+          el.addEventListener('slidemove', move)
+          el.addEventListener('slideend', end)
+        })
+      })
+    },
+    resetPos () {
+      this.translateX.forEach((item, index) => {
+        if (item !== 0) {
+          this.translateX[index] = 0
+          this.$refs.todoSets[index].$el.style.transform = `translateX(${this.translateX[index]}px)`
+        }
+      })
     },
     showBox (key, index) {
       this[key] = true
       this.currentSet = _.cloneDeep(this.sets[index])
-      this.currentSetIndex = index
+      if (key === 'showBoxAddTodo') {
+        this.resetPos()
+      }
     },
     submitModifySet () {
-      this.modifyTodoSet({
-        set: this.currentSet,
-        index: this.currentSetIndex
-      })
+      this.modifyTodoSet(
+        this.currentSet
+      )
       this.showBoxModifySet = false
     },
     submitAddTodo (todo) {
-      this.currentSet.todos.push(todo)
-      this.submitModifySet()
+      todo.sid = this.currentSet.id
+      this.addTodo(todo)
     },
     submitSort (data) {
       this.setTodoSets(data)
@@ -223,6 +330,23 @@ export default {
         query: {
           type: 'set'
         }
+      })
+    },
+    editSet (item) {
+      this.currentSet = _.cloneDeep(item)
+      this.showBoxEditSet = true
+      this.resetPos()
+    },
+    deleteSet (item) {
+      this.$message({
+        title: this.$t('message.confirm_delete'),
+        content: this.$t('message.delete_set', [item.name]),
+        options: {
+          showCancel: true
+        }
+      }).then(() => {
+        this.deleteTodoSet(item.id)
+        this.resetPos()
       })
     }
   }
@@ -251,7 +375,6 @@ export default {
 
     .list-item {
       .name {
-        font-size: 15px;
       }
     }
 
@@ -264,22 +387,62 @@ export default {
     }
 
     .list-item .right {
-      width: 75px;
     }
   }
 }
 
 .todo-set-inner {
+  position: relative;
+
   .com-cell__hd {
     font-size: 18px;
   }
 
-  .come-icon__inner {
+  .com-icon{
     font-size: 20px;
   }
 
   .btn-option {
     margin-left: 20px;
+  }
+
+  .set-btn-groups {
+    display: inline-block;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    transform: translateX(92px);
+    top: 0;
+  }
+
+  .color-btn {
+    display: inline-block;
+    height: 100%;
+    color: white;
+    width: 46px;
+    text-align: center;
+  }
+
+  .color-btn::after {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+
+  .color-btn-inner {
+    vertical-align: middle;
+    font-size: 16px;
+  }
+
+  .btn-pencil {
+    background: rgb(0, 122, 179);
+    border-bottom: 1px solid rgb(0, 122, 179);
+  }
+
+  .btn-delete {
+    background: rgb(255, 135, 23);
+    border-bottom: 1px solid rgb(255, 135, 23);
   }
 }
 </style>

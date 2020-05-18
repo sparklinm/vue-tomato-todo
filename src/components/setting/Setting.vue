@@ -274,9 +274,10 @@ export default {
 }
 
 .settings-user-card {
-  padding: 15px 0 10px 25px;
-  background-size: 100% 100%;
+  padding: 0.3rem 0 0.2rem 0.5rem;
+  background-size: cover;
   color: white;
+  background-repeat: no-repeat;
 
   .user-info,.focus-info {
     display: inline-block;
@@ -285,31 +286,32 @@ export default {
 
   .focus-info {
    margin-left: -15px;
+   .scale-font(0.9);
   }
 
   .user-head-icon {
-    width: 60px;
-    height: 60px;
+    width: 1.2rem;
+    height: 1.2rem;
     border-radius: 50% 50%;
   }
 
   .user-name {
     font-size: 16px;
-    margin-top: 12px
+    margin-top: 0.24rem
   }
 
   .user-signature {
     font-size: 12px;
-    margin-top: 12px;
+    margin-top: 0.24rem;
   }
 
   .tag {
     display: inline-block;
-    padding: 3px 5px;
+    padding: 0.06rem 0.1rem;
     border-radius: 4px;
     background: rgb(238, 201, 201);
     color: rgb(173, 11, 11);
-    margin-right: 6px;
+    margin-right: 0.12rem;
   }
 
   .upload-image {

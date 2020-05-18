@@ -75,14 +75,18 @@ export default {
     window.addEventListener('resize', () => {
       let rootFont = (document.body.clientWidth / 414) * 50
 
-      if (rootFont > 90) {
-        rootFont = 90
+      if (rootFont > 60) {
+        rootFont = 60
       }
       document.documentElement.style.fontSize = rootFont + 'px'
     })
-    document.documentElement.style.fontSize =
-      (document.body.clientWidth / 414) * 50 + 'px'
-    document.body.className = 'theme-1'
+
+    let rootFont = (document.body.clientWidth / 414) * 50
+
+    if (rootFont > 60) {
+      rootFont = 60
+    }
+    document.documentElement.style.fontSize = rootFont + 'px'
 
     // document.documentElement.addEventListener('transitionend', () => {
     //   document.documentElement.classList.remove('full-screen', 'full-screen-active')
@@ -143,6 +147,29 @@ export default {
       `
       }, 300)
     })
+
+    window.onbeforeunload = () => {
+      // user
+      const storeState = this.$store.state
+
+      localStorage.setItem('storeState', JSON.stringify(storeState))
+    }
+    const state = JSON.parse(localStorage.getItem('storeState'))
+
+    if (state) {
+      this.createDate(state.user.getUpClocks)
+      this.createDate(state.user.sleepClocks)
+      this.createDate(state.user.user, 'creat')
+
+      this.createDate(state.plan.plans, 'creat')
+      this.createDate(state.plan.plans, 'deadline')
+
+      this.createDate(state.todo.todos, 'create')
+      this.createDate(state.todo.focus, 'start')
+      this.createDate(state.todo.focus, 'end')
+
+      this.$store.replaceState(state)
+    }
     this.setUser()
   },
   mounted () {
@@ -175,7 +202,27 @@ export default {
       }
 
       this.storeSetUser(user)
+    },
+    createDate (obj, key) {
+      if (key) {
+        if (obj[key]) {
+          obj[key] = new Date(obj[key])
+        } else if (Array.isArray(obj)) {
+          obj.forEach((item) => {
+            if (typeof item === 'object') {
+              item[key] = new Date(item[key])
+            }
+          })
+        }
+        return
+      }
+      if (Array.isArray(obj)) {
+        obj.forEach((item, index) => {
+          obj[index] = new Date(item)
+        })
+      }
     }
+
   }
 }
 </script>
@@ -189,6 +236,7 @@ html,body {
 #app {
   height: 100%;
   background-size: 100% 100%;
+  position: relative;
 }
 // #app div:not(:last-child) {
 //   display: none;
@@ -245,7 +293,7 @@ html:fullscreen {
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition: transform 0.3s ease;
-  position: fixed;
+  position: absolute;
   width: 100%;
   top: 0;
   left: 0;
@@ -265,7 +313,7 @@ html:fullscreen {
 .slide-left-enter-active,
 .slide-left-leave-active {
   transition: transform 0.3s ease;
-  position: fixed;
+  position: absolute;
   width: 100%;
   top: 0;
   left: 0;

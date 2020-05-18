@@ -1,3 +1,5 @@
+import store from '@/store/index.js'
+
 function getNonRepeatRandom (lower, upper, initCache) {
   let cache = initCache || []
   const nonRepeatNum = cache.reduce((total, val) => {
@@ -79,27 +81,62 @@ export class randomSeed {
   }
 }
 
-const randomClockBackground = getNonRepeatRandom(0, 3)
-const randomTodoCardBackground = getNonRepeatRandom(0, 7)
+const sentenceCount = 2
+
+const mainImagesSimpleCount = 7
+
+const mainImagesCuteCount = 9
+
+const cardImagesCount = 17
+
+const clockImagesCount = 15
+
+const randomClockBackground = getNonRepeatRandom(0, clockImagesCount - 1)
 
 export default {
   randomSeed: randomSeed,
   creatNonRepeatRandom: getNonRepeatRandom,
   getSentence () {
-    const length = 2
-    const random = Math.floor(Math.random() * length)
+    const random = Math.floor(Math.random() * sentenceCount)
 
     return `sentence.${random}`
   },
-  getClockBackground () {
+  getClockImage () {
     const random = randomClockBackground()
 
     return `/clock/back${random}.jpg`
   },
-  getTodoCardBackground () {
-    const random = randomTodoCardBackground()
+  getCardImage (imgs) {
+    const todos = store.state.todo.todos
+    const usedImgs = imgs || todos.map((todo) => {
+      return parseInt(todo.background.match(/\d+/g)[0])
+    })
+    const upper = cardImagesCount - 1
+    const lower = 0
+    let seed = null
 
-    return `/card/back${random}.jpg`
+    if (upper - lower + 1 <= usedImgs.length) {
+      seed = new randomSeed(lower, upper)
+    } else {
+      seed = new randomSeed(lower, upper, usedImgs)
+    }
+    return `/card/back${seed.do()}.jpg`
+  },
+  getMainImages () {
+    const mainImages = {
+      simple: [],
+      cute: []
+    }
+
+    for (let i = 0; i < mainImagesSimpleCount; i++) {
+      mainImages.simple.push(`/page_back/simple/back${i}.jpg`)
+    }
+
+    for (let i = 0; i < mainImagesCuteCount; i++) {
+      mainImages.cute.push(`/page_back/cute/back${i}.jpg`)
+    }
+
+    return mainImages
   },
   showLengthTip (str, length, noMore = true, i18) {
     if (str.length === 'undefined') {

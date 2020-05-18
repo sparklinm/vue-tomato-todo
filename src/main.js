@@ -4,6 +4,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store/index'
 import moment from 'moment'
+import _ from 'lodash'
+window._ = _
 import 'dayjs'
 import 'normalize.css'
 import 'font-awesome/css/font-awesome.css'

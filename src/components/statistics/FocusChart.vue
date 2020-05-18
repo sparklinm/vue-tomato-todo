@@ -32,6 +32,16 @@ c
       ref="pie"
       :options="chartOptions"
     />
+    <DatePicker
+      v-model="times"
+      is-range
+      type="date"
+      :show.sync="showBoxPeriod"
+      :submit="customPeriod"
+      :cancel="cancelCustomPeriod"
+      z-index="2100"
+      append-to-body
+    />
   </DataPanel>
 </template>
 
@@ -39,11 +49,13 @@ c
 import util from '@/js/util.js'
 import DataPanel from './DataPanel'
 import CPie from './chart/CPie'
+import DatePicker from '../DatePicker'
 
 export default {
   components: {
     DataPanel,
-    CPie
+    CPie,
+    DatePicker
   },
   props: {
     data: {
@@ -67,7 +79,9 @@ export default {
     return {
       filterValue: 'day',
       chart: null,
-      chartOptions: {}
+      chartOptions: {},
+      showBoxPeriod: false,
+      times: [new Date(), new Date()]
     }
   },
   computed: {
@@ -135,7 +149,20 @@ export default {
           },
           series: [
             {
+              label: {
+                formatter: params => {
+                  let cname = params.data.name
+                  const value = params.data.value
+
+                  if (cname.length > 8) {
+                    cname = cname.slice(0, 8) + '...'
+                  }
+
+                  return `${cname}(${value}${this.$t('word.minute')})`
+                }
+              },
               data: data
+
             }
           ]
         }
@@ -175,7 +202,24 @@ export default {
   },
   methods: {
     handleFilterChange (filter) {
+      if (filter === 'customize') {
+        this.showBoxPeriod = true
+        return
+      }
       this.$emit('change', filter)
+    },
+    customPeriod () {
+      this.showBoxPeriod = false
+      this.$emit('change', {
+        value: 'custom',
+        times: this.times
+      })
+      this.times = [new Date(), new Date()]
+    },
+    cancelCustomPeriod () {
+      this.filterValue = 'day'
+      this.showBoxPeriod = false
+      this.times = [new Date(), new Date()]
     },
     getTotalDuration (data) {
       return data.reduce((total, item) => {
@@ -205,7 +249,7 @@ export default {
     display: inline-block;
     border: 1px solid white;
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .custom-radio__text {

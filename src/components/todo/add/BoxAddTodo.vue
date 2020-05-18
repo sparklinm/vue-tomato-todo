@@ -19,6 +19,7 @@
         placeholder="请输入待办名称"
         :tips="description.todo.name"
         autofocus
+        maxlength="30"
       />
       <div class="config-todo">
         <div class="type">
@@ -211,6 +212,7 @@
           v-model="advancedSettings.taskNotes.value"
           type="textarea"
           placeholder="任务备注"
+          maxlength="50"
         />
         <ComInput
           v-show="showInputLoopTimes"
@@ -246,6 +248,7 @@
         class="input-quantifier"
         :placeholder="$t('tips.please_input_quantifier')"
         autofocus
+        maxlength="30"
       />
 
       <div
@@ -495,6 +498,9 @@ export default {
       todoSettings: 'todo',
       theme: 'currentTheme'
     }),
+    ...mapState('todo', {
+      todos: 'todos'
+    }),
     showTimeDuration () {
       return this.todo.timeWay === 'down'
     },
@@ -571,7 +577,11 @@ export default {
     this.calendarOptions.min = tomorrow
   },
   methods: {
-    ...mapMutations('todo', ['addTodo', 'toggleBoxAddTodo']),
+    ...mapMutations('todo', [
+      'addTodo',
+      'toggleBoxAddTodo',
+      'editTodo'
+    ]),
     checkNumber ({ value, max }) {
       return util.checkLess({
         value,
@@ -792,8 +802,19 @@ export default {
         this.goalDate = this.todo.goal.deadline || new Date()
       }, 300)
     },
+    initCompletedNum () {
+      if (this.todo.goal.unit !== this.unit) {
+        this.todo.goal.complete = 0
+        return
+      }
+
+      if (this.todo.habit.unit !== this.unit) {
+        this.todo.habit.complete = 0
+        return
+      }
+    },
     submitAddTodo (done) {
-      const { name } = this.todo
+      const { name, id } = this.todo
 
       if (name === '') {
         this.$message({
@@ -801,6 +822,64 @@ export default {
           content: this.error.todo.name
         })
         return
+      }
+
+      if (name.length > 30) {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('tips.name_length')
+        })
+        return
+      }
+
+      const hasSameName = this.todos.some(todo => {
+        if (id >= 0) {
+          if (id !== todo.id) {
+            return todo.name === name
+          }
+          return false
+        }
+
+        return todo.name === name
+      })
+
+      if (hasSameName) {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('tips.already_has_same_todo')
+        })
+        return
+      }
+
+      if (this.todo.type === 'goal') {
+        const { deadline, total } = this.todo.goal
+
+        if (!deadline || total <= 0) {
+          this.$message({
+            title: this.$t('word.tip'),
+            content: this.$t('tips.not_input_goal_or_complete')
+          })
+          return
+        }
+        this.initCompletedNum()
+        this.todo.goal.unit = this.unit
+        delete this.todo.habit
+      } else if (this.todo.type === 'habit') {
+        const { piece } = this.todo.habit
+
+        if (!piece) {
+          this.$message({
+            title: this.$t('word.tip'),
+            content: this.$t('tips.not_input_goal_or_complete')
+          })
+          return
+        }
+        this.initCompletedNum()
+        this.todo.habit.unit = this.unit
+        delete this.todo.goal
+      } else {
+        delete this.todo.habit
+        delete this.todo.goal
       }
 
       if (this.todo.timeWay === 'up') {
@@ -812,19 +891,15 @@ export default {
         delete this.todo.timeDuration
       }
 
-      if (this.todo.type === 'goal') {
-        this.todo.goal.unit = this.unit
-        delete this.todo.habit
-      } else if (this.todo.type === 'habit') {
-        this.todo.habit.unit = this.unit
-        delete this.todo.goal
-      } else {
-        delete this.todo.habit
-        delete this.todo.goal
-      }
 
-      if (!this.data) {
+      if (this.data) {
+        delete this.todo.focus
+        delete this.todo.reminders
+        delete this.todo.completedTime
+        this.editTodo(this.todo)
+      } else {
         this.todo.creat = new Date()
+        this.addTodo(this.todo)
       }
 
       this.$emit('submit', this.todo)
@@ -836,7 +911,13 @@ export default {
 
 <style lang="less">
 .box-add-todo {
+  .com-popup__content {
+    text-align: center;
+  }
+
   .config-todo {
+    display: inline-block;
+    max-width: 375px;
     margin-top: 12px;
     letter-spacing: 1px;
     color: @gray;
@@ -871,13 +952,13 @@ export default {
     }
 
     .tips-time-duration {
-      font-size: 10px;
+      font-size: 12px;
       transform: scale(0.8);
       text-align: center;
     }
 
     .advanced-setting {
-      font-size: 10px;
+      font-size: 12px;
       transform: scale(0.9);
       span {
         .config-item;

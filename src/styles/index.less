@@ -1,4 +1,5 @@
 @import './variable.less';
+@import './theme.less';
 
 body {
   font-family: 'Helvetica Neue', 'Microsoft YaHei', Helvetica,
@@ -6,6 +7,7 @@ body {
   font-size: 12px;
   letter-spacing: 0.5px;
   margin: 0 auto;
+  word-wrap: break-word;
 }
 
 .nav,
@@ -21,199 +23,6 @@ button {
   background: transparent;
 }
 
-// theme-1
-.theme-1 {
-  .font-color-base {
-    color: @theme-base-color-1;
-  }
-
-  .font-color-base-10 {
-    color: @theme-base-color-1-10;
-  }
-
-  .background-color-base() {
-    background-color: @theme-base-color-1;
-  }
-
-  .boreder-bottom-base() {
-    border-bottom: 2px solid @theme-base-color-1;
-  }
-
-  .background-color-10() {
-    background-color: @theme-base-color-1-10;
-  }
-
-  .boreder-bottom-10() {
-    border-bottom: 2px solid @theme-base-color-1-10;
-  }
-
-  .background-color-20() {
-    background-color: @theme-base-color-1-20;
-  }
-
-  .boreder-bottom-20() {
-    border-bottom: 2px solid @theme-base-color-1-20;
-  }
-
-  .com-popup__header {
-    .background-color-20();
-  }
-
-  .com-popup__footer-btn {
-    .font-color-base-10();
-  }
-
-  .com-input__area {
-    border-bottom: 1px solid @theme-base-color-1;
-  }
-
-  .com-input__placeholder {
-    color: @theme-base-color-1;
-  }
-
-  .com-input__box_focus {
-    border-bottom: 2px solid @theme-base-color-1-20;
-  }
-
-  .com-input__box {
-    &::-webkit-input-placeholder {
-      color: @theme-base-color-1;
-    }
-
-    &:-moz-placeholder {
-      color: @theme-base-color-1;
-    }
-
-    &::-moz-placeholder {
-      color: @theme-base-color-1;
-    }
-
-    &:-ms-input-placeholder {
-      color: @theme-base-color-1;
-    }
-  }
-
-  .statistical {
-    .data-panel {
-      color: @theme-base-color-1-20;
-    }
-
-    .data-panel.focus-chart {
-      .filters-inline {
-        border-color: @theme-base-color-1-l20;
-        color: @theme-base-color-1-l20;
-      }
-
-      .custom-radio__inline {
-        width: 0;
-
-        &:checked+span {
-          background: @theme-base-color-1-l20;
-          color: @theme-base-color-1-20;
-          font-weight: 600;
-        }
-      }
-    }
-  }
-
-  .custom-time {
-    .title {
-      .background-color-base;
-    }
-  }
-
-  .box-advanced-setting {
-    .title {
-      .background-color-base;
-    }
-  }
-
-  .nav {
-    .background-color-base;
-  }
-
-  .box-edit .btn {
-    .background-color-base;
-  }
-
-  .progress-bar__sector {
-    fill: @theme-base-color-1;
-  }
-
-  .progress-bar__circle-arc {
-    fill: @theme-base-color-1;
-    stroke: rgb(88, 88, 88);
-    stroke-opacity: 0.35;
-  }
-
-  .progress-bar__arc {
-    fill: none;
-    stroke: @theme-base-color-1-l10;
-  }
-
-  .box-sort {
-    .com-cell {
-      border-left: 5px solid;
-      border-color: @theme-base-color-1;
-    }
-  }
-
-  .box-time-reminder {
-    .com-popup__header {
-      background: @theme-base-color-1;
-    }
-
-    .com-cell__hd-title {
-      color: @theme-base-color-1;
-    }
-  }
-
-  .box-add-time-reminder {
-    .set-time {
-      color: @theme-base-color-1-10;
-    }
-  }
-
-  .todo-music-default {
-    background: @theme-base-color-1;
-  }
-
-  .statistical-hd {
-    background: @theme-base-color-1;
-  }
-
-  .settings-list-head {
-    color: @theme-base-color-1-20;
-  }
-
-  .settings-list-item {
-    .current-theme-color {
-      background: @theme-base-color-1;
-    }
-
-    .com-cell__bd-inner {
-      color: @theme-base-color-1-20;
-    }
-  }
-
-  .list-item_no-background {
-    .right {
-      background: @theme-base-color-1;
-    }
-  }
-
-  .page-statistics {
-    background-image: linear-gradient(to bottom, @theme-base-color-1, #fff);
-  }
-
-  .cm-list-item {
-    background: @theme-base-color-1-10;
-  }
-
-  .cm-list-item.abandon-record {
-    background: @theme-base-color-1;
-  }
-}
 
 .cm-list-item {
   padding: 8px 8px 8px 15px;
@@ -273,7 +82,6 @@ button {
   }
 
   .progress-bar__text {
-    font-size: 6px;
   }
 }
 
@@ -310,6 +118,7 @@ ul {
 .drop-list_simple {
   text-align: left;
   color: white;
+  .scale-font(0.9;center;center;);
 
   li {
     line-height: normal;
@@ -406,8 +215,13 @@ ul {
 
 .main {
   box-sizing: border-box;
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
   height: calc(100% - 112px);
   overflow-y: scroll;
+  overflow-x: hidden;
+  .scroll-hide-bar()
 }
 
 .main-page {
@@ -416,8 +230,9 @@ ul {
 
 .sub-main {
   box-sizing: border-box;
-  height: calc(100% - 50px);
+  height: calc(100% - 56px);
   overflow-y: scroll;
+  .scroll-hide-bar()
 }
 
 .right-page {
@@ -522,6 +337,8 @@ ul {
 .custom-enable {
   .com-checkbox__inner {
     width: 0;
+    height: 0;
+    visibility: hidden;
   }
 
   .com-checkbox__inner:checked+span {
@@ -531,7 +348,7 @@ ul {
 
     .dot {
       background: rgb(7, 151, 120);
-      left: 13px;
+      left: 0.26rem;
     }
   }
 }
@@ -558,6 +375,10 @@ ul {
   .custom-radio__icon {
     display: none;
   }
+}
+
+.scroll-hide-bar {
+  .scroll-hide-bar()
 }
 
 .tip-text {
@@ -605,12 +426,33 @@ ul {
   border-radius: 4px;
   background: rgb(238, 201, 201);
   color: rgb(173, 11, 11);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .label-tag_purple {
   background: rgb(206, 185, 223);
   color: black;
+}
+
+.background-shadow {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  left: 0;
+}
+
+// 图片中心居于父元素中心，宽度等于父元素宽度
+// 高度超出时会隐藏，不足时会拉伸
+// 实际应该判断图片和父元素各自的宽高比，图片高度占比大于父元素高度占比时采用
+.img-fit-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center center;
+  transform: translate(-50%,-50%);
+  width: 100%;
+  min-height: 100%;
 }
 
 input:disabled,

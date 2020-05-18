@@ -15,7 +15,7 @@
     >
       <template v-slot:progressBar>
         <ProgressCircle
-          v-if="data.progressBar"
+          v-if="data.progressBar!==''"
           :width="18"
           :progress="data.progressBar"
         />
@@ -271,7 +271,7 @@
     </ComPopup>
 
     <BoxSortTodo
-      :data="curTodos"
+      :data="sortableTodos"
       :show.sync="showBoxSort"
       @submit="submitSort"
     />
@@ -394,7 +394,6 @@
       v-if="showBoxAddTodo"
       :show.sync="showBoxAddTodo"
       :data="todo"
-      @submit="submitEditTodo"
     />
     <DatePicker
       v-model="reminderTime"
@@ -437,11 +436,43 @@ export default {
     }
   },
   data () {
+    const template = {
+      name: 'default',
+      type: 'common',
+      timeWay: 'down',
+      timeDuration: 25,
+      taskNotes: '',
+      goal: {
+        deadline: new Date(),
+        total: 100,
+        complete: 0,
+        unit: 'hour'
+      },
+      habit: {
+        frequency: 1,
+        piece: 10,
+        complete: 0,
+        unit: 'hour'
+      },
+      loopTimes: {
+        value: 1,
+        custom: ''
+      },
+      restTime: {
+        value: 5,
+        custom: ''
+      },
+      reminders: [],
+      focus: [],
+      hideAfterComplete: false
+    }
+
     return {
       testnumer: 0,
       curTodos: [],
+      listIndex: 0,
       showBoxInfo: false,
-      todo: this.todos[0],
+      todo: this.todos[0] || template,
       boxHeaderStyle: {},
       showBoxAddTodo: false,
       showBoxSort: false,
@@ -474,18 +505,18 @@ export default {
       curReminder: {
         time: []
       },
-      reminderTime: [9, 5],
+      reminderTime: new Date(),
       isAddReminder: false,
       showTimeAxis: false,
       showAnimatedInteger: false,
-      listStyles: []
+      listStyles: [],
+      sortableTodos: []
     }
   },
 
   computed: {
     ...mapState('todo', {
       sets: state => state.todoSets,
-      isGetTodos: 'isGetTodos',
       showBoxSortTodo: 'showBoxSortTodo'
     }),
     ...mapState('settings', {
@@ -547,7 +578,7 @@ export default {
           const { duration, unitText } = handleUnit(unit, todo.goal.total)
 
           progress += `${todo.goal.complete}/${duration} ${unitText}`
-          progressBar = this.getProgress(todo.goal.complete, todo.goal.total)
+          progressBar = this.getProgress(todo.goal.complete, duration)
           deadline = this.$t('todo.time_remain_end_plan', [Math.ceil((todo.goal.deadline - new Date()) / (1000 * 60 * 60 * 24))])
         } else if (todo.habit) {
           const unit = todo.habit.unit
@@ -556,7 +587,7 @@ export default {
           progress += `${this.$t('word.today')}:${todo.habit.complete}/${
             duration
           } ${unitText}`
-          progressBar = this.getProgress(todo.habit.complete, todo.habit.piece)
+          progressBar = this.getProgress(todo.habit.complete, duration)
         }
 
         let completedTimes = todoUtil.getCompletedFocus(todo.focus, today).length
@@ -568,8 +599,6 @@ export default {
             completedTimes = this.$t('todo.today_completed', [completedTimes])
           }
         }
-
-
         return {
           name: todo.name,
           description: description,
@@ -626,12 +655,12 @@ export default {
         ])
         bd.progress = this.$t('todo.long_plan_completion')
         data = goal
-        data.number = this.getProgress(goal.complete, goal.total)
+        data.number = this.datas[this.listIndex] && this.datas[this.listIndex].progressBar || 0
       } else if (habit) {
         hd = this.$t('todo.habit_cycle')
         bd.progress = this.$t('todo.habit_completion')
         data = habit
-        data.number = this.getProgress(habit.complete, habit.piece)
+        data.number = this.datas[this.listIndex] && this.datas[this.listIndex].progressBar || 0
       }
 
       return {
@@ -642,17 +671,14 @@ export default {
     }
   },
   watch: {
-    isGetTodos (val) {
-      if (val) {
-        this.getData()
-        this.storeSetIsGetTodos(false)
-      }
-    },
     showBoxSortTodo (val) {
       this.showBoxSort = val
     },
     showBoxSort (val) {
       this.storeSetShowBoxSortTodo(val)
+    },
+    todos () {
+      this.getData()
     }
   },
   mounted () {
@@ -669,7 +695,6 @@ export default {
       storeSetShowTimeAxis: 'setShowTimeAxis',
       storeSetShowStatistics: 'setShowStatistics',
       storeSetTarget: 'setTarget',
-      storeSetIsGetTodos: 'setIsGetTodos',
       storeSetShowBoxSortTodo: 'setShowBoxSortTodo',
       storeAddFocus: 'addFocus'
     }),
@@ -677,64 +702,22 @@ export default {
       return new Promise(resolve => {
         setTimeout(() => {
           if (this.todoSettings.fixedSort) {
-            this.curTodos = this.setCompletedTime(this.todos)
+            this.curTodos = todoUtil.setCompletedTime(this.todos)
+            this.sortableTodos = this.curTodos
           } else {
-            this.curTodos = this.sortTodosByCompletedTime(this.todos)
+            this.curTodos = todoUtil.sortTodosByCompletedTime(this.todos)
+            this.sortableTodos = this.curTodos.filter(item => !item.completedTime)
           }
-          // this.hideTodos(this.todos)
           if (this.todo) {
             this.todo =
               this.curTodos.find(item => item.id === this.todo.id) ||
-              this.curTodos[0]
+              this.curTodos[0] || this.todo
             this.setBoxHeaderStyle(this.todo)
-            this.setListStyles()
-            resolve()
           }
+          this.setListStyles()
+          resolve()
         })
       })
-    },
-    hideTodo (todo, start, end) {
-      if (todo.hideAfterComplete) {
-        const focus = todo.focus.find(data => {
-          return data.end <= end && data.end >= start && data.status === 'completed'
-        })
-
-        if (focus) {
-          return true
-        }
-        return false
-      }
-      return false
-    },
-    setCompletedTime (todos) {
-      const curTodos = []
-      const date = new Date()
-      const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-      const yesterday = new Date(today)
-
-      yesterday.setDate(date.getDate() - 1)
-
-      todos.forEach(todo => {
-        const focus = todo.focus.find(data => {
-          return data.end <= new Date() && data.end >= today && data.status === 'completed'
-        })
-
-        const isHide = this.hideTodo(todo, yesterday, today)
-
-        if (!isHide) {
-          if (focus) {
-            curTodos.push({
-              ...todo,
-              completedTime: focus.end
-            })
-          } else {
-            curTodos.push({
-              ...todo
-            })
-          }
-        }
-      })
-      return curTodos
     },
     // 已完成的待办在最后
     sortTodosByCompletedTime (todos) {
@@ -766,6 +749,7 @@ export default {
           }
         }
       })
+      this.sortableTodos = sortedTodos
       completedTodos.sort((a, b) => {
         return a.completedTime - b.completedTime
       })
@@ -855,7 +839,6 @@ export default {
             experience: '',
             duration: 0
           })
-          this.getData()
         })
         return
       }
@@ -865,7 +848,15 @@ export default {
       })
     },
     getProgress (complete, total) {
-      return Math.ceil((complete / total) * 100)
+      const progress = Math.ceil((complete / total) * 100)
+
+      if (progress > 100) {
+        return 100
+      }
+      if (progress < 0) {
+        return 0
+      }
+      return progress
     },
     getFocusDays () {
       return todoUtil.formatFocus(this.todo.focus)
@@ -880,21 +871,19 @@ export default {
       this.showBoxAddTodo = true
       this.showBoxInfo = false
     },
-    submitEditTodo (todo) {
-      this.storeEditTodo(todo)
-      this.getData()
-    },
     handleBoxInfoClosed () {
       if (!this.showBoxSort) {
-        this.getData().then(() => {
-          if (this.appearance.todoCardBackground === 'colorful') {
-            this.listStyles.splice(this.listIndex, 1, {
-              backgroundImage: `url(${
-                this.curTodos[this.listIndex].background
-              })`
-            })
-          }
+        this.storeEditTodo({
+          id: this.todo.id,
+          background: this.todo.background
         })
+        if (this.appearance.todoCardBackground === 'colorful') {
+          this.listStyles.splice(this.listIndex, 1, {
+            backgroundImage: `url(${
+              this.curTodos[this.listIndex].background
+            })`
+          })
+        }
       }
       this.showAnimatedInteger = false
     },
@@ -922,7 +911,6 @@ export default {
     },
     submitSort (data) {
       this.$emit('update-todos', data)
-      this.getData()
     },
     boolCanChangeBackground () {
       if (this.appearance.todoCardBackground !== 'colorful') {
@@ -934,21 +922,12 @@ export default {
       }
       this.showChangeBackground = true
     },
-    getBackgroundRandom () {
-      const img = setting.getTodoCardBackground()
-
-      if (this.todos.some(item => item.background === img)) {
-        return this.getBackgroundRandom()
-      }
-      return img
-    },
     changeBackgroundRandom () {
-      const randomBackground = this.getBackgroundRandom()
-
-      this.storeEditTodo({
-        id: this.todo.id,
-        background: randomBackground
+      const usedImgs = this.curTodos.map(item => {
+        return parseInt(item.background.match(/\d+/g)[0])
       })
+      const randomBackground = setting.getCardImage(usedImgs)
+
       this.todo.background = randomBackground
       this.setBoxHeaderStyle(this.todo)
       this.showChangeBackground = false
@@ -965,12 +944,7 @@ export default {
       return text
     },
     getReminderTime (time) {
-      const date = new Date('2020-1-5 ' + time)
-
-      return {
-        hour: date.getHours(),
-        minute: date.getMinutes()
-      }
+      return new Date('2020-1-5 ' + time)
     },
     setReminder () {
       this.showBoxTimeReminder = true
@@ -988,7 +962,6 @@ export default {
       }
       this.showBoxAddTimeReminder = true
       this.isAddReminder = true
-      this.getData()
     },
     submitAddReminder (done) {
       if (this.isAddReminder) {
@@ -1002,25 +975,18 @@ export default {
         this.storeEditReminder(this.curReminder)
       }
       done()
-      this.getData()
     },
     setReminderTime () {
       this.showBoxSetReminderTime = true
-      const time = this.getReminderTime(this.curReminder.time)
-
-      this.reminderTime = [time.hour, time.minute]
+      this.reminderTime = this.getReminderTime(this.curReminder.time)
     },
     submitSetReminderTime (done) {
-      const time = this.reminderTime.map(item => {
-        return util.addZero(item, 10)
-      })
 
-      this.curReminder.time = time.join(':')
+      this.curReminder.time = util.dateFormatter(this.reminderTime, 'hh:mm')
       done()
     },
     deleteReminder (id) {
       this.storeDeleteReminder(id)
-      this.getData()
     },
     toTimeAxis () {
       this.$router.push({
@@ -1061,11 +1027,20 @@ export default {
     background: rgba(255, 255, 255, 0.4);
     color: black;
   }
+
+  .list-todo__item {
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+  }
 }
 
 .box-edit {
   .com-popup__header {
     padding: 10px 5px 10px 10px;
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
   }
 
   .btn-header {
@@ -1114,7 +1089,7 @@ export default {
   }
 
   .cell-hd {
-    font-size: 10px;
+    font-size: 12px;
     .scale-font(0.95);
     padding: 8px 12px;
     text-align: left;

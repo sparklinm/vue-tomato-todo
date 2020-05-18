@@ -6,7 +6,8 @@
       :show="show"
       :submit="submitAddPlan"
       top-btn
-      @closed="reset"
+      @closed="$emit('update:show',false)"
+      @open="init"
     >
       <ComInput
         ref="input-name"
@@ -14,6 +15,7 @@
         type="textarea"
         :placeholder="$t('plan.plan_name')"
         autofocus
+        maxlength="30"
       />
       <ComInput
         ref="input-desc"
@@ -21,6 +23,7 @@
         type="textarea"
         :placeholder="$t('plan.plan_description')"
         autofocus
+        maxlength="30"
       />
       <div class="btn-set-deadline">
         <span
@@ -68,7 +71,7 @@ export default {
         deadline: ''
       },
       showDatePicker: false,
-      value: []
+      value: new Date()
     }
   },
   computed: {
@@ -76,47 +79,62 @@ export default {
       return util.dateFormatter(this.plan.deadline, 'yyyy-MM-dd') || this.$t('todo.set_goal_deadline')
     }
   },
-  watch: {
-    data (val) {
-      this.plan = _.cloneDeep(val)
-    }
-  },
   created () {
     if (this.data) {
       this.plan = this.data
     }
 
-    const date = new Date()
-
-    this.value = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+    this.value = new Date()
   },
   methods: {
     ...mapMutations('plan', ['addPlan', 'editPlan']),
     submitAddPlan (done) {
+      const name = this.plan.name
+
+      if (name === '') {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('tips.not_empty_plan_name')
+        })
+        return
+      }
+
+      if (name.length > 30) {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('tips.name_length')
+        })
+        return
+      }
+
       if (this.data) {
         this.editPlan(this.plan)
+        this.$emit('edited', this.plan)
       } else {
         this.plan.creat = new Date()
         this.addPlan(this.plan)
       }
       done()
     },
-    reset () {
+    init () {
+      if (this.data) {
+        this.plan = _.cloneDeep(this.data)
+        this.value = this.plan.deadline
+        return
+      }
       this.plan = {
         name: '',
-        description: ''
+        description: '',
+        deadline: ''
       }
-      this.$emit('update:show', false)
-      this.$emit('closed')
+      this.value = new Date()
     },
     setGoalDeadline (done) {
-      this.plan.deadline = new Date(this.value[0], this.value[1] - 1, this.value[2])
+      this.plan.deadline = this.value
       done()
     },
     cancelSetGoalDeadline (done) {
-      const date = this.plan.deadline || new Date()
-
-      this.value = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+      this.value = this.plan.deadline || new Date()
       done()
     }
   }

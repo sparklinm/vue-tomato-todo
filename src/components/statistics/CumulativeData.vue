@@ -547,7 +547,13 @@ export default {
       chart.data = this.getStopData(...chart.period)
     },
     initPeriod (chart, range) {
-      const period = this.getPeriod(range)
+      let period = []
+
+      if (range && range.value === 'custom') {
+        period = range.times
+      } else {
+        period = this.getPeriod(range)
+      }
 
       chart.period = period
       chart.range = range

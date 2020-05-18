@@ -160,6 +160,7 @@ export default {
     })
     this.initCard()
     this.broadcast.on('onFirstItem', () => {
+      this.$parent.calendarHeight = this.broadcast.conHeight
       this.$emit('pre-month')
       this.$nextTick(() => {
         this.initCard()
