@@ -5,7 +5,7 @@
     :show="show"
     bottom-confirm-btn
     :submit="submitAddSet"
-    @closed="$emit('update:show',false)"
+    @closed="handleClosed"
   >
     <ComInput
       ref="input-name"
@@ -13,6 +13,7 @@
       type="textarea"
       placeholder="请输入待办集名称"
       autofocus
+      maxlength="30"
     />
     <div class="colors">
       <label
@@ -20,8 +21,10 @@
         :key="color"
       >
         <input
+          v-model="todoSet.background"
           type="radio"
           name="color"
+          :value="color"
         >
         <span
           class="color-sample"
@@ -34,32 +37,105 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
+
 export default {
   props: {
     show: {
       type: Boolean,
       default: false
+    },
+    data: {
+      type: Object,
+      default: null
     }
   },
   data () {
     return {
       todoSet: {
         name: '',
-        background: ''
+        background: '',
+        resetTimeSingle: '',
+        resetTimeAll: '',
+        continuousExcute: false
       },
       colors: ['#0000FF', '#FFFFCC', '#336699', '#CCFFFF', '#003366', '#FFCCCC', '#CC3333']
     }
   },
+  computed: {
+    ...mapState('todo', {
+      sets: state => state.todoSets
+    })
+  },
+  watch: {
+    data () {
+      this.initSet()
+    }
+  },
+  created () {
+    this.initSet()
+  },
   methods: {
-    ...mapMutations('todo', ['addTodoSet']),
+    ...mapMutations('todo', ['addTodoSet', 'modifyTodoSet']),
+    initSet () {
+      if (this.data) {
+        this.todoSet = _.cloneDeep(this.data)
+      }
+    },
     selectColor (index) {
       this.todoSet.background = this.colors[index]
     },
     submitAddSet (done) {
-      this.todoSet.todos = []
-      this.addTodoSet(this.todoSet)
+      const { name, id } = this.todoSet
+
+      if (name === '') {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('tips.not_empty_set_name')
+        })
+        return
+      }
+
+      if (name.length > 30) {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('tips.name_length')
+        })
+        return
+      }
+
+      const hasSameName = this.sets.some(set => {
+        if (id >= 0) {
+          if (id !== set.id) {
+            return set.name === name
+          }
+          return false
+        }
+
+        return set.name === name
+      })
+
+      if (hasSameName) {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('tips.already_has_same_set')
+        })
+        return
+      }
+
+      if (this.data) {
+        this.modifyTodoSet(this.todoSet)
+      } else {
+        this.addTodoSet(this.todoSet)
+      }
       done()
+    },
+    handleClosed () {
+      this.todoSet = {
+        name: '',
+        background: ''
+      }
+      this.$emit('update:show', false)
     }
   }
 }

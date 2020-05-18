@@ -123,7 +123,7 @@ export default {
 .com-tooltip {
   .fixed-full-screen();
   background-color: transparent;
-  font-size: 10px;
+  font-size: 12px;
   transition: all;
 }
 

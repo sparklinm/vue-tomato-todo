@@ -60,9 +60,11 @@ export default {
             label: {
               show: true,
               formatter: `{b}({c}${this.$t('word.minute')})`,
-              position: 'outside',
+              position: 'outer',
               fontSize: 10,
-              color: '#555'
+              color: '#555',
+              alignTo: 'labelLine',
+              bleedMargin: 20
             },
             labelLine: {
               show: true,
@@ -210,7 +212,7 @@ export default {
 
 <style lang="less">
 .pie-contianer {
-  width: 7.56rem;
+  width: 100%;
   height: 4rem;
 }
 </style>

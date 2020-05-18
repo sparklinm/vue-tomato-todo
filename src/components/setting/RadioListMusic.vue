@@ -1,13 +1,16 @@
 <template>
-  <BoxRadioList
-    v-model="curValue"
-    class="box-set-music fade"
-    :show.sync="showBoxMusic"
-    name="todo_music"
-    :data="music"
-    :hide-on-select="false"
-    @change="handleMusicChange"
-  />
+  <div>
+    <BoxRadioList
+      v-model="curValue"
+      class="box-set-music fade"
+      :show.sync="showBoxMusic"
+      name="todo_music"
+      :data="music"
+      :hide-on-select="false"
+      @change="handleMusicChange"
+      @closed="$emit('closed')"
+    />
+  </div>
 </template>
 
 <script>
@@ -39,7 +42,8 @@ export default {
     return {
       music: [],
       curValue: this.value,
-      showBoxMusic: false
+      showBoxMusic: false,
+      lastValue: this.value
     }
   },
   watch: {
@@ -47,7 +51,10 @@ export default {
       this.showBoxMusic = val
     },
     value (val) {
-      this.curValue = val
+      if (val === this.curValue) {
+        return
+      }
+      this.curValue = this.lastValue = val
       this.setMusic()
     },
     data () {
@@ -75,7 +82,7 @@ export default {
         if (item.name === this.curValue.name) {
 
           obj.text += `(${this.$t('settings.already_selected')})`
-          this.curValue = item
+          this.curValue = this.lastValue = item
         }
         return obj
       })
@@ -89,11 +96,21 @@ export default {
       }
     },
     handleMusicChange (val) {
-      this.$emit('input', this.curValue)
-      this.$emit('change', val)
       if (val !== 'custom') {
         this.setMusic()
+        this.$emit('input', this.curValue)
+        this.$emit('change', this.curValue)
+        return
       }
+
+      // 点击custom时，不改变绑定值，只抛出事件
+      // 子组件通过watch观察curValue，但watch是延时的
+      // 而这里又将curValue设定回了原值，故watch在观察时，不会观察到变化
+      // 所以需要在下一次事件循环时，将curValue设回原值
+      setTimeout(() => {
+        this.curValue = this.lastValue
+        this.$emit('change', 'custom')
+      })
     }
   }
 }

@@ -3,6 +3,7 @@
     <ev-calendar
       :options="options"
       @select-day="selectDay"
+      @month-changed="setListHeight"
     >
       <template #headerLeftBtn>
         <ComIcon
@@ -15,7 +16,7 @@
       <template #events>
         <ev-event
           v-for="(todo, index) in completedTodos"
-          :key="index"
+          :key="todo.fid"
           :event="{ date: todo.start }"
         >
           <div
@@ -261,7 +262,7 @@ export default {
           todo.focus.forEach(item => {
             if (util.isEqualDateFuzzy(item.start, this.selectedDay, 'hour')) {
               const duration =
-                item.duration || this.getTimeDif(item.start, item.end)
+                item.duration
               let progress = ''
 
               if (todo.timeDuration) {
@@ -270,6 +271,7 @@ export default {
               const durationTxt =
                 duration > 0 ? duration + this.$t('word.minute') : ''
               const obj = {
+                fid: item.id,
                 start: item.start,
                 end: item.end,
                 name: todo.name,
@@ -311,11 +313,15 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    calendarColor (val) {
+      this.options.color = val
     }
   },
   mounted () {
     this.selectDay(new Date())
     this.options.color = this.calendarColor
+    this.setListHeight()
   },
   methods: {
     dateFormatter: util.dateFormatter,
@@ -337,6 +343,17 @@ export default {
       this.showBoxDuration = true
     },
     submitEditDuration () {
+      if (this.focusDuration === '') {
+        this.showBoxDuration = false
+        return
+      }
+      if (this.focusDuration < 0) {
+        this.$message({
+          title: this.$t('word.tip'),
+          content: this.$t('tips.focus_duration')
+        })
+        return
+      }
       if (this.focusDuration > this.curTodo.data.duration) {
         this.error.focusDuration = this.$t('message.modify_focus_duration', [this.curTodo.data.duration])
         this.$message({
@@ -372,6 +389,16 @@ export default {
         id: this.curTodo.data.id,
         experience: this.experience
       })
+    },
+    setListHeight () {
+      setTimeout(() => {
+        const height = parseInt(window.getComputedStyle(document.querySelector('.ev-calendar')).height)
+        const $list = document.querySelector('.ev-events')
+
+        $list.style.height = `calc(100% - ${height}px)`
+        $list.scrollTop = 0
+      }, 300)
+
     }
   }
 }
@@ -381,6 +408,19 @@ export default {
 .time-axis {
   height: 100%;
   background: white;
+
+  .ev-calendar-wrapper {
+    height: 100%;
+  }
+
+  .ev-calendar {
+  }
+
+  .ev-events {
+    overflow-y: scroll;
+    .scroll-hide-bar();
+  }
+
 }
 
 .box-edit-completed {
@@ -449,4 +489,5 @@ export default {
 .calendar-return-btn {
   margin-right: 10px;
 }
+
 </style>

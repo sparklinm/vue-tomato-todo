@@ -101,7 +101,16 @@ export default {
             {
               data: seriesData,
               label: {
-                formatter: `{b}({c}${this.$t('word.times')})`
+                formatter: params => {
+                  let cname = params.data.name
+                  const value = params.data.value
+
+                  if (cname.length > 8) {
+                    cname = cname.slice(0, 8) + '...'
+                  }
+
+                  return `${cname}(${value}${this.$t('word.times')})`
+                }
               }
             }
           ]

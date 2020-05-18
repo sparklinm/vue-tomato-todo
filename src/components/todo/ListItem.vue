@@ -11,7 +11,9 @@
         class="name"
         style=""
       >
-        <span class="name-inline">
+        <span
+          class="name-inline"
+        >
           {{ name }}
           <div
             v-if="completedTime"
@@ -114,22 +116,28 @@ export default {
   .name-inline {
     display: inline-block;
     position: relative;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 4.4rem;
   }
 
   .left {
-     padding: 12px 0px 8px 20px;
+     padding: 0.24rem 0rem 0.16rem 0.4rem;
     .flex(@flex-direction: column);
     flex-grow: 1;
+    margin-right: 1rem;
 
     .content {
-      margin-top: 15px;
-      font-size: 12px;
+      margin-top: 0.3rem;
+      font-size: 0.24rem;
       opacity: 0.8;
     }
 
     .card {
-      margin-top: 12px;
-      font-size: 10px;
+      margin-top: 0.24rem;
+      font-size: 12px;
       .flex(@align-items: center);
 
       .description {
@@ -140,15 +148,15 @@ export default {
       .progress {
         list-style: none;
         margin: 0;
-        padding-left: 15px;
+        padding-left: 0.3rem;
         .flex(@align-items: center);
 
         li {
-          margin-right: 4px;
+          margin-right: 0.08rem;
         }
 
         .progress-text {
-          font-size: 10px;
+          font-size: 12px;
           transform: scale(0.7);
           transform-origin: left center;
         }
@@ -160,12 +168,14 @@ export default {
     position: relative;
     width: 90px;
     padding: 12px 0px 8px 0px;
+    flex-shrink: 0;
+    text-align: center;
 
     .deadline {
       position: absolute;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.8);
-      font-size: 10px;
+      font-size: 12px;
       letter-spacing: 1px;
       white-space: nowrap;
     }
@@ -182,10 +192,9 @@ export default {
 
     .completed-times {
       position: absolute;
-      left: 50%;
       bottom: 5px;
-      transform: translateX(-50%);
-      font-size: 10px;
+      font-size: 12px;
+      transform: translateX(-50%) scale(0.8);
       letter-spacing: 0px;
       white-space: nowrap;
     }

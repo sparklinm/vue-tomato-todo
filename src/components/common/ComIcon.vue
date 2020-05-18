@@ -7,14 +7,14 @@
   >
     <span :class="iconColorClass">
       <i
-        class="come-icon__inner"
+        class="com-icon__inner"
         :class="classObj"
         :style="{ fontSize: size + 'px' }"
       />
     </span>
     <span
       v-if="text"
-      class="come-icon__text"
+      class="com-icon__text"
     >{{ text }}</span>
   </span>
 </template>
@@ -50,11 +50,11 @@ export default {
       }
     },
     iconColorClass () {
-      const calssName = this.iconColor ? `come-icon__inner_${this.iconColor}` : ''
+      const calssName = this.iconColor ? `com-icon__inner_${this.iconColor}` : ''
 
       return {
         [calssName]: true,
-        'come-icon__area': calssName
+        'com-icon__area': calssName
       }
     }
   },
@@ -69,18 +69,19 @@ export default {
 }
 
 .come-icon {
+  display: inline-block;
   font-size: 20px;
 }
 
-.come-icon__inner {
+.com-icon__inner {
 }
 
-.come-icon__text {
+.com-icon__text {
   margin-top: 6px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
-.come-icon__area {
+.com-icon__area {
   display: inline-block;
   width: 25px;
   height: 25px;
@@ -88,38 +89,45 @@ export default {
   text-align: center;
   font-size: 21px;
 
+  &::after {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+
   i {
     font-size: 14px;
     vertical-align: middle;
   }
 }
 
-.come-icon__inner_purple {
+.com-icon__inner_purple {
   background: rgb(238, 223, 252);
   color: rgb(175, 103, 243);
 }
 
-.come-icon__inner_red {
+.com-icon__inner_red {
   background: rgb(252, 231, 231);
   color: rgb(238, 82, 62);
 }
 
-.come-icon__inner_yellow {
+.com-icon__inner_yellow {
   background: rgb(252, 235, 223);
   color: rgb(255, 126, 41);
 }
 
-.come-icon__inner_green {
+.com-icon__inner_green {
   background: rgb(223, 252, 235);
   color: rgb(48, 95, 83);
 }
 
-.come-icon__inner_blue {
+.com-icon__inner_blue {
   background: rgb(228, 244, 255);
   color: rgb(80, 159, 224);
 }
 
-.come-icon__inner_cyan {
+.com-icon__inner_cyan {
   background: rgb(214, 252, 244);
   color: rgb(66, 175, 161);
 }

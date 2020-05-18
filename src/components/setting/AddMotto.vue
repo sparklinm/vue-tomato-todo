@@ -10,9 +10,11 @@
           v-for="(item, index) in allMotto"
           :key="item"
           class="list-motto-item"
-          @click="showFullMotto(index)"
         >
-          <ComCell :title="item">
+          <ComCell
+            :title="item"
+            @click-hd="showFullMotto(index)"
+          >
             <template #right-icon>
               <ComIcon
                 name="trash"
@@ -49,6 +51,7 @@
         class="input-motto"
         type="textarea"
         :placeholder="$t('settings.input_motto')"
+        maxlength="50"
       />
       <template #footer>
         <button
@@ -116,7 +119,6 @@ export default {
   mounted () {
     this.allMotto = this.motto
     this.randomMottoWay = this.todo.randomMottoWay
-    console.log(this.allMotto)
   },
   methods: {
     ...mapMutations('settings', {
@@ -129,8 +131,8 @@ export default {
     },
     deleteMotto (index) {
       this.$message({
-        title: this.$t('message.confirm_delete'),
-        content: this.$t('action.delete') + '?',
+        content: this.$t('message.confirm_delete'),
+        title: this.$t('action.delete'),
         options: {
           showCancel: true
         }
@@ -180,6 +182,10 @@ export default {
       padding: 25px 40px;
     }
 
+    .com-icon {
+      padding: 5px;
+    }
+
     .com-cell__hd {
       font-size: 16px;
       white-space: nowrap;
@@ -222,7 +228,7 @@ export default {
 
   .what-motto {
     font-style: italic;
-    font-size: 10px;
+    font-size: 12px;
     color: rgb(158, 158, 158);
     letter-spacing: 1px;
   }

@@ -62,12 +62,11 @@ export default {
 
 <style lang="less">
 .setting-login {
-  position: fixed;
-  width: 100%;
+  position: relative;
   height: 100%;
 
   .background {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 100%;
   }

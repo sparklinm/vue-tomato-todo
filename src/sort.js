@@ -141,6 +141,7 @@ export default class Sorter {
 
     // event.preventDefault()
     const touch = event.targetTouches[0]
+    // 抓取子节点时，往上寻找 sort-cell 节点
     const node = this.getParentByClass(touch.target, 'sort-cell')
 
     if (!node) return
@@ -170,12 +171,14 @@ export default class Sorter {
   dragOver = e => {
     const event = e
     const touch = event.targetTouches[0]
+    // 距离开始位置的偏移量
     const dy = touch.clientY - this.mouse.originY
     const dx = touch.clientX - this.mouse.originX
     const direction = touch.clientY - this.mouse.startY
 
     this.mouse.startY = touch.clientY
     this.nodeCopy.style.transform = `translate(${dx}px,${dy}px)`
+    // 拖拽元素中心在另一个元素内
     const hint = this.hint(
       this.nodeInitPos.centreX,
       this.nodeInitPos.centreY + dy,

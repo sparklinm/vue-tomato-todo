@@ -219,7 +219,8 @@ module.exports = {
     input_quantifier: `<div>您可以自定义事项的量词,如页、章、公里等等。</div>
                        <div>需要注意的是，在自定义量词后，美当您完成一个番茄钟，系统会主动询问您完成了多少量，而不是自动记录。</div>
                        <div>如果您仅需要记录时间，请选择系统默认量词分钟。</div>
-                       `
+                       `,
+    delete_set: '确定要删除待办集 <span class="pink">{0}</span> 吗？其包含的子待办也会被删除。'
   },
   tips: {
     do_todo_duration: '不记录5秒钟以下的todo',
@@ -249,7 +250,15 @@ module.exports = {
     up_time_not_enable_loop: '正向计时不允许中途开启循环',
     none_time_not_enable_loop: '不计时计时不允许中途开启循环',
     please_input_quantifier: '请输入量词',
-    please_input_correct_quantifier: '请输入正确的量词'
+    please_input_correct_quantifier: '请输入正确的量词',
+    already_has_same_todo: '已经存在名称相同的待办啦',
+    name_length: '名称不能超过30个字符',
+    not_input_goal_or_complete: '您还没有填写目标或者习惯的完成量哦',
+    already_has_same_set: '已经存在名称相同的待办集啦',
+    not_empty_set_name: '待办集名称不能为空',
+    focus_duration: '专注时长不能少于0',
+    input_complete_num: '输入完成量',
+    not_empty_plan_name: '计划名称不能为空'
   },
   sentence: {
     0: '喜欢安定，也不怕漂泊。喜欢结伴，也不怕多行。',
@@ -259,8 +268,14 @@ module.exports = {
     defalut: '默认背景音乐',
     defalut_white_noise: '白噪音',
     ding_ding: '叮叮',
-    pinao: '钢琴',
-    music_box: '八音盒'
+    piano: '钢琴',
+    short_ring: '短暂铃声',
+    music_box: '八音盒',
+    none_sound: '无声',
+    clock_tick: '时钟滴答',
+    soft_piano: '舒缓钢琴曲',
+    rain_sound: '雨声',
+    peaceful_mind: '静心沉思'
   },
   settings: {
     pomodoro_core_settings: '番茄钟核心设置',
@@ -367,6 +382,7 @@ module.exports = {
     exit_login: '退出登录',
     exit_login_desc: '退出当前登录的账号',
     change_cover: '更换封面吗',
-    use_default_account_login: '默认账号登录'
+    use_default_account_login: '默认账号登录',
+    user_info_set: '个人信息设置'
   }
 }

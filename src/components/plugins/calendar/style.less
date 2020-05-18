@@ -97,25 +97,49 @@
   float: left;
   display: block;
   width: 14.285%;
+  height: 35px;
+  font-size: 0;
   cursor: default;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  text-align: center;
 }
 
-.ev-calendar__dates-value {
+.ev-calendar__dates-item::after {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.ev-calendar__dates-item__inline {
   display: inline-block;
   width: 24px;
   height: 24px;
   line-height: 24px;
-  margin-bottom: 8px;
   font-size: 12px;
   position: relative;
   z-index: 3;
   text-align: center;
   border-radius: 50%;
   border: 1px solid transparent;
+  vertical-align: middle;
+  font-size: 0;
 }
 
-.ev-calendar__dates-value_gray {
+.ev-calendar__dates-item__inline::after {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.ev-calendar__dates-value {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 12px;
+}
+
+.ev-calendar__dates-item__inline_gray {
   color:rgb(190, 190, 190);
 }
 

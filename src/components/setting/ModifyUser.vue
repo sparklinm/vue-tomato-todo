@@ -82,6 +82,7 @@
         ref="inputNickname"
         v-model="nickname"
         :placeholder="$t('user.input_new_nickname')"
+        maxlength="10"
       />
     </ComPopup>
 
@@ -100,6 +101,7 @@
         ref="inputSignature"
         v-model="signature"
         :placeholder="$t('user.input_new_signature')"
+        maxlength="30"
       />
     </ComPopup>
   </div>
@@ -240,7 +242,7 @@ export default {
     position: absolute;
     right: 20px;
     bottom: 10px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .upload-image {

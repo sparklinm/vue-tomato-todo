@@ -13,7 +13,7 @@
             :class="{'have-completed' : plan.completed}"
           >
             <span
-              v-marquee
+              v-marquee="nameOptions[index]"
               class="hd-inline"
             >
               {{ plan.name }}
@@ -24,7 +24,7 @@
             class="bd"
           >
             <span
-              v-marquee
+              v-marquee="descriptionOptions[index]"
             >
               {{ plan.description }}
             </span>
@@ -107,6 +107,7 @@
     <BoxAddFuturePlan
       :show.sync="showBoxEditPlan"
       :data="curPlan"
+      @edited="handleEdited"
     />
   </div>
 </template>
@@ -128,7 +129,10 @@ export default {
       showBoxEditPlan: false,
       tips: {
         delete: this.$t('message.confirm_delete')
-      }
+      },
+      nameOptions: [],
+      descriptionOptions: [],
+      planIndex: 0
     }
   },
   computed: {
@@ -136,8 +140,9 @@ export default {
       plans: state => state.plans
     })
   },
+  watch: {},
   mounted () {
-    this.curPlan = this.plans[0]
+    this.curPlan = _.cloneDeep(this.plans[0])
   },
   methods: {
     ...mapMutations('plan', {
@@ -155,7 +160,8 @@ export default {
       return this.$t('plan.have_passed_days', [`<span class="key">${diffDay}</span>`])
     },
     edit (index) {
-      this.curPlan = this.plans[index]
+      this.curPlan = _.cloneDeep(this.plans[index])
+      this.planIndex = index
       this.showBoxInfo = true
     },
     markCompleted () {
@@ -187,6 +193,21 @@ export default {
         this.storeDeletePlan(this.curPlan.id)
         this.showBoxInfo = false
       })
+    },
+    handleEdited (plan) {
+      const oldPlan = this.curPlan
+      const newPlan = plan
+
+      if (oldPlan.name !== newPlan.name) {
+        this.nameOptions[this.planIndex] = {
+          changed: true
+        }
+      }
+      if (oldPlan.description !== newPlan.description) {
+        this.descriptionOptions[this.planIndex] = {
+          changed: true
+        }
+      }
     }
   }
 }
@@ -233,7 +254,7 @@ export default {
   .right {
     text-align: right;
     .flex(@justify-content: space-between; @flex-direction: column);
-    flex: none;
+    flex-shrink: 0;
     color: @gray-d;
     .hd {
       line-height: 1;

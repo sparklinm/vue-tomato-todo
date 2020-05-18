@@ -10,14 +10,16 @@
         ...item.customClass
       ]"
     >
-      <span
-        class="ev-calendar__dates-value"
+      <div
+        class="ev-calendar__dates-item__inline"
         :style="item.style"
-        :class="{'ev-calendar__dates-value_gray':item.status!=='cur'}"
+        :class="{'ev-calendar__dates-item__inline_gray':item.status!=='cur'}"
         @click="selectDay(item)"
       >
-        {{ item.value }}
-      </span>
+        <span class="ev-calendar__dates-value">
+          {{ item.value }}
+        </span>
+      </div>
     </div>
   </div>
 </template>

@@ -29,6 +29,8 @@ const colors = [
   }
 ]
 
+
+
 export default {
   colors,
   getTheme () {
@@ -37,7 +39,7 @@ export default {
     if (storedTheme) {
       return JSON.parse(storedTheme)
     }
-    return this.colors[0]
+    return this.colors[1]
   },
   setTheme (theme) {
     localStorage.setItem('theme', JSON.stringify(theme))

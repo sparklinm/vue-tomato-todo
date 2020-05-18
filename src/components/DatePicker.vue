@@ -44,8 +44,8 @@ export default {
       default: false
     },
     value: {
-      type: Array,
-      default: () => {[]}
+      type: [Date, Array],
+      default: () => (new Date())
     },
     type: {
       type: String,
@@ -58,8 +58,8 @@ export default {
   },
   data () {
     return {
-      curStartVal: this.value,
-      curEndVal: this.value,
+      curStartVal: [],
+      curEndVal: [],
       curShow: this.show,
       startData: [],
       endData: []
@@ -83,12 +83,7 @@ export default {
       }
     },
     value (val) {
-      if (this.isRange) {
-        this.curStartVal = val[0]
-        this.curEndVal = val[1]
-      } else {
-        this.curStartVal = val
-      }
+      this.initValue(val)
     }
   },
   mounted () {
@@ -97,10 +92,9 @@ export default {
   methods: {
     init () {
       this.initData()
+      this.initValue(this.value)
       if (this.isRange) {
         this.endData = this.startData
-        this.curStartVal = this.value[0]
-        this.curEndVal = this.value[1]
       }
     },
     initData () {
@@ -111,6 +105,42 @@ export default {
       if (this.type === 'date') {
         this.startData = this.getYearMonthDay()
         return
+      }
+    },
+    initValue (val) {
+      if (this.isRange) {
+        const startDate = this.formatterDate(val[0])
+        const endDate = this.formatterDate(val[1])
+
+        if (this.type === 'time') {
+          this.curStartVal = [startDate.hour, startDate.minute]
+          this.curEndVal = [endDate.hour, endDate.minute]
+        } else {
+          this.curStartVal = [startDate.year, startDate.month, startDate.day]
+          this.curEndVal = [endDate.year, endDate.month, endDate.day]
+        }
+      } else {
+        const startDate = this.formatterDate(val)
+
+        if (this.type === 'time') {
+          this.curStartVal = [startDate.hour, startDate.minute]
+        } else {
+          this.curStartVal = [startDate.year, startDate.month, startDate.day]
+        }
+      }
+    },
+    formatterDate (date) {
+      if (!date || !date.getTime()) {
+        return {}
+      }
+
+      return {
+        year: date.getFullYear(),
+        month: date.getMonth(),
+        day: date.getDate(),
+        hour: date.getHours(),
+        minute: date.getMinutes(),
+        second: date.getSeconds()
       }
     },
     getHourMinute () {
@@ -145,7 +175,7 @@ export default {
 
         for (let month = 1; month <= 12; month++) {
           const secondChildren = {
-            value: month,
+            value: month - 1,
             label: util.addZero(month, 10) + '月',
             children: []
           }
@@ -166,9 +196,29 @@ export default {
     },
     handleChange () {
       if (this.isRange) {
-        this.$emit('input', [this.curStartVal, this.curEndVal])
+        let startDate = null
+        let endDate = null
+
+        if (this.type === 'time') {
+          startDate = new Date()
+          startDate.setHours(this.curStartVal[0], this.curStartVal[1])
+          endDate = new Date()
+          endDate.setHours(this.curEndVal[0], this.curEndVal[1])
+        } else {
+          startDate = new Date(...this.curStartVal)
+          endDate = new Date(...this.curEndVal)
+        }
+        this.$emit('input', [startDate, endDate])
       } else {
-        this.$emit('input', this.curStartVal)
+        let startDate = null
+
+        if (this.type === 'time') {
+          startDate = new Date()
+          startDate.setHours(this.curStartVal[0], this.curStartVal[1])
+        } else {
+          startDate = new Date(...this.curStartVal)
+        }
+        this.$emit('input', startDate)
       }
     }
   }

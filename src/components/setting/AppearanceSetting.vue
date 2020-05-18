@@ -441,16 +441,7 @@ export default {
         timeTextSize: 'normal',
         timeTextStyle: 'normal'
       },
-      pageBack: {
-        simple: [
-          '/page_back/simple/back0.jpg',
-          '/page_back/simple/back1.jpg',
-          '/page_back/simple/back2.jpg',
-          '/page_back/simple/back3.jpg',
-          '/page_back/simple/back4.jpg'
-        ],
-        cute: ['/page_back/simple/back0.jpg', '/page_back/simple/back1.jpg']
-      },
+      pageBack: setting.getMainImages(),
       showBoxTodoCardBackground: false,
       selTodoCardBackground: [
         {
@@ -604,13 +595,7 @@ export default {
       }).then(() => {
         this.settings.mainPageBackground = src
         this.handleSettingChange()
-        this.$message({
-          title: this.$t('word.tip'),
-          content: this.$t('message.whether_to_main_page'),
-          options: {
-            showCancel: true
-          }
-        }).then(() => {
+        this.$loading.show(2000).then(() => {
           this.$router.push({
             path: '/'
           })
@@ -654,6 +639,7 @@ export default {
     padding: 10px 10px 0;
     position: fixed;
     background: #f7f7f7;
+    z-index: 1;
   }
 
   .custom-radio {
@@ -751,20 +737,30 @@ export default {
 
     .bd {
       margin: 0 -5px;
+      font-size: 0;
     }
 
     .background-sample-container {
       display: inline-block;
-      padding: 0 5px;
-      margin-bottom: 2px;
-      width: 33.3%;
+      // padding: 0 5px;
+      // margin-bottom: 4px;
+      width: 30%;
       text-align: center;
       box-sizing: border-box;
+
+      margin: 0 0.12rem 0.12rem;
+      padding-bottom: 48%;
+      height: 0;
+      position: relative;
     }
 
     .background-sample {
-      width: 125px;
-      height: 180px;
+      // width: 125px;
+      // height: 180px;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 0;
       border-radius: 10px;
     }
 

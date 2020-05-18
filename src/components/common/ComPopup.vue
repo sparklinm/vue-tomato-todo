@@ -277,23 +277,23 @@ export default {
   vertical-align: middle;
   background-color: white;
   text-align: left;
-  border-radius: 8px;
+  border-radius: 0.16rem;
 }
 
 .com-popup > div:first-child {
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+  border-top-left-radius: 0.16rem;
+  border-top-right-radius: 0.16rem;
 }
 
 .com-popup > div:last-child {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 0.16rem;
+  border-bottom-right-radius: 0.16rem;
 }
 
 .com-popup__header {
   color: white;
   font-size: 16px;
-  padding: 15px 15px;
+  padding: 0.3rem 0.3rem;
   transform-origin: 50% 50%;
   position: relative;
   transition: background-image 0.4s ease;
@@ -304,33 +304,39 @@ export default {
 
 .com-popup__header-text {
   position: relative;
+  margin-right: 0.5rem;
+  width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .com-popup__header-btn-area {
   .flex(@align-items: center);
   position: relative;
+  flex-shrink: 0;
 }
 
 .com-popup__header-btn {
-  margin-left: 25px;
+  margin-left: 0.5rem;
 }
 
 .com-popup__content {
-  padding: 10px 15px 8px;
+  padding: 0.2rem 0.3rem 0.16rem;
 }
 
 .com-popup__footer {
-  padding: 0 5px;
-  margin: 5px 0 10px;
+  padding: 0 0.1rem;
+  margin: 0.1rem 0 0.2rem;
 }
 
 .com-popup__footer-btn {
   width: 100%;
   font-size: 12px;
   letter-spacing: 1px;
-  padding: 8px 6px;
+  padding: 0.16rem 0.12rem;
   border: none;
-  border-radius: 2px;
+  border-radius: 0.04rem;
   background: white;
   box-shadow: 0 2px 1px 1px rgb(238, 238, 238);
   cursor: pointer;

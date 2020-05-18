@@ -74,7 +74,8 @@ export default {
       curDate: new Date(),
       nextDate: null,
       preDate: null,
-      curOptions: this.$EventCalendar
+      curOptions: this.$EventCalendar,
+      calendarHeight: 0
     }
   },
   computed: {
@@ -212,16 +213,19 @@ export default {
       this.curDate = this.getNextMonthDate(this.curDate)
       this.initDate()
       this.autoSelectDay()
+      this.$emit('month-changed')
     },
     preMonth () {
       this.curDate = this.getPreMonthDate(this.curDate)
       this.initDate()
       this.autoSelectDay()
+      this.$emit('month-changed')
     },
     toMonth (date) {
       this.curDate = date
       this.initDate()
       this.autoSelectDay()
+      this.$emit('month-changed')
     }
   }
 }

@@ -1,5 +1,3 @@
-import util from './util'
-
 export default {
   filterStopData (todo, start, end) {
     let data = []
@@ -104,5 +102,83 @@ export default {
       }
     })
     return result
+  },
+  hideTodo (todo, start, end) {
+    if (todo.hideAfterComplete) {
+      const focus = todo.focus.find(data => {
+        return data.end <= end && data.end >= start && data.status === 'completed'
+      })
+
+      if (focus) {
+        return true
+      }
+      return false
+    }
+    return false
+  },
+  setCompletedTime (todos) {
+    const curTodos = []
+    const date = new Date()
+    const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    const yesterday = new Date(today)
+
+    yesterday.setDate(date.getDate() - 1)
+
+    todos.forEach(todo => {
+      const focus = todo.focus.find(data => {
+        return data.end <= new Date() && data.end >= today && data.status === 'completed'
+      })
+
+      const isHide = this.hideTodo(todo, yesterday, today)
+
+      if (!isHide) {
+        if (focus) {
+          curTodos.push({
+            ...todo,
+            completedTime: focus.end
+          })
+        } else {
+          curTodos.push({
+            ...todo
+          })
+        }
+      }
+    })
+    return curTodos
+  },
+  // 已完成的待办在最后
+  sortTodosByCompletedTime (todos) {
+    const sortedTodos = []
+    const completedTodos = []
+    const date = new Date()
+    const today = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    const yesterday = new Date(today)
+
+    yesterday.setDate(date.getDate() - 1)
+
+    todos.forEach(todo => {
+      const focus = todo.focus.find(data => {
+        return data.end <= new Date() && data.end >= today && data.status === 'completed'
+      })
+
+      const isHide = this.hideTodo(todo, yesterday, today)
+
+      if (!isHide) {
+        if (focus) {
+          completedTodos.push({
+            ...todo,
+            completedTime: focus.end
+          })
+        } else {
+          sortedTodos.push({
+            ...todo
+          })
+        }
+      }
+    })
+    completedTodos.sort((a, b) => {
+      return a.completedTime - b.completedTime
+    })
+    return sortedTodos.concat(completedTodos)
   }
 }
