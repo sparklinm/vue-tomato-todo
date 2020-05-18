@@ -155,7 +155,7 @@ export default {
   text-align: center;
   color: white;
 
-  .come-icon__inner {
+  .com-icon__inner {
     font-size: 16px;
   }
 }

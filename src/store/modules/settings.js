@@ -4,76 +4,7 @@ import echart from '@/echart'
 export default {
   namespaced: true,
   state: {
-    themes: [
-      {
-        class: 'theme-1',
-        base: '#6acfac',
-        darken10: '#5caf92',
-        darken20: '#4c947b',
-        lighter10: '#76ecc3'
-      },
-      {
-        class: 'theme-2',
-        base: '#37A5E5',
-        darken10: '#338bbe',
-        darken20: '#2776a3',
-        lighter10: '#43abe7'
-      },
-      {
-        class: 'theme-3',
-        base: '#FAA3C1',
-        darken10: '#cf89a1',
-        darken20: '#ac667e',
-        lighter10: '#ff88b1'
-      },
-      {
-        class: 'theme-4',
-        base: '#78C9C2',
-        darken10: '#54b4ac',
-        darken20: '#34928a',
-        lighter10: '#5fdacf'
-      }
-      // {
-      //   class: 'theme-1',
-      //   color: '#798CBF'
-      // },
-      // {
-      //   class: 'theme-2',
-      //   color: '#37A5E5'
-      // },
-      // {
-      //   class: 'theme-3',
-      //   color: '#FAA3C1'
-      // },
-      // {
-      //   class: 'theme-4',
-      //   color: '#78C9C2'
-      // },
-      // {
-      //   class: 'theme-5',
-      //   color: '#9E87CE'
-      // },
-      // {
-      //   class: 'theme-6',
-      //   color: '#F55449'
-      // },
-      // {
-      //   class: 'theme-7',
-      //   color: '#C68D65'
-      // },
-      // {
-      //   class: 'theme-8',
-      //   color: '#707F8F'
-      // },
-      // {
-      //   class: 'theme-9',
-      //   color: '#D57F93'
-      // },
-      // {
-      //   class: 'theme-10',
-      //   color: '#4F88C6'
-      // }
-    ],
+    themes: config.colors,
     currentTheme: {
       base: '#6acfac',
       darken10: '#5caf92',
@@ -86,14 +17,14 @@ export default {
       beep: true,
       tone: {
         name: 'ding_ding',
-        src: '/music/ding_ding.mp3'
+        src: '/music/beep/ding_ding.mp3'
       },
       // same_volume_media,same_volume_system
       toneVolume: 'same_volume_system',
       backgroundMusic: {
-        name: 'ding_ding',
-        src: '/music/ding_ding.mp3',
-        backgroundImg: '/music/background/back1.jpg'
+        name: 'soft_piano',
+        src: '/music/soft_piano.mp3',
+        backgroundImg: '/music/images/back1.jpg'
       },
       restDuration: 5,
       // system,custom,mixin
@@ -107,7 +38,7 @@ export default {
       // online,local,mixin
       posterRandomMode: 'online',
       morePoster: false,
-      mainPageBackground: '/page_back/simple/back4.jpg',
+      mainPageBackground: '/page_back/simple/back5.jpg',
       todoCardBackground: 'colorful',
       todoOpacity: 'opaque',
       todoSetCardBackground: 'solid',
@@ -128,28 +59,48 @@ export default {
     beeps: [
       {
         name: 'ding_ding',
-        src: '/music/ding_ding.mp3'
+        src: '/music/beep/ding_ding.mp3'
       },
       {
-        name: 'pinao',
-        src: ''
+        name: 'short_ring',
+        src: '/music/beep/short_ring.mp3'
+      },
+      {
+        name: 'piano',
+        src: '/music/beep/piano.mp3'
       },
       {
         name: 'music_box',
-        src: '/music/music_box.mp3'
+        src: '/music/beep/music_box.mp3'
       }
     ],
     todoMusic: [
       {
-        name: 'ding_ding',
-        src: '/music/ding_ding.mp3',
-        backgroundImg: '/music/background/back1.jpg'
+        name: 'none_sound',
+        src: '',
+        backgroundImg: '/music/images/back1.jpg'
       },
       {
-        name: 'music_box',
-        src: '/music/music_box.mp3',
-        backgroundImg: '/music/background/back2.jpg'
+        name: 'clock_tick',
+        src: '/music/clock_tick.mp3',
+        backgroundImg: '/music/images/back2.jpg'
+      },
+      {
+        name: 'soft_piano',
+        src: '/music/soft_piano.mp3',
+        backgroundImg: '/music/images/back3.jpg'
+      },
+      {
+        name: 'rain_sound',
+        src: '/music/rain_sound.mp3',
+        backgroundImg: '/music/images/back4.jpg'
+      },
+      {
+        name: 'peaceful_mind',
+        src: '/music/peaceful_mind.mp3',
+        backgroundImg: '/music/images/back5.jpg'
       }
+
     ],
     // urls array
     todoPosters: [],

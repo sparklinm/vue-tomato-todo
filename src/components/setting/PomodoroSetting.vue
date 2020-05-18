@@ -172,6 +172,7 @@
       :data="todoMusic"
       show-custom
       @change="handleMusicChange"
+      @closed="handleListMusicClosed"
     />
 
     <ComPopup
@@ -186,8 +187,9 @@
       <ComInput
         ref="inputRestDuration"
         v-model="settings.restDuration"
-        :min="0"
+        :min="1"
         :max="100"
+        type="positiveInteger"
         class="com-input__purple"
       />
     </ComPopup>
@@ -205,6 +207,7 @@
         ref="inputPauseDuration"
         v-model="settings.stopUpperLimit"
         :placeholder="$t('settings.custom_pause_upper_limit')"
+        type="positiveInteger"
         :min="1"
         :max="300"
       />
@@ -231,6 +234,7 @@
 
     <audio
       ref="audio"
+      autoplay
       src=""
     />
   </div>
@@ -264,6 +268,7 @@ export default {
         hideAfterComplete: false,
         autoToMainPage: true
       },
+      lastTone: {},
       showBoxRingVolume: false,
       ringVolumeTypes: [
         {
@@ -320,11 +325,23 @@ export default {
         text: this.$t('word.customize'),
         src: ''
       })
-      this.settings.tone = this.beeps.find(item => item.name === this.settings.tone.name) || this.beeps[0]
+      this.settings.tone = this.lastTone = this.beeps.find(item => item.name === this.settings.tone.name) || this.beeps[0]
       this.selectedRing = this.settings.tone.custom ? this.settings.tone.name : this.$t(`music.${this.settings.tone.name}`)
+    },
+    uploadBeep (val) {
+      if (val === 'custom') {
+        this.settings.tone = this.lastTone
+        setTimeout(() => {
+          this.$refs.uploadBeep.click()
+        }, 200)
+      }
     },
     doUploadBeep (e) {
       const file = e.target.files[0]
+
+      if (!file) {
+        return
+      }
       const url = URL.createObjectURL(file)
 
       this.$refs.audio.src = url
@@ -346,6 +363,10 @@ export default {
     },
     doUploadMusic (e) {
       const file = e.target.files[0]
+
+      if (!file) {
+        return
+      }
       const url = URL.createObjectURL(file)
 
       this.$refs.audio.src = url
@@ -366,30 +387,26 @@ export default {
     },
     handleRingTypeChange (val) {
       if (val !== 'custom') {
+        this.lastTone = val
+        this.$refs.audio.src = val.src
         this.handleSettingsChange()
-
         this.selectedRing = val.custom ? val.name : this.$t(`music.${val.name}`)
       }
     },
     handleMusicChange (val) {
       if (val !== 'custom') {
-        setTimeout(() => {
-        }, 300)
-
+        this.$refs.audio.src = val.src
+        this.$refs.audio.loop = true
         this.handleSettingsChange()
         return
       }
-
       setTimeout(() => {
         this.$refs.uploadMusic.click()
       }, 200)
     },
-    uploadBeep (val) {
-      if (val === 'custom') {
-        setTimeout(() => {
-          this.$refs.uploadBeep.click()
-        }, 200)
-      }
+    handleListMusicClosed () {
+      this.$refs.audio.src = ''
+      this.$refs.audio.loop = false
     },
     setRestDuration () {
       this.showRestDuration = true

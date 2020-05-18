@@ -30,3 +30,14 @@
   bottom: 0;
   text-align: center;
 }
+
+
+.scroll-hide-bar() {
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

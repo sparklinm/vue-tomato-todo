@@ -146,7 +146,7 @@ export default {
 
 <style lang="less">
 .bar-container {
-  width: 7.56rem;
+  width: 100%;
   height: 3rem;
 }
 </style>

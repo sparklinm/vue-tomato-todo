@@ -2,7 +2,7 @@
   <CalendarView
     class="right-page"
     show-return
-    :todos="[todo]"
+    :todos="todo"
     @return="toLastPage"
   />
 </template>
@@ -27,7 +27,7 @@ export default {
       if (this.$route.params.id === 'all') {
         return this.getAllTodos
       }
-      return this.getTodoById(parseInt(this.$route.params.id))
+      return [this.getTodoById(parseInt(this.$route.params.id))]
     }
   },
   watch: {},

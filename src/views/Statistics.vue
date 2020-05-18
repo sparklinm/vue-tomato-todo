@@ -28,5 +28,6 @@ export default {
 .page-statistics {
   height: 100%;
   overflow-y:scroll;
+  .scroll-hide-bar()
 }
 </style>

@@ -1,12 +1,17 @@
 <template>
   <div class="do-todo-wrapper">
     <div class="do-todo">
-      <div class="do-todo-poster">
-        <img
-          ref="poster"
-          alt=""
-        >
-      </div>
+      <transition
+        name="fade"
+        @after-enter="imageShown"
+      >
+        <div
+          v-show="backgroundImage"
+          class="do-todo-poster"
+          :style="{backgroundImage:`url(${backgroundImage})`}"
+        />
+      </transition>
+
       <div class="poster-shadow" />
       <div style="position:relative">
         <div class="tool">
@@ -57,6 +62,12 @@
             </div>
             <div class="status">
               {{ status }} {{ timesLeft }}
+            </div>
+            <div
+              v-if="totalTodos"
+              class="total-todos"
+            >
+              {{ completedTodosProgress }}
             </div>
           </div>
         </div>
@@ -258,6 +269,7 @@
         v-model="abandonReason"
         :placeholder="$t('todo.please_input_abandon_reason')"
         autofocus
+        maxlength="30"
       />
       <StopChart
         v-if="showBoxAbandonReason"
@@ -272,6 +284,37 @@
       @submit="submitEditExperience"
       @closed="toLastPage"
     />
+
+    <ComPopup
+      class="box-set-loop"
+      no-header
+      :show.sync="showBoxCompletedNum"
+      @opened="$refs.inputNum.focus()"
+    >
+      <ComInput
+        ref="inputNum"
+        v-model.number="completedNum"
+        type="positiveInteger"
+        :placeholder="$t('tips.input_complete_num')"
+        autofocus
+        :min="0"
+      />
+
+      <template v-slot:footer>
+        <button
+          class="com-popup__footer-btn"
+          @click="complete"
+        >
+          {{ $t("action.confirm") }}
+        </button>
+        <button
+          class="com-popup__footer-btn"
+          @click="cancelSetCompletedNum"
+        >
+          {{ $t("action.cancel") }}
+        </button>
+      </template>
+    </ComPopup>
 
     <ClockFocus :show.sync="showBoxFocusClock" />
 
@@ -370,12 +413,20 @@ export default {
       showBoxFocusClock: false,
       tone: {
         src: ''
-      }
+      },
+      todoIndex: 1,
+      showBoxCompletedNum: false,
+      completedNum: '',
+      backgroundImage: ''
     }
   },
   computed: {
     ...mapGetters('todo', {
-      getTodoById: 'getTodoById'
+      getTodoById: 'getTodoById',
+      getSetById: 'getSetById'
+    }),
+    ...mapState('todo', {
+      sets: 'todoSets'
     }),
     ...mapState('settings', {
       posters: 'todoPosters',
@@ -387,6 +438,53 @@ export default {
     }),
     todo () {
       return this.getTodoById(this.id)
+    },
+    unit () {
+      const { type, goal, habit } = this.todo
+
+      if (type === 'goal') {
+        return goal.unit
+      }
+
+      if (type === 'habit') {
+        return habit.unit
+      }
+      return ''
+    },
+    canSetCompletedNum () {
+      const defaultUnits = ['hour', 'minute', 'times', '']
+
+      if (!defaultUnits.includes(this.unit)) {
+        return true
+      }
+      return false
+    },
+    set () {
+      return this.getSetById(this.todo.sid)
+    },
+    isInSet () {
+      return this.set.id >= 0
+    },
+    totalTodos () {
+      if (this.isInSet && this.set && this.set.todos.length) {
+        let alltodos = []
+
+        if (!this.todoSettings.fixedSort) {
+          alltodos = todoUtil.sortTodosByCompletedTime(this.set.todos)
+        } else {
+          alltodos = this.set.todos
+        }
+        const curTodoIndex = alltodos.findIndex(todo => todo.id === this.todo.id)
+
+        return alltodos.length - curTodoIndex
+      }
+      return 0
+    },
+    completedTodosProgress () {
+      if (this.totalTodos > 1) {
+        return `${this.todoIndex}/${this.totalTodos}`
+      }
+      return ''
     },
     progress () {
       if (this.isDoing) {
@@ -488,11 +586,11 @@ export default {
       let img = ''
 
       if (posterRandomMode === 'online') {
-        img = setting.getClockBackground()
+        img = setting.getClockImage()
       } else if (posterRandomMode === 'local') {
         img = this.posters[this.randomLocalBackgroundSeed()]
       } else {
-        const onlinePoster = setting.getTodoCardBackground()
+        const onlinePoster = setting.getClockImage()
         const localPoster = this.posters[this.randomLocalBackgroundSeed()]
         const random = Math.floor(Math.random() * 2)
 
@@ -503,11 +601,18 @@ export default {
     setPoster () {
       const background = this.getRandomBackground()
 
-      new LoadImg(this.$refs.poster).setSrc(background).then(() => {
-        this.music = this.todoSettings.backgroundMusic
-        this.$refs.music.src = this.music.src
-        this.playMusic()
-      })
+      this.backgroundImage = background
+
+      // new LoadImg(this.$refs.poster).setSrc(background).then(() => {
+      //   this.music = this.todoSettings.backgroundMusic
+      //   this.$refs.music.src = this.music.src
+      //   this.playMusic()
+      // })
+    },
+    imageShown () {
+      this.music = this.todoSettings.backgroundMusic
+      this.$refs.music.src = this.music.src
+      this.playMusic()
     },
     initStopChart () {
       this.stopData = todoUtil.getStopData(
@@ -583,6 +688,9 @@ export default {
         defaultTime = this.todoSettings.restDuration
       }
 
+      if (this.isInSet) {
+        defaultTime = this.set.resetTimeSingle || defaultTime
+      }
 
       const duration = typeof customTime === 'number' && customTime >= 0
         ? customTime * 60
@@ -833,6 +941,16 @@ export default {
     // 放弃计时
     submitAbandonTime () {
       this.showBoxAbandonReason = false
+      const focus = {
+        tid: this.id,
+        start: this.start,
+        end: this.end,
+        status: 'stopped',
+        duration: Math.floor(this.totalDuration / 60),
+        reason: this.abandonReason
+      }
+
+      this.addFocus(focus)
       setTimeout(() => {
         history.back()
       }, 1000)
@@ -851,6 +969,9 @@ export default {
     submitEditExperience () {
       this.focusObj.experience = this.experience
       this.addFocus(this.focusObj)
+      setTimeout(() => {
+        history.back()
+      }, 1000)
     },
     // 跳过所有计时
     skipAllTime () {
@@ -860,33 +981,44 @@ export default {
       this.showBoxSkipTime = false
       this.end = new Date(this.start)
       this.end.setSeconds(this.totalDuration)
-      let status = 'completed'
+      this.textCompleted = this.$t('todo.click_fill_in_experience')
+      this.timeClockFont = 26
 
-      if (this.abandonReason !== undefined) {
-        status = 'stopped'
+      if (this.canSetCompletedNum) {
+        this.showBoxCompletedNum = true
+        return
       }
+
+      this.complete()
+    },
+    complete () {
+      this.showBoxCompletedNum = false
       const focus = {
         tid: this.id,
         start: this.start,
         end: this.end,
-        status: status,
+        status: 'completed',
         duration: Math.floor(this.totalDuration / 60)
       }
 
-      if (status === 'completed') {
-        focus.experience = this.experience
-        this.textCompleted = this.$t('todo.click_fill_in_experience')
-        this.timeClockFont = 26
-        this.timerGoBack = setTimeout(() => {
-          this.addFocus(focus)
-          this.toLastPage()
-        }, 2000)
-      } else {
-        focus.reason = this.abandonReason
+      if (this.canSetCompletedNum) {
+        focus.completed = this.completedNum || 0
+      }
+
+      if (this.unit === 'times') {
+        focus.completed = 1
+      }
+
+      focus.experience = this.experience
+      this.timerGoBack = setTimeout(() => {
         this.addFocus(focus)
         this.toLastPage()
-      }
+      }, 2000)
       this.focusObj = focus
+    },
+    cancelSetCompletedNum () {
+      this.completedNum = ''
+      this.complete()
     },
     toLastPage () {
       if (this.todoSettings.autoToMainPage) {
@@ -913,6 +1045,10 @@ export default {
 
   .do-todo-poster {
     .fixed-full-screen();
+    background-size: cover;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    transition: all 0.6s ease;
 
     img {
       width: 100%;
@@ -989,11 +1125,11 @@ export default {
       font-size: 18px;
     }
 
-    .status {
+    .status,.total-todos {
       margin-top: 10px;
       font-weight: 300;
-      opacity: 0.9;
-      font-size: 10px;
+      opacity: 0.8;
+      .scale-font(0.9;center;center)
     }
   }
 

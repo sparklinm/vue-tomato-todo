@@ -120,7 +120,7 @@ export default {
   }
 
   .footer {
-    font-size: 10px;
+    font-size: 12px;
     text-align: right;
     color: @theme-base-color-1-20;
 

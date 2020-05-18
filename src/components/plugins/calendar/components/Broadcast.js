@@ -509,10 +509,11 @@ export default class extends Events {
     const nextHeight = window.getComputedStyle(this.nodes[this.nextIndex].el)
       .height
     const conHeight =
-      Math.max(parseFloat(curHeight), parseFloat(nextHeight)) + 'px'
+      Math.max(parseFloat(curHeight), parseFloat(nextHeight))
 
+    this.conHeight = conHeight
     this.style(this.el, {
-      height: conHeight
+      height: conHeight + 'px'
     })
   }
 

@@ -130,7 +130,9 @@ export default {
 }
 
 .radio-list__item {
-  background-size: 100% 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
 }
 
 .radio-list__item:first-child {

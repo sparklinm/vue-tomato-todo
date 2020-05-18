@@ -36,6 +36,7 @@ export default class {
   _start = e => {
     const x = e.targetTouches[0].pageX
     const y = e.targetTouches[0].pageY
+
     this.prePoint = {
       x: x,
       y: y
@@ -54,6 +55,7 @@ export default class {
   _move = e => {
     const x = e.targetTouches[0].pageX
     const y = e.targetTouches[0].pageY
+
     this.movePoint = {
       x: x,
       y: y
@@ -90,6 +92,7 @@ export default class {
   _end = e => {
     const x = e.changedTouches[0].pageX
     const y = e.changedTouches[0].pageY
+
     this.endPoint = {
       x: x,
       y: y

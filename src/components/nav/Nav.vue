@@ -55,10 +55,24 @@
           name="question-circle"
         />
 
-        <ComIcon
-          v-if="page.buttons.includes('setting')"
-          name="cog"
-        />
+        <span v-if="page.buttons.includes('setting')">
+          <ComToolTip :show.sync="showDropListSetting">
+            <ComIcon name="cog" />
+            <template #content>
+              <div class="drop-list_simple">
+                <ul>
+                  <li @click="toMe">
+                    {{ $t('settings.user_info_set') }}
+                  </li>
+
+                  <li @click="toPomodoro">
+                    {{ $t('settings.pomodoro_core_settings') }}
+                  </li>
+                </ul>
+              </div>
+            </template>
+          </ComToolTip>
+        </span>
 
         <span v-if="page.buttons.includes('more')">
           <ComToolTip :show.sync="showDropListMore">
@@ -83,7 +97,6 @@
     <BoxAddTodo
       v-if="showBoxAddTodo"
       :show.sync="showBoxAddTodo"
-      @submit="submintAddTodo"
     />
     <BoxAddTodoSet :show.sync="showBoxAddTodoSet" />
     <BoxAddFuturePlan :show.sync="showBoxAddPlan" />
@@ -124,9 +137,10 @@
           ref="getUpCardBackground"
           :src="background"
           alt=""
-          class="clock-card-background"
+          class="clock-card-background img-fit-container"
           @load="showImg"
         >
+        <div class="background-shadow" />
 
         <div class="clock-card-inline">
           <div class="card-header">
@@ -140,13 +154,13 @@
                 <span class="time">{{ getUpCard.time }}</span>
                 <span>{{ getUpCard.date }}</span>
               </div>
-              <div>
+              <div class="tags">
                 <span class="tag">{{ getUpCard.status }}</span>
                 <span class="tag tag_purple">{{
                   $t("todo.continue_focus_0_days", [focusDays.total])
                 }}</span>
               </div>
-              <div>
+              <div class="tags">
                 <span class="tag">{{
                   $t("todo.total_focus_0_days", [focusDays.total])
                 }}</span>
@@ -210,9 +224,10 @@
           ref="sleepCardBackground"
           :src="background"
           alt=""
-          class="clock-card-background"
+          class="clock-card-background img-fit-container"
           @load="showImg"
         >
+        <div class="background-shadow" />
 
         <div class="clock-card-inline">
           <div class="card-header">
@@ -226,13 +241,13 @@
                 <span class="time">{{ sleepCard.time }}</span>
                 <span>{{ sleepCard.date }}</span>
               </div>
-              <div>
+              <div class="tags">
                 <span class="tag">{{ sleepCard.status }}</span>
                 <span class="tag tag_purple">{{
                   $t("todo.continue_focus_0_days", [focusDays.total])
                 }}</span>
               </div>
-              <div>
+              <div class="tags">
                 <span class="tag">{{
                   $t("todo.total_focus_0_days", [focusDays.total])
                 }}</span>
@@ -301,7 +316,8 @@ export default {
       },
       sentence: '',
       background: '',
-      showDropListMore: false
+      showDropListMore: false,
+      showDropListSetting: false
     }
   },
   computed: {
@@ -311,7 +327,8 @@ export default {
     ...mapState('user', {
       getUpTimes: state => state.getUpClocks,
       sleepTimes: state => state.sleepClocks,
-      headIcon: state => state.user.headIcon
+      headIcon: state => state.user.headIcon,
+      isLogin: state => state.isLogin
     }),
     ...mapState('settings', {
       productIcon: state => state.productIcon
@@ -433,7 +450,7 @@ export default {
           name: 'tip',
           icon: 'question-circle',
           event: () => {},
-          limits: ['me']
+          limits: ['none']
         }
       ]
 
@@ -460,16 +477,11 @@ export default {
   methods: {
     ...mapMutations('todo', [
       'addTodo',
-      'setIsGetTodos',
       'setShowBoxSortTodo',
       'setShowBoxSortSet'
     ]),
     showBox (key) {
       this[key] = true
-    },
-    submintAddTodo (data) {
-      this.addTodo(data)
-      this.setIsGetTodos(true)
     },
     blurBackground () {
       const img = this.getImgEl()
@@ -506,7 +518,9 @@ export default {
       return img
     },
     setClockBackground () {
-      this.changeSrc(setting.getClockBackground())
+      const img = setting.getClockImage()
+
+      this.changeSrc(img)
     },
     changeSrc (src) {
       const img = this.getImgEl()
@@ -604,6 +618,30 @@ export default {
       } else {
         this.$tips(this.$t('tips.sort_limit'))
       }
+    },
+    toMe () {
+      this.showDropListSetting = false
+      if (!this.isLogin) {
+        this.$nextTick(() => {
+          this.$router.push({
+            path: 'login'
+          })
+        })
+        return
+      }
+      this.$nextTick(() => {
+        this.$router.push({
+          path: 'modify_me'
+        })
+      })
+    },
+    toPomodoro () {
+      this.showDropListSetting = false
+      this.$nextTick(() => {
+        this.$router.push({
+          path: 'pomodoro_setting'
+        })
+      })
     }
   }
 }
@@ -665,17 +703,17 @@ export default {
   .clock-card {
     position: relative;
     color: white;
+    overflow: hidden;
   }
 
   .clock-card-background {
-    position: absolute;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
     transition: all 0.5s ease;
   }
 
   .clock-card-default-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-image:linear-gradient(to bottom,rgb(1, 104, 173), rgb(1, 58, 97));
   }
 
@@ -683,6 +721,10 @@ export default {
     position: relative;
     z-index: 10;
     width: 100%;
+  }
+
+  .tags {
+    .scale-font(0.8;left;center;)
   }
 
   .tag {
@@ -701,7 +743,7 @@ export default {
   .copyright {
     color: white;
     text-align: right;
-    font-size: 8px;
+    .scale-font(0.9;right;center;);
     padding: 10px;
   }
 
@@ -732,7 +774,6 @@ export default {
     color: white;
     vertical-align: middle;
     margin-left: 20px;
-    font-size: 8px;
   }
 
   .card-info span {

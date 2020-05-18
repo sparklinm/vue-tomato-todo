@@ -39,9 +39,10 @@
         ref="focusCardBackground"
         :src="background"
         alt=""
-        class="clock-card-background"
+        class="clock-card-background img-fit-container"
         @load="showImg"
       >
+      <div class="background-shadow" />
 
       <div class="clock-card-inline">
         <div class="card-header">
@@ -49,7 +50,7 @@
             <div>
               <span class="time">{{ focusCard.date }}</span>
             </div>
-            <div>
+            <div class="tags">
               <span class="tag">{{
                 $t("todo.total_focus_0_days", [focusDays.total])
               }}</span>
@@ -307,7 +308,7 @@ export default {
       screenshot.downloadImage(this.$refs.card, 'test.png')
     },
     setClockBackground () {
-      this.changeSrc(setting.getClockBackground())
+      this.changeSrc(setting.getClockImage())
     },
     changeSrc (src) {
       const img = this.$refs.focusCardBackground
@@ -452,7 +453,13 @@ export default {
       this.initTodos(chart)
     },
     initPeriod (chart, range) {
-      const period = this.getPeriod(range)
+      let period = []
+
+      if (range && range.value === 'custom') {
+        period = range.times
+      } else {
+        period = this.getPeriod(range)
+      }
 
       chart.period = period
       chart.range = range
@@ -538,7 +545,6 @@ export default {
 
   .custom-radio__text {
     display: inline-block;
-    padding: 6px 10px;
   }
 
   .custom-radio__inline:checked + span {
@@ -570,8 +576,7 @@ export default {
   }
   .focus-chart {
     .custom-radio__text {
-      font-size: 10px;
-      width: 1.1rem;
+      font-size: 12px;
       box-sizing: border-box;
     }
 
@@ -619,7 +624,7 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: space-around;
-      font-size: 9px;
+      font-size: 12px;
     }
   }
 

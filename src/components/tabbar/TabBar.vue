@@ -22,48 +22,62 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data () {
-    return {
-      tabBars: [
-        {
-          icon: 'bars',
-          text: this.$t('word.todo'),
-          path: ''
-        },
-        {
-          icon: 'tasks',
-          text: this.$t('word.todo_set'),
-          path: 'set'
-        },
-        {
-          icon: 'pie-chart',
-          text: this.$t('word.statistics'),
-          path: 'statistics'
-        },
-        {
-          icon: 'sliders',
-          text: this.$t('word.time_axis'),
-          path: 'time_axis'
-        },
-        {
-          icon: 'space-shuttle',
-          text: this.$t('word.future_plan'),
-          path: 'future_plan'
-        },
-        {
-          icon: 'user',
-          text: this.$t('menu.my'),
-          path: 'me'
-        }
-      ]
-    }
+    return {}
   },
   computed: {
+    ...mapState('settings', ['modules']),
     showTabBar () {
       const paths = ['/do']
 
       return !paths.includes(this.$route.path)
+    },
+    tabBars () {
+      const bars = []
+      let bar = {}
+      const maps = {
+        todo: {
+          icon: 'bars',
+          text: this.$t('word.todo'),
+          path: ''
+        },
+        set: {
+          icon: 'tasks',
+          text: this.$t('word.todo_set'),
+          path: 'set'
+        },
+        statistics: {
+          icon: 'pie-chart',
+          text: this.$t('word.statistics'),
+          path: 'statistics'
+        },
+        time_axis: {
+          icon: 'sliders',
+          text: this.$t('word.time_axis'),
+          path: 'time_axis'
+        },
+        future_plan: {
+          icon: 'space-shuttle',
+          text: this.$t('word.future_plan'),
+          path: 'future_plan'
+        },
+        me: {
+          icon: 'user',
+          text: this.$t('menu.my'),
+          path: 'me'
+        }
+      }
+
+      this.modules.forEach(item => {
+        if (item.show) {
+          bar = maps[item.name]
+          bars.push(bar)
+        }
+      })
+      return bars
     }
   },
   mounted () {
@@ -79,7 +93,7 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='less'>
 .tab-bar {
   position: fixed;
   bottom: 0;
@@ -98,6 +112,11 @@ export default {
   .tab-bar-items {
     flex: 1;
     .flex(@justify-content: center;);
+
+    .com-icon__text {
+      .scale-font(0.9;center;center;);
+      white-space: nowrap;
+    }
   }
 
   .com-icon {

@@ -1,6 +1,9 @@
 <template>
   <div class="com-cell">
-    <div class="com-cell__hd">
+    <div
+      class="com-cell__hd"
+      @click="$emit('click-hd')"
+    >
       <ComIcon
         v-if="icon"
         :name="icon"
@@ -122,7 +125,7 @@ export default {
 .com-cell__hd-lable {
   margin-top: 5px;
   color: rgb(138, 138, 138);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .com-cell__bd {
@@ -136,7 +139,7 @@ export default {
 }
 
 .com-cell__bd-desc {
-  font-size: 10px;
+  font-size: 12px;
   margin-top: 5px;
   color: rgb(138, 138, 138);
 }
