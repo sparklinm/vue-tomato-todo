@@ -475,7 +475,7 @@ export default {
       todo: this.todos[0] || template,
       boxHeaderStyle: {},
       showBoxAddTodo: false,
-      showBoxSort: false,
+      showBoxSort: true,
       showBoxMove: false,
       description: {
         sortTodo: {

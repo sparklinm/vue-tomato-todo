@@ -88,7 +88,7 @@ export default {
         this.sorter.destroy()
       }
 
-      this.sorter = new Sorter(this.$refs.sortContainer.$el, this.curData)
+      this.sorter = new Sorter(this.$refs.sortContainer.$el, {}, this.curData)
       this.sorter.init()
     },
     deleteItem (index) {
@@ -105,6 +105,8 @@ export default {
 </script>
 
 <style lang='less'>
-
+#item1 {
+  height: 80px;
+}
 
 </style>
