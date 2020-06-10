@@ -21,17 +21,17 @@
   <script>
     const container = document.getElementById('container')
 
-    function style (el, obj) {
+    function style(el, obj) {
       Object.assign(el.style, obj)
     }
 
-    function clicks (e) {
+    function clicks(e) {
       container.style.display = 'block'
       set()
 
     }
 
-    function set () {
+    function set() {
       const computedStyle = window.getComputedStyle(container)
 
       console.log(computedStyle.width)
@@ -39,12 +39,12 @@
 
       style(
         container, {
-          left: 0,
-          top: 50 + 'px',
-          position: 'absolute',
-          width: computedStyle.width,
-          height: computedStyle.height
-        }
+        left: 0,
+        top: 50 + 'px',
+        position: 'absolute',
+        width: computedStyle.width,
+        height: computedStyle.height
+      }
       )
 
     }
@@ -111,6 +111,7 @@
     <div class="list-group-item">8</div>
     <div class="list-group-item">9</div>
     <div class="list-group-item" id="s10">10</div>
+    <br>
     <div class="list-group-item">11</div>
     <div class="list-group-item">12</div>
     <div class="list-group-item">13</div>
@@ -118,6 +119,7 @@
     <div class="list-group-item">15</div>
     <div class="list-group-item">16</div>
     <div class="list-group-item">17</div>
+    <br>
     <div class="list-group-item">18</div>
     <div class="list-group-item" id="ss19">19</div>
     <div class="list-group-item">20</div>
@@ -151,7 +153,7 @@
     <div class="list-group-itemt" id="ss22">22</div>
     <div class="list-group-itemt">23</div>
   </div>
-  
+
   <button id='ss'>sss</button>
   <div id="sortTrue2" class="list-group">
     <div class="list-group-item2" id="t1"></div>
@@ -186,19 +188,21 @@
     }
 
     #sortTrue {
-      /* overflow: scroll;
-    height: 300px; */
-    /* white-space: nowrap; */
-    display: inline-block;
+      overflow: scroll;
+    height: 300px;
+      white-space: nowrap;
+      display: inline-block;
+      vertical-align: top;
 
-    width: 400px;
+      width: 400px;
     }
 
-    
+
     #sortTrues {
       display: inline-block;
 
-width: 400px;
+      width: 400px;
+      vertical-align: top;
     }
 
     .list-group-itemt {
@@ -245,7 +249,7 @@ width: 400px;
     }
   </style>
   <script>
-    function getPosition (node) {
+    function getPosition(node) {
       const pRect = this.container.getBoundingClientRect()
       const cRect = node.getBoundingClientRect()
       const left = cRect.left - pRect.left
@@ -329,11 +333,24 @@ width: 400px;
     }
 
     const sorter = new Sorter(el, {
-      dragNode: 'list-group-item'
+      dragNode: 'list-group-item',
+      group:{
+        clone:true,
+        put:true
+      },
+      sort:true
+
 
     }, arr)
 
     sorter.init()
+    setTimeout(() => {
+    // sorter.sort(0,4)
+    // sorter.removeNodeAnimated(4)
+    // let div=document.createElement('div')
+    // div.className='list-group-itemt'
+    // sorter.addNodeAnimated(0,div)
+    }, 2000);
 
     const els = document.querySelector('#sortTrues')
 
@@ -344,8 +361,8 @@ width: 400px;
     }, arr)
 
 
-sorters.init()
-console.log(Sorter.group(sorter, sorters))
+    sorters.init()
+    // console.log(Sorter.group(sorter, sorters))
 
     const el2 = document.querySelector('#sortTrue2')
 
