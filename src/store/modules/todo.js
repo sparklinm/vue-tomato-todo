@@ -414,7 +414,7 @@ export default {
       const todo = state.todos.find(todo => todo.id === obj.id)
 
       if (todo) {
-        _.merge(todo, obj)
+        _merge(todo, obj)
         if (todo.timeWay === 'up') {
           delete todo.loopTimes
           delete todo.timeDuration

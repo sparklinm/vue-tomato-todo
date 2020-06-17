@@ -184,7 +184,9 @@ export default {
       this.$emit('to-month', new Date())
       this.$nextTick(() => {
         this.broadcast.init()
-        this.broadcast.toItem(1, false)
+        this.broadcast.toItem(1, {
+          animation: false
+        })
       })
     },
     selectDay (date) {
@@ -197,7 +199,9 @@ export default {
       }
       this.broadcast.init()
       if (this.calendar.preDate) {
-        this.broadcast.toItem(1, false)
+        this.broadcast.toItem(1, {
+          animation: false
+        })
       }
     }
   }

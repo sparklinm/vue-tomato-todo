@@ -118,7 +118,7 @@ export default {
     },
     init () {
       if (this.data) {
-        this.plan = _.cloneDeep(this.data)
+        this.plan = _cloneDeep(this.data)
         this.value = this.plan.deadline
         return
       }

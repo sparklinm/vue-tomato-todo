@@ -132,7 +132,7 @@ export default {
   },
   watch: {
     options (val) {
-      if (!_.isEmpty(val)) {
+      if (!_isEmpty(val)) {
         if (!this.notMerge) {
           this.chartOptions = val
           return

@@ -142,7 +142,7 @@ export default {
   },
   watch: {},
   mounted () {
-    this.curPlan = _.cloneDeep(this.plans[0])
+    this.curPlan = _cloneDeep(this.plans[0])
   },
   methods: {
     ...mapMutations('plan', {
@@ -160,7 +160,7 @@ export default {
       return this.$t('plan.have_passed_days', [`<span class="key">${diffDay}</span>`])
     },
     edit (index) {
-      this.curPlan = _.cloneDeep(this.plans[index])
+      this.curPlan = _cloneDeep(this.plans[index])
       this.planIndex = index
       this.showBoxInfo = true
     },

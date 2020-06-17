@@ -30,7 +30,7 @@ export default {
       focusData = this.getFocusByTime(todo.focus, startDate, endDate)
     }
     if (focusData.length) {
-      currentTodo = _.cloneDeep(todo)
+      currentTodo = _cloneDeep(todo)
       currentTodo.focus = []
       currentTodo.focus.push(...focusData)
     }

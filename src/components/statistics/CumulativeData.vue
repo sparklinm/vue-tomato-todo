@@ -290,7 +290,7 @@ export default {
       const focusData = this.filterFocusData(todo, startDate, endDate)
 
       if (focusData.length) {
-        currentTodo = _.cloneDeep(todo)
+        currentTodo = _cloneDeep(todo)
         currentTodo.focus = []
         currentTodo.focus.push(...focusData)
       }
@@ -610,16 +610,14 @@ export default {
 }
 
 .statistical-hd-con {
-  height: 50px;
 }
 
 .statistical-hd {
   .flex(@justify-content: space-between; @align-items: center;);
-  position: fixed;
   top: 0;
   width: 100%;
-  height: 50px;
-  line-height: 50px;
+  line-height: 56px;
+  height: 56px;
   padding: 0 20px;
   color: white;
   font-size: 18px;

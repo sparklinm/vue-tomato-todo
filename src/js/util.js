@@ -191,9 +191,6 @@ export default {
       return [new Date(year, 0, 1), new Date(year + 1, 0, 1)]
     }
   },
-  getTimeDif (time1, time2, unit) {
-    // let
-  },
   getRandomItem (ary) {
     const random = Math.floor(Math.random() * ary.length)
 
@@ -235,7 +232,7 @@ export default {
       if (typeof target[key] === 'undefined') {
         target[key] = Array.isArray(value) ? [] : {}
       }
-      if (typeof value !== 'object' || _.isEmpty(value)) {
+      if (typeof value !== 'object' || _isEmpty(value)) {
         target[key] = value
       } else {
         this.assginLeafNode(target[key], value)

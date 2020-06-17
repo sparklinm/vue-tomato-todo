@@ -31,7 +31,7 @@ import Events from './Events'
 export default class extends Events {
   // 当前轮播的元素索引
   currentIndex = 0;
-  oldCurrentIndex =0;
+  lastCurrentIndex = 0;
   // 与当前元素交互的元素索引
   nextIndex = 0;
   // 父元素偏移量（transform:translateX）
@@ -67,11 +67,11 @@ export default class extends Events {
     this.domResize = new DomResize(this.parentNode)
 
     this.domResize.on('domResize', () => {
+      // console.log('111')
 
-
-      this.init()
-      // 在滑动过程中改变dom大小时，不能直接修正到正常位置
-      // this.setPos(this.getCorrectPos())
+      // this.init()
+      // // 在滑动过程中改变dom大小时，不能直接修正到正常位置
+      // this.changeTranslate(this.getCorrectPos())
     })
     this.touch = new Touch(this.el)
   }
@@ -88,8 +88,9 @@ export default class extends Events {
       this.setConWidth()
       this.setPosAry()
       this.initNodesStyle()
-
-      this.toItem(1, false)
+      this.toItem(1, {
+        animation: false
+      })
     } else {
       this.setNodes()
       this.length = this.nodes.length
@@ -105,17 +106,20 @@ export default class extends Events {
   autoResize () {}
 
   addlistener () {
+    this.throttleSlide = this.throttle(this._slide)
+    this.el.addEventListener('transitionend', this.transitionend)
     this.el.addEventListener('slidestart', this._slidestart)
-    this.el.addEventListener('slide', this.throttle(this._slide))
+    this.el.addEventListener('slidemove', this.throttle(this._slide))
     // this.el.addEventListener('slide', this._slide)
-    this.el.addEventListener('slidend', this._slidend)
+    this.el.addEventListener('slideend', this._slidend)
   }
 
   removeListener () {
+    this.el.removeEventListener('transitionend', this.transitionend)
     this.el.removeEventListener('slidestart', this._slidestart)
-    this.el.removeEventListener('slide', this.throttle(this._slide))
+    this.el.removeEventListener('slidemove', this.throttleSlide)
     // this.el.addEventListener('slide', this._slide)
-    this.el.removeEventListener('slidend', this._slidend)
+    this.el.removeEventListener('slideend', this._slidend)
   }
 
   throttle (fn) {
@@ -137,62 +141,76 @@ export default class extends Events {
     }
   }
 
+  transitionend = () => {
+    this.style(this.el, {
+      transition: ''
+    })
+    this.isAnimated = false
+    requestAnimationFrame(() => {
+      this.emit('_animationend')
+    })
+  };
+
   _slidestart = () => {};
 
   _slide = e => {
-    if (!this.isAnimated) {
-      const pos = e.detail
-      let dx = pos.dx
+    const start = performance.now()
 
-      if (!this.loop) {
-        // 非loop模式下的 最大左滑和最大右滑
-        const maxOffset = 200
-        const leftLimit = this.posAry[0] + maxOffset
-        const rightLimit = this.posAry[this.posAry.length - 1] - maxOffset
-
-        if (this.translateX > leftLimit) {
-          dx = 0
-        } else if (this.translateX + pos.dx > leftLimit) {
-          dx = maxOffset - this.translateX
-        } else if (this.translateX < rightLimit) {
-          dx = 0
-        } else if (this.translateX + pos.dx < rightLimit) {
-          dx = rightLimit - this.translateX
-        }
-      }
-
-      this.slide(dx)
+    if (this.isAnimated) {
+      return
     }
+
+    const pos = e.detail
+
+    if (pos.offsetx >= this.size.width) {
+      return
+    }
+
+    let dx = pos.dx
+
+    if (!this.loop) {
+      // 非loop模式下的 最大左滑和最大右滑
+      const maxOffset = 200
+      const leftLimit = this.posAry[0] + maxOffset
+      const rightLimit = this.posAry[this.posAry.length - 1] - maxOffset
+
+      if (this.translateX > leftLimit) {
+        dx = 0
+      } else if (this.translateX + pos.dx > leftLimit) {
+        dx = maxOffset - this.translateX
+      } else if (this.translateX < rightLimit) {
+        dx = 0
+      } else if (this.translateX + pos.dx < rightLimit) {
+        dx = rightLimit - this.translateX
+      }
+    }
+
+    this.slide(dx)
+    console.log(performance.now() - start)
   };
 
   _slidend = () => {
-    this.smoothSlide(this.getCorrectPos())
-    this.on(
-      'animationend',
-      () => {
-        // loop模式下在滑动到首尾后跳转
-        if (this.loop) {
-          if (this.currentIndex === 0 && this.nextIndex === this.length - 1) {
-            this.toLast()
-          } else if (
-            this.currentIndex === this.length - 1 &&
-          this.nextIndex === 0
-          ) {
-            this.toFirst()
-          }
-        }
-        this.setCurrentIndex()
-        this.emit('slidend')
-      },
-      true
-    )
+    this.correctPosition()
   };
 
   smoothSlide (distance) {
-    if (!this.isAnimated) {
-      this.doSmoothSlide(distance)
-      this.isAnimated = true
-    }
+    return new Promise(resolve => {
+      if (distance === 0) {
+        return
+      }
+      if (!this.isAnimated) {
+        this.doSmoothSlide(distance)
+        this.resolve = resolve
+        this.isAnimated = true
+      }
+    })
+
+    // this.isAnimated = true
+    // this.translateX += distance
+    // this.style(this.el, {
+    //   transform: `translateX(${this.translateX}px)`,
+    //   transition: 'transform 300ms ease'
+    // })
   }
 
   doSmoothSlide (distance) {
@@ -204,10 +222,10 @@ export default class extends Events {
         const d = distance - piece
 
         if (d > 0) {
-          this.setPos(piece)
+          this.slide(piece)
           this.doSmoothSlide(d)
         } else {
-          this.setPos(distance)
+          this.slide(distance)
           this.doSmoothSlide(0)
         }
       } else if (distance < 0) {
@@ -215,14 +233,15 @@ export default class extends Events {
         const d = distance - piece
 
         if (d < 0) {
-          this.setPos(piece)
+          this.slide(piece)
           this.doSmoothSlide(d)
         } else {
-          this.setPos(distance)
+          this.slide(distance)
           this.doSmoothSlide(0)
         }
       } else {
-        this.emit('animationend')
+        this.resolve && this.resolve()
+        this.resolve = null
         // 不在动画状态
         this.isAnimated = false
       }
@@ -230,119 +249,143 @@ export default class extends Events {
   }
 
   slide (dx) {
-    this.setPos(dx)
+    this.changeTranslate(dx)
+    // 在滑动过程中实时获得下一个元素索引(待优化，不需要每次执行)
   }
 
-  setPos (dx) {
+
+  changeTranslate (dx) {
     this.translateX += dx
     this.style(this.el, {
       transform: `translateX(${this.translateX}px)`
     })
-    // 在滑动过程中实时获得下一个元素索引(待优化，不需要每次执行)
+    this.setNextIndex()
+  }
+
+  setTranslate (d) {
+    this.translateX = d
+    this.style(this.el, {
+      transform: `translateX(${this.translateX}px)`
+    })
     this.setNextIndex()
   }
 
   // 滑动到某个元素（待优化）
-  toItem (index, animation = true) {
-    let cindex = index
+  // direction 表示方向 1 为向右，-1 为向左，loop下有用
+  toItem (index, { animation = true, direction }) {
 
-    if (!this.loop) {
-      if (index < 0) {
-        cindex = 0
-      } else if (index > this.length - 1) {
-        cindex = this.length - 1
-      }
-    } else {
-      if (index < 0) {
-        cindex = this.length - 1
-      } else if (index > this.length - 1) {
-        cindex = 0
-      }
+    let tindex = index
+
+    if (index < 0) {
+      tindex = 0
+    } else if (index > this.length - 1) {
+      tindex = this.length - 1
     }
 
-    if (cindex === this.currentIndex) {
+    if (!animation) {
+      this.setTranslate(this.posAry[tindex])
+      this.setCurrentIndex(tindex)
       return
     }
 
-    if (this.currentIndex === 0 && cindex === this.length - 1 && this.loop) {
-      if (!animation) {
-        this.slide(this.size.width)
-        this.toLast()
-        this.emit('slidend')
-      } else {
-        this.smoothSlide(this.size.width)
-        this.on(
-          'animationend',
-          () => {
-            this.toLast()
-            this.emit('slidend')
-          },
-          true
-        )
+
+    const doSlide = (distance) => {
+      this.smoothSlide(distance).then(() => {
+        this.emit('animationend')
+        this.setCurrentIndex(tindex)
+      })
+    }
+
+    if (tindex === this.currentIndex) {
+      const distance = this.posAry[this.currentIndex] - this.translateX
+
+      if (distance !== 0) {
+        doSlide(distance)
       }
-    } else if (
-      this.currentIndex === this.length - 1 &&
-      cindex === 0 &&
-      this.loop
-    ) {
-      if (!animation) {
-        this.slide(-this.size.width)
-        this.toFirst()
-        this.emit('slidend')
-      } else {
-        this.smoothSlide(-this.size.width)
-        this.on(
-          'animationend',
-          () => {
-            this.toFirst()
-            this.emit('slidend')
-          },
-          true
-        )
+      return
+    }
+
+
+    let distance = this.posAry[tindex] - this.translateX
+
+    if (direction && this.loop) {
+      if (direction === 1) {
+        if (this.currentIndex < tindex) {
+          doSlide(distance)
+        } else {
+          distance = this.lastHolderPos - this.translateX
+          const distance2 = this.posAry[tindex] - this.posAry[0]
+
+          this.smoothSlide(distance).then(() => {
+            this.setTranslate(this.posAry[0])
+            if (distance2 === 0) {
+              this.emit('animationend')
+              this.setCurrentIndex(tindex)
+            } else {
+              this.smoothSlide(distance2).then(() => {
+                this.emit('animationend')
+                this.setCurrentIndex(tindex)
+              })
+            }
+          })
+        }
+      } else if (direction === -1) {
+        if (this.currentIndex > tindex) {
+          doSlide(distance)
+        } else {
+          distance = this.firstHolderPos - this.translateX
+          const distance2 = this.posAry[tindex] - this.posAry[this.length - 1]
+
+          this.smoothSlide(distance).then(() => {
+            this.setTranslate(this.posAry[this.length - 1])
+            if (distance2 === 0) {
+              this.emit('animationend')
+              this.setCurrentIndex(tindex)
+            } else {
+              this.smoothSlide(distance2).then(() => {
+                this.emit('animationend')
+                this.setCurrentIndex(tindex)
+              })
+            }
+          })
+        }
       }
     } else {
-      const distance = (this.currentIndex - cindex) * this.size.width
-
-      if (!animation) {
-        this.slide(distance)
-        this.setCurrentIndex()
-        this.emit('slidend')
-      } else {
-        this.smoothSlide(distance)
-        this.on(
-          'animationend',
-          () => {
-            this.setCurrentIndex()
-            this.emit('slidend')
-          },
-          true
-        )
-      }
+      doSlide(distance)
     }
   }
 
-  // loop模式下跳转
-  toLast () {
-    const distance = (this.currentIndex - this.length) * this.size.width
-
-    this.slide(distance)
-    this.setCurrentIndex()
-  }
-
-  // loop模式下跳转
-  toFirst () {
-    const distance = (this.currentIndex + 1 - 0) * this.size.width
-
-    this.slide(distance)
-    this.setCurrentIndex()
-  }
 
   next (animation = true) {
-    this.toItem(this.currentIndex + 1, animation)
+    if (this.currentIndex === this.length - 1 && this.loop) {
+      this.toItem(0, {
+        animation,
+        direction: 1
+      })
+    } else {
+      this.toItem(this.currentIndex + 1, {
+        animation
+      })
+    }
   }
 
   pre (animation = true) {
-    this.toItem(this.currentIndex - 1, animation)
+    if (this.currentIndex === 0 && this.loop) {
+      this.toItem(this.length - 1, {
+        animation,
+        direction: -1
+      })
+    } else {
+      this.toItem(this.currentIndex - 1, {
+        animation
+      })
+    }
+  }
+
+  resetPostion (animation = true) {
+    this.toItem(this.currentIndex, {
+      animation
+    })
   }
 
   initNodesStyle () {
@@ -355,18 +398,18 @@ export default class extends Events {
   }
 
   addHolder () {
-    if (this.first) {
-      this.el.removeChild(this.first)
+    if (this.firstHolder) {
+      this.el.removeChild(this.firstHolder)
     }
-    if (this.last) {
-      this.el.removeChild(this.last)
+    if (this.lastHolder) {
+      this.el.removeChild(this.lastHolder)
     }
     const children = this.el.children
 
-    this.last = children[0].cloneNode(true)
-    this.first = children[children.length - 1].cloneNode(true)
-    this.el.insertBefore(this.first, children[0])
-    this.el.appendChild(this.last)
+    this.lastHolder = children[0].cloneNode(true)
+    this.firstHolder = children[children.length - 1].cloneNode(true)
+    this.el.insertBefore(this.firstHolder, children[0])
+    this.el.appendChild(this.lastHolder)
   }
 
   setConSize () {
@@ -404,12 +447,38 @@ export default class extends Events {
   }
 
   setPosAry () {
+    // 不包含holder的本身元素位置
     const posAry = []
 
     for (let i = 0; i < this.length; i++) {
       posAry[i] = this.getPosByIndex(i)
     }
     this.posAry = posAry
+    if (this.loop) {
+      this.firstHolderPos = 0
+      this.lastHolderPos = this.posAry[this.posAry.length - 1] - this.size.width
+    }
+  }
+
+  correctPosition () {
+    const distance = this.translateX - this.posAry[this.currentIndex]
+    let direction = 0
+
+    if (distance < 0) {
+      direction = 1
+    } else {
+      direction = -1
+    }
+
+    if (Math.abs(distance) > this.size.width / 3) {
+      if (direction === 1) {
+        this.next()
+      } else if (direction === -1) {
+        this.pre()
+      }
+    } else {
+      this.resetPostion()
+    }
   }
 
   // 触摸事件结束时，修正元素位置
@@ -508,8 +577,7 @@ export default class extends Events {
       .height
     const nextHeight = window.getComputedStyle(this.nodes[this.nextIndex].el)
       .height
-    const conHeight =
-      Math.max(parseFloat(curHeight), parseFloat(nextHeight))
+    const conHeight = Math.max(parseFloat(curHeight), parseFloat(nextHeight))
 
     this.conHeight = conHeight
     this.style(this.el, {
@@ -517,20 +585,20 @@ export default class extends Events {
     })
   }
 
-  setCurrentIndex () {
-    this.currentIndex = this.getIndexByPos(this.translateX)
-    if (this.currentIndex !== this.oldCurrentIndex) {
+  setCurrentIndex (index) {
+    this.currentIndex = index || this.getIndexByPos(this.translateX)
+    if (this.currentIndex !== this.lastCurrentIndex) {
       if (this.currentIndex === 0) {
         this.emit('onFirstItem')
       } else if (this.currentIndex === this.length - 1) {
         this.emit('onLastItem')
       }
-      this.oldCurrentIndex = this.currentIndex
-    }
-
-    // currentIndex变化时，设置容器高度
-    if (this.timingHeight) {
-      this.setConHeightTiming()
+      this.emit('change')
+      this.lastCurrentIndex = this.currentIndex
+      // currentIndex变化时，设置容器高度
+      if (this.timingHeight) {
+        this.setConHeightTiming()
+      }
     }
   }
 
@@ -543,10 +611,12 @@ export default class extends Events {
         this.nextIndex = Math.floor(this.nextIndex)
       }
     }
-
     // nextIndex变化时，设置容器高度
     if (this.timingHeight) {
-      this.setConHeightTiming()
+      if (this.nextIndex !== this.lastNextIndex) {
+        this.lastNextIndex = this.nextIndex
+        this.setConHeightTiming()
+      }
     }
   }
 

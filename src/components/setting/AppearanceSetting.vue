@@ -548,7 +548,7 @@ export default {
       storeDeleteTodoPoster: 'deleteTodoPoster'
     }),
     setSettins () {
-      this.settings = _.cloneDeep(this.appearanceSettings)
+      this.settings = _cloneDeep(this.appearanceSettings)
     },
     handleSettingChange () {
       this.storeModifyAppearance(this.settings)

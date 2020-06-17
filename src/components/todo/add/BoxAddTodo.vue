@@ -623,9 +623,9 @@ export default {
     },
     init (type = 'common') {
       if (this.data && type === this.data.type) {
-        this.todo = _.cloneDeep(Object.assign({}, this.todoCommon, this.data))
+        this.todo = _cloneDeep(Object.assign({}, this.todoCommon, this.data))
       } else {
-        this.todo = _.cloneDeep(Object.assign({}, this.data, this.todoCommon))
+        this.todo = _cloneDeep(Object.assign({}, this.data, this.todoCommon))
         this.todo.type = type
       }
 

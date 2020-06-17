@@ -1,5 +1,6 @@
 <script>
 import Vue from 'vue'
+import ComToolTipContent from './ComToolTipContent'
 
 export default {
   props: {
@@ -30,19 +31,18 @@ export default {
     },
     curShow (val) {
       if (val) {
+        // 需要添加nextTick，才能获取到$slots中的值，原因待
         this.$nextTick(() => {
           this.creatContent()
         })
-      } else {
-        this.removeContent()
       }
-      this.$emit('update:show', val)
     }
   },
   mounted () {
     if (this.showOnClick) {
       this.$el.addEventListener('click', () => {
         this.curShow = true
+        this.$emit('update:show', true)
       })
     }
     if (this.curShow) {
@@ -50,71 +50,128 @@ export default {
     }
   },
   methods: {
-    remove () {
-      this.curShow = false
-    },
     creatContent () {
-    // 创建content组件
+      // 创建content组件
+      const that = this
+      // const Content = Vue.extend({
+      //   props: {
+      //     show: {
+      //       type: Boolean,
+      //       default: false
+      //     }
+      //   },
+      //   data () {
+      //     return {
+      //       showContent: false
+      //     }
+      //   },
+      //   watch: {
+      //     show (val) {
+      //       this.showContent = val
+      //     }
+      //   },
+      //   mounted () {
+      //     this.showContent = true
+      //     this.$nextTick(() => {
+      //       that.setPosition(this.$refs.content, that.$el)
+      //     })
+      //   },
+      //   methods: {
+      //     hide () {
+      //       this.showContent = false
+      //     },
+      //     afterLeave () {
+      //       this.$el.remove()
+      //       that.curShow = false
+      //       that.$emit('update:show', false)
+      //     }
+      //   },
+      //   render (createElement) {
+      //     const content = createElement(
+      //       'div',
+      //       {
+      //         style: {
+      //           position: 'absolute'
+      //         },
+      //         attrs: {
+      //           id: 'com-tooltip-content'
+      //         },
+      //         directives: [
+      //           {
+      //             name: 'show',
+      //             value: this.showContent
+      //           }
+      //         ],
+      //         ref: 'content'
+      //       },
+      //       that.$slots.content
+      //     )
+
+      //     return createElement(
+      //       'div',
+      //       {
+      //         class: {
+      //           'com-tooltip': true
+      //         },
+      //         props: {
+      //           show: that.curShow
+      //         },
+      //         on: {
+      //           click: this.hide
+      //         }
+      //       },
+      //       [
+      //         createElement(
+      //           'transition',
+      //           {
+      //             attrs: {
+      //               name: 'com-tooltip-content'
+      //             },
+      //             on: {
+      //               'after-leave': this.afterLeave
+      //             }
+      //           },
+      //           [content]
+      //         )
+      //       ]
+      //     )
+      //   }
+      // })
+
       const Content = Vue.extend({
-        render: (createElement) => {
+        render (createElement) {
           return createElement(
-            'div',
+            ComToolTipContent,
             {
-              style: {
-                position: 'absolute'
-              },
               props: {
-                show: {
-                  type: Object,
-                  default: false
-                }
+                // 传递 show 控制显示
+                show: that.curShow,
+                // 传递 ToolTip 组件本身
+                component: that
               }
             },
-            this.$slots.content
+            // 将content插槽传递给content组件
+            that.$slots.content
           )
         }
       })
 
-      this.tipContent = new Content()
-      // 创建父容器com-tooltip，fixed定位且全屏
-      this.container = document.createElement('div')
-      this.container.className = 'com-tooltip'
-      this.container.style.zIndex = 5000
-      // content组件挂载元素
-      this.container.innerHTML = '<div id="com-tooltip-content"></div>'
-      // 点击父容器时，关闭content
-      this.container.addEventListener('click', e => {
-        if (e.target.className.includes('com-tooltip')) {
-          this.curShow = false
-        }
-      })
-      document.body.appendChild(this.container)
-      // 挂载
-      this.tipContent.$mount('#com-tooltip-content')
-      // 动画效果
-      this.tipContent.$el.classList.add('com-tooltip__content_ani-in')
-      this.tipContent.$el.addEventListener('animationend', () => {
-        this.tipContent.$el.classList.remove('com-tooltip__content_ani-in')
-      })
-      this.setPosition(this.tipContent.$el, this.$el)
+      const div = document.createElement('div')
+
+      document.body.appendChild(div)
+      new Content().$mount(div)
     },
     setPosition (element, target) {
       const targetRect = target.getBoundingClientRect()
 
       element.style.left =
-          targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
+        targetRect.left + (targetRect.width - element.clientWidth) / 2 + 'px'
       element.style.top = targetRect.bottom + 'px'
-    },
-    removeContent () {
-      this.tipContent.$el.classList.add('com-tooltip__content_ani-out')
-      this.tipContent.$el.addEventListener('animationend', () => {
-        document.body.removeChild(this.container)
-      })
     }
   },
 
   render () {
-    return this.$slots.default && this.$slots.default[0] || this.$el
+    return (this.$slots.default && this.$slots.default[0]) || this.$el
   }
 }
 </script>
@@ -125,13 +182,14 @@ export default {
   background-color: transparent;
   font-size: 12px;
   transition: all;
+  z-index: 5000;
 }
 
-.com-tooltip__content_ani-in {
+.com-tooltip-content-enter-active {
   animation: fade 0.15s ease-out;
 }
 
-.com-tooltip__content_ani-out {
+.com-tooltip-content-leave-active {
   animation: fade 0.15s ease-out reverse;
 }
 </style>

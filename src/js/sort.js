@@ -69,7 +69,7 @@ class Event {
 
   // 移除事件
   off (name, callback) {
-    if (!this.onEvents[name]) {
+    if (!this.onEvents[name] || !this.onEvents[name].length) {
       return
     }
     this.onEvents[name] = this.onEvents[name].filter((event, index) => {
@@ -88,7 +88,6 @@ class Event {
   }
 
   emit (name) {
-
     if (!this.onEvents[name] || !this.onEvents[name].length) {
       return
     }
@@ -163,7 +162,7 @@ class Sorter {
       way: 'mouse',
       // 拖拽不能超出边界
       animation: true,
-      duration: 3000,
+      duration: 200,
       delay: 0,
       dragNode: 'sort-cell',
       dragClass: '',
@@ -175,7 +174,7 @@ class Sorter {
       ...initOptions
     }
     this.event = new Event()
-    // this.data = _.cloneDeep(data)
+    // this.data = _cloneDeep(data)
     this.data = data
   }
 
@@ -2066,4 +2065,6 @@ class Sorter {
 }
 
 window.Sorter = Sorter
-// export default Sorter
+console.log('ss')
+
+export default Sorter

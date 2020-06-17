@@ -195,7 +195,7 @@ export default {
       done()
     },
     setChartSettings () {
-      this.charSettins = _.cloneDeep(this.chart)
+      this.charSettins = _cloneDeep(this.chart)
     },
     setDurationUnit (val) {
       this.charSettins.chartDurationUnit = val

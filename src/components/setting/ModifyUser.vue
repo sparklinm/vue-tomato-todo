@@ -146,7 +146,7 @@ export default {
       storeModifyUser: 'modifyUser'
     }),
     setCurUser () {
-      this.curUser = _.cloneDeep(this.user)
+      this.curUser = _cloneDeep(this.user)
     },
     handleUserChange () {
       this.storeModifyUser(this.curUser)

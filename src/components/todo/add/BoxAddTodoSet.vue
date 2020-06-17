@@ -79,7 +79,7 @@ export default {
     ...mapMutations('todo', ['addTodoSet', 'modifyTodoSet']),
     initSet () {
       if (this.data) {
-        this.todoSet = _.cloneDeep(this.data)
+        this.todoSet = _cloneDeep(this.data)
       }
     },
     selectColor (index) {

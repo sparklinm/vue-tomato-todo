@@ -177,27 +177,14 @@ module.exports = {
     'html/report-bad-indent': 'error'
   },
   'globals': {
-    '$': true,
-    'log': true,
-    'utils': true,
-    'models': true,
-    'views': true,
-    'pages': true,
-    'validators': true,
-    'Constants': true,
-    'Vue': true,
-    '_': true,
-    'sprintf': true,
-    'moment': true,
-    'JSONRpc': true,
-    'Chart': true,
-    'accounting': true,
-    'LIOUtil': true,
-    'module': true,
     'Velocity': true,
     'html2canvas': true,
     'StackBlur': true,
     'gsap': true,
-    'TWEEN': true
+    'TWEEN': true,
+    '_cloneDeep': true,
+    '_isEmpty': true,
+    '_merge': true,
+    
   }
 }

@@ -205,7 +205,7 @@ export default {
     }
   },
   mounted () {
-    this.currentSet = _.cloneDeep(this.sets[0])
+    this.currentSet = _cloneDeep(this.sets[0])
     if (this.appearance.todoSetOpacity === 'opaque') {
       this.setClass = {
         'todo-set_opaque': true
@@ -296,7 +296,7 @@ export default {
     },
     showBox (key, index) {
       this[key] = true
-      this.currentSet = _.cloneDeep(this.sets[index])
+      this.currentSet = _cloneDeep(this.sets[index])
       if (key === 'showBoxAddTodo') {
         this.resetPos()
       }
@@ -333,7 +333,7 @@ export default {
       })
     },
     editSet (item) {
-      this.currentSet = _.cloneDeep(item)
+      this.currentSet = _cloneDeep(item)
       this.showBoxEditSet = true
       this.resetPos()
     },

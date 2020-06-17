@@ -537,7 +537,7 @@ export default {
     }
   },
   mounted () {
-    this.currentTodo = _.cloneDeep(this.todo)
+    this.currentTodo = _cloneDeep(this.todo)
     setTimeout(() => {
       this.startDoingTime()
     }, 400)

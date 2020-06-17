@@ -39,7 +39,7 @@ c
       :show.sync="showBoxPeriod"
       :submit="customPeriod"
       :cancel="cancelCustomPeriod"
-      z-index="2100"
+      z-index="5555"
       append-to-body
     />
   </DataPanel>

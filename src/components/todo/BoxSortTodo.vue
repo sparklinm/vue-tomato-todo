@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import Sorter from '@/sort.js'
+import Sorter from '@/js/sort.js'
 
 export default {
   props: {
@@ -57,7 +57,7 @@ export default {
   },
   data () {
     return {
-      curData: _.cloneDeep(this.data),
+      curData: _cloneDeep(this.data),
       showBoxSort: this.show,
       sorter: null,
       description: {
@@ -70,7 +70,7 @@ export default {
   },
   watch: {
     data (val) {
-      this.curData = _.cloneDeep(val)
+      this.curData = _cloneDeep(val)
     },
     show (val) {
       this.showBoxSort = val

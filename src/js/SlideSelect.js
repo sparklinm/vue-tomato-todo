@@ -2,32 +2,6 @@ import Touch from './Touch'
 import DomResize from './DomResize'
 import Events from './Events'
 
-// function copyProperties (target, source) {
-//   for (const key of Reflect.ownKeys(source)) {
-//     if (key !== 'constructor' && key !== 'prototype' && key !== 'name') {
-//       const desc = Object.getOwnPropertyDescriptor(source, key)
-//       Object.defineProperty(target, key, desc)
-//     }
-//   }
-// }
-
-// function mix (...mixins) {
-//   class Mix {
-//     constructor () {
-//       for (const mixin of mixins) {
-//         copyProperties(this, new mixin()) // 拷贝实例属性
-//       }
-//     }
-//   }
-
-//   for (const mixin of mixins) {
-//     copyProperties(Mix, mixin) // 拷贝静态属性
-//     copyProperties(Mix.prototype, mixin.prototype) // 拷贝原型属性
-//   }
-
-//   return Mix
-// }
-
 export default class extends Events {
   // 所选元素索引
   curIndex = 0;

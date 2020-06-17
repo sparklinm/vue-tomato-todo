@@ -207,7 +207,7 @@ export default {
       storeSetCurrentTheme: 'setCurrentTheme'
     }),
     setAllModule () {
-      this.allModules = _.cloneDeep(this.modules)
+      this.allModules = _cloneDeep(this.modules)
     },
     uploadImage () {
       this.$message({

@@ -3,6 +3,7 @@ import Mask from './Mask.vue'
 function creatMaskPlugin (Vue, options) {
   const MaskComponent = Vue.extend(Mask)
   const instance = new MaskComponent()
+
   instance.$mount(document.createElement('div'))
   document.body.appendChild(instance.$el)
   Vue.prototype.$mask = function (show) {
@@ -22,8 +23,6 @@ function creatMaskPlugin (Vue, options) {
     setMask () {
       instance.show = true
       if (this.data.length) {
-        console.log(this.data)
-
         instance.zIndex = this.data[this.data.length - 1].style.zIndex - 1
       }
     },

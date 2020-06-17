@@ -68,14 +68,6 @@ export default {
   .flex(@flex-direction: column; @align-items: center);
 }
 
-.come-icon {
-  display: inline-block;
-  font-size: 20px;
-}
-
-.com-icon__inner {
-}
-
 .com-icon__text {
   margin-top: 6px;
   font-size: 12px;

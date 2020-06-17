@@ -1,5 +1,5 @@
 import config from '@/config'
-import echart from '@/echart'
+import echart from '@/lib/echart'
 
 export default {
   namespaced: true,
