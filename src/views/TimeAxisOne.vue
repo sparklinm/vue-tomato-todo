@@ -1,6 +1,6 @@
 <template>
   <CalendarView
-    class="right-page"
+    class="page-time-axis-one"
     show-return
     :todos="todo"
     @return="toLastPage"
@@ -43,4 +43,8 @@ export default {
 </script>
 
 <style>
+.page-time-axis-one {
+  position: relative;
+  z-index: 5000;
+}
 </style>

@@ -30,6 +30,7 @@ export default {
     },
     curShow (val) {
       if (val) {
+        // 需要添加nextTick，才能获取到$slots中的值，原因待
         this.$nextTick(() => {
           this.creatContent()
         })
@@ -79,7 +80,6 @@ export default {
       // 创建父容器com-tooltip，fixed定位且全屏
       this.container = document.createElement('div')
       this.container.className = 'com-tooltip'
-      this.container.style.zIndex = 5000
       // content组件挂载元素
       this.container.innerHTML = '<div id="com-tooltip-content"></div>'
       // 点击父容器时，关闭content
@@ -125,6 +125,7 @@ export default {
   background-color: transparent;
   font-size: 12px;
   transition: all;
+  z-index: 5000;
 }
 
 .com-tooltip__content_ani-in {

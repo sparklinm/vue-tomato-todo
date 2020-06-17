@@ -8,7 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <link rel="stylesheet" href="">
-  <script src="sort.js"></script>
+  <script src="sort.js" type="module"></script>
 </head>
 
 
@@ -248,7 +248,8 @@
 
     }
   </style>
-  <script>
+  <script type="module">
+    import Sorter from './sort.js'
     function getPosition(node) {
       const pRect = this.container.getBoundingClientRect()
       const cRect = node.getBoundingClientRect()

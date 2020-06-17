@@ -6,11 +6,13 @@
       <div
         class="statistical-hd"
       >
-        <div class="statistical-hd__left">
+        <div
+          class="statistical-hd__left"
+          @click="toLastPage"
+        >
           <ComIcon
             class="calendar-return-btn"
             name="arrow-left"
-            @click="toLastPage"
           />
           <span>{{ name }}</span>
         </div>

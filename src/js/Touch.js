@@ -49,11 +49,42 @@ export default class {
     this.el.addEventListener('touchstart', this._start)
     this.el.addEventListener('touchmove', this._move)
     this.el.addEventListener('touchend', this._end)
+    window.addEventListener('mousedown', this._start)
+    window.addEventListener('mousemove', this._move)
+    window.addEventListener('mouseup', this._end)
+  }
+
+  checkNode (node) {
+    if (!node) {
+      return false
+    }
+    if (node === this.el) {
+      return true
+    }
+    return this.checkNode(node.parentNode)
   }
 
   _start = e => {
-    const startx = e.targetTouches[0].pageX
-    const starty = e.targetTouches[0].pageY
+    let startx = 0
+    let starty = 0
+
+    if (e.type === 'mousedown') {
+      if (e.button !== 0) {
+        return
+      }
+      if (this.checkNode(e.target)) {
+        this.canSlide = true
+      } else {
+        this.canSlide = false
+        return
+      }
+      e.preventDefault()
+      startx = e.pageX
+      starty = e.pageY
+    } else {
+      startx = e.targetTouches[0].pageX
+      starty = e.targetTouches[0].pageY
+    }
 
     // 初始化data
     Object.assign(this.customData, {
@@ -74,8 +105,21 @@ export default class {
   };
 
   _move = e => {
-    const endx = e.targetTouches[0].pageX
-    const endy = e.targetTouches[0].pageY
+
+    let endx = 0
+    let endy = 0
+
+    if (e.type === 'mousemove') {
+      if (!this.canSlide) {
+        return
+      }
+      endx = e.pageX
+      endy = e.pageY
+    } else {
+      endx = e.targetTouches[0].pageX
+      endy = e.targetTouches[0].pageY
+    }
+
     // 相较于上一次touchmove点的距离
     let dx = endx - this.prePoint.x
     const dy = endy - this.prePoint.y
@@ -110,8 +154,20 @@ export default class {
   };
 
   _end = e => {
-    const endx = e.changedTouches[0].pageX
-    const endy = e.changedTouches[0].pageY
+    let endx = 0
+    let endy = 0
+
+    if (e.type === 'mouseup') {
+      if (!this.canSlide) {
+        return
+      }
+      endx = e.pageX
+      endy = e.pageY
+      this.canSlide = false
+    } else {
+      endx = e.changedTouches[0].pageX
+      endy = e.changedTouches[0].pageY
+    }
 
     Object.assign(this.customData, {
       endx,

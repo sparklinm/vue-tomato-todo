@@ -29,21 +29,21 @@ requireComponent.keys().forEach(fileName => {
   // 获取组件配置
   const componentConfig = requireComponent(fileName)
   // 剥路径`/xx`和文件类型`.xx`
-  const componentName = fileName.split('/').pop().replace(/\.\w+$/, '')
+  const componentName = fileName
+    .split('/')
+    .pop()
+    .replace(/\.\w+$/, '')
 
   // 全局注册组件
-  Vue.component(
-    componentName,
-    componentConfig.default || componentConfig
-  )
+  Vue.component(componentName, componentConfig.default || componentConfig)
 })
 
 Vue.use(VueI18n)
 const i18n = new VueI18n({
   locale: 'zh', // 语言标识
   messages: {
-    'zh': require('./assets/lang/zh'),
-    'en': {}
+    zh: require('./assets/lang/zh'),
+    en: {}
   }
 })
 
@@ -70,7 +70,6 @@ Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 
-
 new Vue({
   router,
   store,
@@ -80,3 +79,5 @@ new Vue({
   },
   render: h => h(App)
 }).$mount('#app')
+
+

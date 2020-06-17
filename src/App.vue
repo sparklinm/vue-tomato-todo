@@ -2,6 +2,7 @@
   <div
     id="app"
   >
+    <!-- <div style="position:absolute;left:0;top:0;bottom:0;right:0;z-index:2000;background:pink" /> -->
     <!-- <div
       class="test"
       style="position:fixed;z-index:99999;min-width:50px;min-height:40px;background:yellow;color:red;padding:10px;left:0;top:0"
@@ -237,6 +238,7 @@ html,body {
   height: 100%;
   background-size: 100% 100%;
   position: relative;
+  overflow: hidden;
 }
 // #app div:not(:last-child) {
 //   display: none;
