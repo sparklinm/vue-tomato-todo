@@ -21,17 +21,17 @@
   <script>
     const container = document.getElementById('container')
 
-    function style(el, obj) {
+    function style (el, obj) {
       Object.assign(el.style, obj)
     }
 
-    function clicks(e) {
+    function clicks (e) {
       container.style.display = 'block'
       set()
 
     }
 
-    function set() {
+    function set () {
       const computedStyle = window.getComputedStyle(container)
 
       console.log(computedStyle.width)
@@ -39,12 +39,12 @@
 
       style(
         container, {
-        left: 0,
-        top: 50 + 'px',
-        position: 'absolute',
-        width: computedStyle.width,
-        height: computedStyle.height
-      }
+          left: 0,
+          top: 50 + 'px',
+          position: 'absolute',
+          width: computedStyle.width,
+          height: computedStyle.height
+        }
       )
 
     }
@@ -248,8 +248,8 @@
 
     }
   </style>
-  <script>
-    function getPosition(node) {
+  <script type="module">
+    function getPosition (node) {
       const pRect = this.container.getBoundingClientRect()
       const cRect = node.getBoundingClientRect()
       const left = cRect.left - pRect.left
@@ -334,11 +334,11 @@
 
     const sorter = new Sorter(el, {
       dragNode: 'list-group-item',
-      group:{
-        clone:true,
-        put:true
+      group: {
+        clone: true,
+        put: true
       },
-      sort:true
+      sort: true
 
 
     }, arr)
@@ -350,9 +350,9 @@
     // let div=document.createElement('div')
     // div.className='list-group-itemt'
     // sorter.addNodeAnimated(0,div)
-    }, 2000);
+    }, 2000)
 
-    const els = document.querySelector('#sortTrues')
+const els = document.querySelector('#sortTrues')
 
 
     const sorters = new Sorter(els, {

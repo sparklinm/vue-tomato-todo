@@ -1,10 +1,8 @@
-import Events from './Events'
 
-export default class extends Events {
+export default class {
   el= null
 
   constructor (el) {
-    super()
     this.el = el
     el.addEventListener('load', this.showImg)
 
@@ -12,16 +10,16 @@ export default class extends Events {
 
   setSrc (src) {
     return new Promise((resolve) => {
-      Object.assign(this.el.style, {
-        opacity: 0,
-        visibility: 'hidden'
+      requestAnimationFrame(() => {
+        Object.assign(this.el.style, {
+          opacity: 0,
+          visibility: 'hidden'
+        })
+        requestAnimationFrame(() => {
+          this.el.src = src
+        })
       })
-      setTimeout(() => {
-        this.el.src = src
-      })
-      this.on('shown', () => {
-        resolve()
-      })
+      this.resolve = resolve
     })
   }
 
@@ -38,7 +36,8 @@ export default class extends Events {
         Object.assign(el.style, {
           transition: 'initial'
         })
-        this.emit('shown')
+        this.resolve && this.resolve()
+        this.resolve = null
       })
     }, 300)
   }

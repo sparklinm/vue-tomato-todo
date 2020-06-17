@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="todos.length"
+    ref="listTodo"
     class="list-todo"
   >
     <ListItem
@@ -475,7 +476,7 @@ export default {
       todo: this.todos[0] || template,
       boxHeaderStyle: {},
       showBoxAddTodo: false,
-      showBoxSort: true,
+      showBoxSort: false,
       showBoxMove: false,
       description: {
         sortTodo: {

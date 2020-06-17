@@ -93,6 +93,9 @@ export default {
     window.addEventListener('resize', this.resize)
     this.resize()
   },
+  destroyed () {
+    window.removeEventListener('resize', this.resize)
+  },
   methods: {
     resize () {
       const style = window.getComputedStyle(this.$refs.chartContainer)
@@ -174,26 +177,26 @@ export default {
         return 0
       }
 
-      let leftWidth = legend.width || chartWidth
-      let rowCount = 1
+      const leftWidth = legend.width || chartWidth
+      let totalWidth = 0
       const textStyle = _.cloneDeep(legend.textStyle)
 
+      // 对于echart，如果fontSize小于12并不会让一行的元素更多，而是会在元素之间增加距离
       textStyle.fontSize = textStyle.fontSize < 12 ? 12 : textStyle.fontSize
       data.forEach(item => {
         const name = typeof item === 'object' ? item.name : item
         const text = legend.formatter(name)
-        const textWidth = this.getTextWidth(text, textStyle)
+        const textWidth = this.getTextWidth(text, this.getChartFontStyle(textStyle))
+        // 图例图形和文字之间的距离
         const iconGap = 5
-        const totalWidth = iconWidth + textWidth + iconGap
 
-        if (totalWidth > leftWidth) {
-          rowCount++
-          leftWidth = legend.width || chartWidth
-        }
-        leftWidth -= totalWidth
+        totalWidth += iconWidth + textWidth + iconGap
       })
+
+      const rowCount = Math.ceil(totalWidth / leftWidth)
       const textHeight = legend.textStyle.fontSize || 12
       const itemHeight = textHeight > iconHeight ? textHeight : iconHeight
+      // 文字有默认的1.2倍行距
       const lineHeight = legend.textStyle.lineHeight || 1.2
       let rowHeight = itemHeight
 
