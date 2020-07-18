@@ -16,7 +16,7 @@
     "font-awesome": "^4.7.0",
     "gsap": "^3.2.6",
     "html2canvas": "^1.0.0-rc.5",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
     "postcss-pxtorem": "^4.0.1",
