@@ -4,16 +4,17 @@ const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 
-
-
 module.exports = {
   pluginOptions: {
     'style-resources-loader': {
       preProcessor: 'less',
-      patterns: [path.resolve(__dirname, 'src/styles/mixin.less'), path.resolve(__dirname, 'src/styles/variable.less')]
+      patterns: [
+        path.resolve(__dirname, 'src/styles/mixin.less'),
+        path.resolve(__dirname, 'src/styles/variable.less')
+      ]
     }
   },
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     // // 解决ie11兼容ES6
     // config.entry('main').add('babel-polyfill')
     // // 开启图片压缩
@@ -25,14 +26,15 @@ module.exports = {
     //     bypassOnDebug: true
     //   })
     // 开启js、css压缩
-    config.optimization.minimize(true)
     if (process.env.NODE_ENV === 'production') {
-      config.plugin('compressionPlugin')
-        .use(new CompressionPlugin({
+      config.optimization.minimize(true)
+      config.plugin('compressionPlugin').use(
+        new CompressionPlugin({
           test: /\.js$|\.html$|.\css/, // 匹配文件名
           threshold: 1000, // 对超过10k的数据压缩
           deleteOriginalAssets: false // 不删除源文件
-        }))
+        })
+      )
       config.plugin('terser').use(
         new TerserPlugin({
           terserOptions: {
@@ -55,7 +57,20 @@ module.exports = {
       appleTouchIcon: 'product.png',
       maskIcon: 'product.png',
       msTileImage: 'product.png'
-    }
+    },
+    manifestOptions: {
+      icons: [
+        {
+          src: './product.png',
+          type: 'image/png',
+          sizes: '144x144 192x192 512x512'
+        }
+      ]
+    },
+    themeColor: '#37a5e5',
+    msTileColor: '#ffffff',
+    appleMobileWebAppCapable: 'yes',
+    name: '番茄todo'
   },
   productionSourceMap: false,
   configureWebpack: {
@@ -69,7 +84,6 @@ module.exports = {
         StackBlur: 'stackblur-canvas',
         TWEEN: 'tween'
       }),
-
 
       // 忽略 moment.js的所有本地文件
       new BrowserSyncPlugin(

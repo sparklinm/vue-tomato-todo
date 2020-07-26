@@ -174,6 +174,7 @@ export default {
     this.setUser()
   },
   mounted () {
+    document.querySelector('.cm-enter-loading').remove()
     const theme = config.getTheme()
 
     this.storeSetCurrentTheme(theme)

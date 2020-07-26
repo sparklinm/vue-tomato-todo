@@ -81,8 +81,7 @@ button {
     display: none;
   }
 
-  .progress-bar__text {
-  }
+  .progress-bar__text {}
 }
 
 ul {
@@ -118,7 +117,7 @@ ul {
 .drop-list_simple {
   text-align: left;
   color: white;
-  .scale-font(0.9;center;center;);
+  .scale-font(0.9; center; center; );
 
   li {
     line-height: normal;
@@ -152,6 +151,13 @@ ul {
   position: fixed;
   right: 0;
   width: 40%;
+}
+
+@media screen and (min-width:700px) {
+  .drop-list_right {
+    right: calc(50% - 350px);
+    max-width: 300px;
+  }
 }
 
 .com-input__purple {
@@ -422,7 +428,7 @@ ul {
   left: 50%;
   top: 50%;
   transform-origin: center center;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   width: 100%;
   min-height: 100%;
 }
