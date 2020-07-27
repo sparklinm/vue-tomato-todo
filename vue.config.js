@@ -27,7 +27,6 @@ module.exports = {
     //   })
     // 开启js、css压缩
     if (process.env.NODE_ENV === 'production') {
-      config.optimization.minimize(true)
       config.plugin('compressionPlugin').use(
         new CompressionPlugin({
           test: /\.js$|\.html$|.\css/, // 匹配文件名
@@ -35,6 +34,8 @@ module.exports = {
           deleteOriginalAssets: false // 不删除源文件
         })
       )
+
+      config.optimization.minimize(true)
       config.plugin('terser').use(
         new TerserPlugin({
           terserOptions: {

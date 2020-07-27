@@ -6248,11 +6248,6 @@ nth-check@^1.0.2, nth-check@~1.0.1:
   dependencies:
     boolbase "~1.0.0"
 
-nullthrows@^1.0.0:
-  version "1.1.1"
-  resolved "https://registry.npm.taobao.org/nullthrows/download/nullthrows-1.1.1.tgz#7818258843856ae971eae4208ad7d7eb19a431b1"
-  integrity sha1-eBgliEOFaulx6uQgitfX6xmkMbE=
-
 num2fraction@^1.2.2:
   version "1.2.2"
   resolved "https://registry.npm.taobao.org/num2fraction/download/num2fraction-1.2.2.tgz#6f682b6a027a4e9ddfa4564cd2589d1d4e669ede"
@@ -9133,13 +9128,6 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
-
-vintagejs@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.npm.taobao.org/vintagejs/download/vintagejs-2.2.0.tgz#9c8cb878d56533d8bdc80ce552f1ae1f03450dd1"
-  integrity sha1-nIy4eNVlM9i9yAzlUvGuHwNFDdE=
-  dependencies:
-    nullthrows "^1.0.0"
 
 vm-browserify@^1.0.1:
   version "1.1.2"

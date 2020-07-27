@@ -1,3 +1,4 @@
+
 <template>
   <transition name="plu-tips">
     <div
@@ -34,6 +35,8 @@ export default {
   position: fixed;
   bottom: 50px;
   z-index: 3000;
+  left: 0;
+  right: 0;
   width: 100%;
   text-align: center;
 
