@@ -49,7 +49,25 @@ module.exports = {
           parallel: true // 使用多进程并行运行来提高构建速度。默认并发运行数：os.cpus().length - 1。
         })
       )
+      config.optimization.splitChunks({
+        chunks: 'all',
+        maxInitialRequests: Infinity,
+        minSize: 200000, // 依赖包超过300000bit将被单独打包
+        automaticNameDelimiter: '-',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name (module) {
+              const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]
+
+              return `chunk.${packageName.replace('@', '')}`
+            },
+            priority: 10
+          }
+        }
+      })
     }
+
   },
   pwa: {
     iconPaths: {
