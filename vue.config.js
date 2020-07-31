@@ -49,6 +49,7 @@ module.exports = {
           parallel: true // 使用多进程并行运行来提高构建速度。默认并发运行数：os.cpus().length - 1。
         })
       )
+      // 分包对于单页面作用不大
       config.optimization.splitChunks({
         chunks: 'all',
         maxInitialRequests: Infinity,
@@ -68,6 +69,14 @@ module.exports = {
       })
     }
 
+    // 图片压缩，会损坏图像精度
+    // https://www.npmjs.com/package/image-webpack-loader
+    config.module
+      .rule('images')
+      .use('image-webpack-loader')
+      .loader('image-webpack-loader')
+      .options({})
+      .end()
   },
   pwa: {
     iconPaths: {
@@ -104,7 +113,6 @@ module.exports = {
         TWEEN: 'tween'
       }),
 
-      // 忽略 moment.js的所有本地文件
       new BrowserSyncPlugin(
         // BrowserSync options
         {
