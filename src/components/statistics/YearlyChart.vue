@@ -46,13 +46,7 @@ export default {
       return (
         this.$t('todo.yearly_statistics') +
         ' ' +
-        util.formatTime(this.period[0], {
-          unit: true,
-          hide: {
-            day: true,
-            month: true
-          }
-        })
+        util.dateFormatter(this.period[0], 'yyyy')
       )
     }
   },

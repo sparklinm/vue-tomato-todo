@@ -47,7 +47,7 @@ export default {
         this.$t('todo.monthly_statistics') +
         ' ' +
         util.formatTime(this.period[0], {
-          unit: true,
+          cut: '-',
           hide: {
             day: true
           }

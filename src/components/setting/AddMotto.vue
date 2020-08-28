@@ -1,5 +1,5 @@
 <template>
-  <div class="setting-add-motto">
+  <div class="setting-add-motto h100p">
     <SubNav
       @addMotto="addMotto"
       @mottoSetting="showBoxSetMotto=true"

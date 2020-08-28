@@ -162,6 +162,9 @@ export default {
       return font
     },
     getLegendHeight (legend, chartWidth) {
+      if (!legend) {
+        return
+      }
       const {
         data,
         itemWidth: iconWidth,

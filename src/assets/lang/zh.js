@@ -280,7 +280,7 @@ module.exports = {
   settings: {
     pomodoro_core_settings: '番茄钟核心设置',
     ring: '铃声',
-    custom_language: '自定义语言',
+    custom_language: '自定义格言',
     rest_duration: '休息时长',
     appearance_settings: '外观设置',
     todo_card_background: '待办卡片背景',

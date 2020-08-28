@@ -1,12 +1,5 @@
 <template>
-  <div
-    id="app"
-  >
-    <!-- <div style="position:absolute;left:0;top:0;bottom:0;right:0;z-index:2000;background:pink" /> -->
-    <!-- <div
-      class="test"
-      style="position:fixed;z-index:99999;min-width:50px;min-height:40px;background:yellow;color:red;padding:10px;left:0;top:0"
-    /> -->
+  <div id="app">
     <transition
       :name="transitionName"
       :css="css"
@@ -15,32 +8,6 @@
         <router-view />
       </keep-alive>
     </transition>
-    <!--
-    <button @click="toImage">
-      sss
-    </button> -->
-
-    <!-- <div
-      class="container"
-    >
-      <span>
-        春风十里
-      </span>
-    </div> -->
-    <!-- <img
-      id="full-screen"
-      ref="img"
-      src="/background/test.png"
-      style="width:100px;height:200px;background:red"
-      alt=""
-    >
-    <div
-      ref="img"
-      style="width:100px;height:200px;background:red"
-    />
-    <button @click="fullScreen">
-      全屏
-    </button> -->
   </div>
 </template>
 
@@ -89,10 +56,6 @@ export default {
     }
     document.documentElement.style.fontSize = rootFont + 'px'
 
-    // document.documentElement.addEventListener('transitionend', () => {
-    //   document.documentElement.classList.remove('full-screen', 'full-screen-active')
-    // })
-
     document.addEventListener('fullscreenchange', () => {
       document.documentElement.classList.add(
         'full-screen',
@@ -136,16 +99,6 @@ export default {
             'full-screen-active'
           )
         }, 200)
-
-        document.querySelector('.test').innerHTML = `
-       <p>orientation:${window.orientation}</p>
-       <p>innerWidth:${window.innerWidth}</p>
-       <p>innerHeight:${window.innerHeight}</p>
-       <p>clientWidth:${document.documentElement.clientWidth}</p>
-       <p>clientHeight:${document.documentElement.clientHeight}</p>
-       <p>screenWidth:${window.screen.width}</p>
-       <p>screenHeight:${window.screen.height}</p>
-      `
       }, 300)
     })
 
@@ -155,6 +108,7 @@ export default {
 
       localStorage.setItem('storeState', JSON.stringify(storeState))
     }
+
     const state = JSON.parse(localStorage.getItem('storeState'))
 
     if (state) {
@@ -166,6 +120,7 @@ export default {
       this.createDate(state.plan.plans, 'deadline')
 
       this.createDate(state.todo.todos, 'create')
+      this.createDate(state.todo.todos, 'goal.deadline')
       this.createDate(state.todo.focus, 'start')
       this.createDate(state.todo.focus, 'end')
 
@@ -206,13 +161,29 @@ export default {
       this.storeSetUser(user)
     },
     createDate (obj, key) {
+      function setAttr (o, key) {
+        const keys = key.split('.')
+        let subO = o
+
+        keys.some((key, index) => {
+          if (typeof subO[key] === 'object') {
+            subO = subO[key]
+          } else {
+            if (index === keys.length - 1) {
+              subO[key] = new Date(subO[key])
+            }
+            return true
+          }
+        })
+      }
+
       if (key) {
         if (obj[key]) {
-          obj[key] = new Date(obj[key])
+          setAttr(obj, key)
         } else if (Array.isArray(obj)) {
           obj.forEach((item) => {
             if (typeof item === 'object') {
-              item[key] = new Date(item[key])
+              setAttr(item, key)
             }
           })
         }
@@ -224,13 +195,13 @@ export default {
         })
       }
     }
-
   }
 }
 </script>
 
 <style lang="less">
-html,body {
+html,
+body {
   // min-height: 100%;
   height: 100%;
 }
@@ -267,9 +238,6 @@ html,body {
     width: 100vw;
     height: 100vh;
   }
-}
-
-html:fullscreen {
 }
 
 .full-screen {

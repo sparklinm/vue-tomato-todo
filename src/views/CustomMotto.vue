@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h100p">
     <AddMotto />
   </div>
 </template>

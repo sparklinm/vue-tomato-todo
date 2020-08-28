@@ -51,7 +51,7 @@ export default {
         this.$t('todo.stop_reason_distribution') +
         ' ' +
         util.formatTime(this.period[0], {
-          unit: true,
+          cut: '-',
           hide: {
             day: true
           }

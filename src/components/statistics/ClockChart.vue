@@ -43,7 +43,7 @@ export default {
         this.$t('todo.get_up_clock_distribution') +
         ' ' +
         util.formatTime(this.period[0], {
-          unit: true,
+          cut: '-',
           hide: {
             day: true
           }

@@ -38,7 +38,7 @@ export default {
       // online,local,mixin
       posterRandomMode: 'online',
       morePoster: false,
-      mainPageBackground: '/page_back/simple/back5.jpg',
+      mainPageBackground: '/page_back/cute/back6.jpg',
       todoCardBackground: 'colorful',
       todoOpacity: 'opaque',
       todoSetCardBackground: 'solid',

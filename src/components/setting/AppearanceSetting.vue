@@ -626,6 +626,8 @@ export default {
 
 <style lang="less">
 .setting-appearance {
+  height: 100%;
+
   .back {
     .fixed-full-screen();
     background: rgb(247, 247, 247);
@@ -640,6 +642,9 @@ export default {
     position: fixed;
     background: #f7f7f7;
     z-index: 1;
+    width: 100%;
+    max-width: 700px;
+    box-sizing: border-box;
   }
 
   .custom-radio {

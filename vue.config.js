@@ -3,6 +3,8 @@ const webpack = require('webpack')
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+// const PurifyCSSPlugin = require('purifycss-webpack')
+const glob = require('glob')
 
 module.exports = {
   pluginOptions: {
@@ -112,6 +114,10 @@ module.exports = {
         StackBlur: 'stackblur-canvas',
         TWEEN: 'tween'
       }),
+      // new PurifyCSSPlugin({
+      //   // Give paths to parse for rules. These should be absolute!
+      //   paths: glob.sync(path.join(__dirname, 'public/*.html'))
+      // }),
 
       new BrowserSyncPlugin(
         // BrowserSync options

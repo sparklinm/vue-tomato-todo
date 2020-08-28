@@ -615,7 +615,7 @@ export default {
     },
     creatTime () {
       return util.formatTime(this.todo.create, {
-        unit: true
+        cut: '-'
       })
     },
     showReminders () {
@@ -843,7 +843,7 @@ export default {
         })
         return
       }
-      document.documentElement.requestFullscreen()
+      // document.documentElement.requestFullscreen()
       this.$router.push({
         path: `/do/${this.todo.id}`
       })

@@ -6,7 +6,7 @@
       <div class="left">
         <ComIcon
           name="arrow-left"
-          class="sub-nav__return-icon"
+          class="sub-nav__return-icon cp"
           @click="returnLastPage"
         />
         {{ title }}

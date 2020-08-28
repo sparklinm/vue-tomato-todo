@@ -13,7 +13,10 @@
         /> -->
         <span v-if="page.buttons.includes('clock')">
           <ComToolTip :show.sync="showClock">
-            <ComIcon name="clock-o" />
+            <ComIcon
+              name="clock-o"
+              class="cp"
+            />
             <template v-slot:content>
               <div class="drop-list_simple nav-drop">
                 <ul>
@@ -34,6 +37,7 @@
 
         <ComIcon
           v-if="page.buttons.includes('addTodo')"
+          class="cp"
           name="plus"
           @click="showBox('showBoxAddTodo')"
         />
@@ -41,23 +45,29 @@
         <ComIcon
           v-if="page.buttons.includes('addTodoSet')"
           name="plus-square"
+          class="cp"
           @click="showBox('showBoxAddTodoSet')"
         />
 
         <ComIcon
           v-if="page.buttons.includes('addFuturePlan')"
           name="plus"
+          class="cp"
           @click="showBox('showBoxAddPlan')"
         />
 
         <ComIcon
           v-if="page.buttons.includes('tip')"
+          class="cp"
           name="question-circle"
         />
 
         <span v-if="page.buttons.includes('setting')">
           <ComToolTip :show.sync="showDropListSetting">
-            <ComIcon name="cog" />
+            <ComIcon
+              name="cog"
+              class="cp"
+            />
             <template #content>
               <div class="drop-list_simple">
                 <ul>
@@ -76,7 +86,10 @@
 
         <span v-if="page.buttons.includes('more')">
           <ComToolTip :show.sync="showDropListMore">
-            <ComIcon name="ellipsis-v" />
+            <ComIcon
+              name="ellipsis-v"
+              class="cp"
+            />
             <template #content>
               <div class="drop-list_white drop-list_right">
                 <ul>

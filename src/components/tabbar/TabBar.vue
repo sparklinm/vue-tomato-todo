@@ -8,7 +8,7 @@
         <li
           v-for="item in tabBars"
           :key="item.text"
-          class="tab-bar-items"
+          class="tab-bar-items cp"
         >
           <ComIcon
             :name="item.icon"

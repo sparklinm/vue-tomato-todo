@@ -28,8 +28,6 @@ yarn lint
 
 [查看 demo 请看这里](https://todo.sparklinm.cn)，PC 端最好使用手机模式浏览。
 
-## Screenshot
-
 ## Tech Stack
 
 - Vue @ 2.6.10
