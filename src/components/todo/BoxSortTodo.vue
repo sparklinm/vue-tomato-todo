@@ -103,10 +103,3 @@ export default {
   }
 }
 </script>
-
-<style lang='less'>
-#item1 {
-  height: 80px;
-}
-
-</style>

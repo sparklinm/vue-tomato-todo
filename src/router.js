@@ -1,21 +1,22 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Main from './views/Main.vue'
-import Todo from './views/Todo.vue'
-import TodoSet from './views/TodoSet.vue'
-import DoTodo from './views/DoTodo.vue'
-import Statistics from './views/Statistics.vue'
-import StatisticsOne from './views/StatisticsOne.vue'
-import TimeAxis from './views/TimeAxis.vue'
-import TimeAxisOne from './views/TimeAxisOne.vue'
-import FuturePlan from './views/FuturePlan.vue'
-import Setting from './views/Setting.vue'
-import PomodoroSetting from './views/PomodoroSetting.vue'
-import CustomMotto from './views/CustomMotto.vue'
-import AppearanceSetting from './views/AppearanceSetting.vue'
-import OtherSettings from './views/OtherSettings.vue'
-import Login from './views/Login.vue'
-import Me from './views/Me.vue'
+const Main = () => import('./views/Main.vue')
+const Todo = () => import('./views/Todo.vue')
+const TodoSet = () => import('./views/TodoSet.vue')
+const DoTodo = () => import('./views/DoTodo.vue')
+const Statistics = () => import('./views/Statistics.vue')
+const StatisticsOne = () => import('./views/StatisticsOne.vue')
+const TimeAxis = () => import('./views/TimeAxis.vue')
+const TimeAxisOne = () => import('./views/TimeAxisOne.vue')
+const FuturePlan = () => import('./views/FuturePlan.vue')
+const Setting = () => import('./views/Setting.vue')
+const PomodoroSetting = () => import('./views/PomodoroSetting.vue')
+const CustomMotto = () => import('./views/CustomMotto.vue')
+const AppearanceSetting = () => import('./views/AppearanceSetting.vue')
+const OtherSettings = () => import('./views/OtherSettings.vue')
+const Login = () => import('./views/Login.vue')
+const Me = () => import('./views/Me.vue')
+
 Vue.use(Router)
 
 const router = new Router({
