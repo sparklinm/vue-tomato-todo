@@ -289,7 +289,14 @@
 </template>
 
 <script>
-import screenshot from '@/js/screenshot'
+let screenshot = {}
+
+window.addEventListener('load', () => {
+  import ('@/js/screenshot').then((module) => {
+    screenshot = module.default
+  })
+})
+// import screenshot from '@/js/screenshot'
 import util from '@/js/util'
 import todo from '@/js/todo'
 import setting from '@/js/setting'

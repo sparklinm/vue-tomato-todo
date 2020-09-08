@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import '@/lib/echart'
 import { mapGetters, mapState } from 'vuex'
 import CumulativeData from '../components/statistics/CumulativeData'
 

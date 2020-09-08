@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import '@/lib/echart'
 import { mapGetters } from 'vuex'
 import CumulativeData from '../components/statistics/CumulativeData'
 

@@ -51,25 +51,39 @@ module.exports = {
           parallel: true // 使用多进程并行运行来提高构建速度。默认并发运行数：os.cpus().length - 1。
         })
       )
-      // 分包对于单页面作用不大
-      config.optimization.splitChunks({
-        chunks: 'all',
-        maxInitialRequests: Infinity,
-        minSize: 200000, // 依赖包超过300000bit将被单独打包
-        automaticNameDelimiter: '-',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name (module) {
-              const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]
-
-              return `chunk.${packageName.replace('@', '')}`
-            },
-            priority: 10
-          }
-        }
-      })
     }
+
+    // 分包对于单页面作用不大
+    config.optimization.splitChunks({
+      chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 200000, // 依赖包超过300000bit将被单独打包
+      automaticNameDelimiter: '-',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name (module) {
+            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]
+
+            return `chunk.${packageName.replace('@', '')}`
+          },
+          priority: 10
+        }
+      }
+    })
+
+    // config.plugin('preload').tap(options => {
+    //   options[0].fileBlacklist = options[0].fileBlacklist || []
+    //   options[0].fileBlacklist.push(/chunk.echarts(.)+?\.js$/)
+    //   return options
+    // })
+    // // 或者
+    // // 修改它的选项：
+    // config.plugin('prefetch').tap(options => {
+    //   options[0].rel = 'prefetch'
+    //   options[0].include = 'all'
+    //   return options
+    // })
 
     // 图片压缩，会损坏图像精度
     // https://www.npmjs.com/package/image-webpack-loader
@@ -110,7 +124,6 @@ module.exports = {
         _isEmpty: 'lodash/isEmpty',
         _merge: 'lodash/merge',
         Velocity: 'velocity-animate',
-        html2canvas: 'html2canvas',
         StackBlur: 'stackblur-canvas',
         TWEEN: 'tween'
       }),

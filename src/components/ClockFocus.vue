@@ -176,7 +176,13 @@
 <script>
 import DataPanel from '@/components/statistics/DataPanel'
 import FocusChart from '@/components/statistics/FocusChart'
-import screenshot from '@/js/screenshot'
+let screenshot = {}
+
+window.addEventListener('load', () => {
+  import ('@/js/screenshot').then((module) => {
+    screenshot = module.default
+  })
+})
 import util from '@/js/util'
 import todo from '@/js/todo'
 import setting from '@/js/setting'

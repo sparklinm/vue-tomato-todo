@@ -1,5 +1,4 @@
 import config from '@/config'
-import echart from '@/lib/echart'
 
 export default {
   namespaced: true,
@@ -184,7 +183,11 @@ export default {
       state.currentTheme = value
       config.setTheme(value)
       document.body.className = value.class
-      echart.registerTheme()
+      import ('@/lib/echart').then(module => {
+        const echart = module.default
+
+        echart.registerTheme()
+      })
     }
   },
   actions: {}

@@ -9,7 +9,9 @@ import '@/styles/index.less'
 
 import VueI18n from 'vue-i18n'
 
-import './lib/echart'
+// import './lib/echart'
+// import 'html2canvas'
+// import ('./lib/echart')
 import MyPlugins from './plugins'
 import './plugins/calendar/style.less'
 import Calendar from './plugins/calendar'

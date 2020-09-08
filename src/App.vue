@@ -12,7 +12,9 @@
 </template>
 
 <script>
-import screenshot from '@/js/screenshot'
+window.addEventListener('load', () => {
+  import ('@/lib/echart')
+})
 import config from './config'
 import { mapMutations, mapState, mapGetters } from 'vuex'
 
@@ -40,6 +42,7 @@ export default {
     }
   },
   created () {
+
     window.addEventListener('resize', () => {
       let rootFont = (document.body.clientWidth / 414) * 50
 
@@ -133,6 +136,8 @@ export default {
     const theme = config.getTheme()
 
     this.storeSetCurrentTheme(theme)
+
+
   },
   methods: {
     ...mapMutations('user', {
@@ -144,9 +149,6 @@ export default {
     fullScreen () {
       this.$refs.img.requestFullscreen()
       // document.documentElement.requestFullscreen()
-    },
-    toImage () {
-      screenshot.downloadImage(document.body, 'test.png')
     },
     setUser () {
       const user = {
