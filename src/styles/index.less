@@ -14,6 +14,32 @@ body {
   max-width: 700px;
 }
 
+.nav-wrap {
+  height: 56px;
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  color: white;
+  font-size: 16px;
+  width: 100%;
+  z-index: 1234;
+  padding: 0px 15px;
+  height: 56px;
+  box-sizing: border-box;
+  .flex(@align-items: center; @justify-content: space-between;);
+
+  .right {
+    font-size: 18px;
+
+    & > span {
+      margin-left: 20px;
+      padding: 5px;
+    }
+  }
+}
+
 button {
   outline: none;
   border: none;

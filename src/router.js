@@ -24,10 +24,12 @@ const router = new Router({
     {
       path: '/',
       component: Main,
+      name: 'Main',
       children: [
         {
           path: '',
           component: Todo,
+          name: 'Todo',
           meta: {
             parent: true,
             keepAlive: true
@@ -36,6 +38,7 @@ const router = new Router({
         {
           path: '/set',
           component: TodoSet,
+          name: 'TodoSet',
           meta: {
             parent: true,
             keepAlive: true
@@ -44,6 +47,7 @@ const router = new Router({
         {
           path: '/statistics',
           component: Statistics,
+          name: 'Statistics',
           meta: {
             parent: true
           }
@@ -51,6 +55,7 @@ const router = new Router({
         {
           path: '/time_axis',
           component: TimeAxis,
+          name: 'TimeAxis',
           meta: {
             parent: true
           }
@@ -58,6 +63,7 @@ const router = new Router({
         {
           path: '/future_plan',
           component: FuturePlan,
+          name: 'FuturePlan',
           meta: {
             parent: true
           }
@@ -65,6 +71,7 @@ const router = new Router({
         {
           path: '/me',
           component: Setting,
+          name: 'Setting',
           meta: {
             parent: true
           }
@@ -73,7 +80,7 @@ const router = new Router({
 
     },
     {
-      name: 'do',
+      name: 'DoTodo',
       path: '/do/:id',
       component: DoTodo,
       meta: {
@@ -83,6 +90,7 @@ const router = new Router({
     {
       path: '/statistics/:id',
       component: StatisticsOne,
+      name: 'StatisticsOne',
       meta: {
         child: true,
         keepAlive: true
@@ -91,6 +99,7 @@ const router = new Router({
     {
       path: '/time_axis/:id',
       component: TimeAxisOne,
+      name: 'TimeAxisOne',
       meta: {
         child: true,
         keepAlive: true
@@ -99,6 +108,7 @@ const router = new Router({
     {
       path: '/pomodoro_setting',
       component: PomodoroSetting,
+      name: 'PomodoroSetting',
       meta: {
         parent: true,
         child: true
@@ -106,6 +116,7 @@ const router = new Router({
     },
     {
       path: '/custom_motto',
+      name: 'CustomMotto',
       component: CustomMotto,
       meta: {
         child: true
@@ -113,6 +124,7 @@ const router = new Router({
     },
     {
       path: '/appearance_setting',
+      name: 'AppearanceSetting',
       component: AppearanceSetting,
       meta: {
         child: true
@@ -120,6 +132,7 @@ const router = new Router({
     },
     {
       path: '/other_setting',
+      name: 'OtherSettings',
       component: OtherSettings,
       meta: {
         child: true
@@ -128,6 +141,7 @@ const router = new Router({
     {
       path: '/login',
       component: Login,
+      name: 'Login',
       meta: {
         child: true
       }
@@ -135,11 +149,13 @@ const router = new Router({
     {
       path: '/modify_me',
       component: Me,
+      name: 'Me',
       meta: {
         child: true
       }
     }
-  ]
+  ],
+  mode: 'history'
 })
 
 export default router

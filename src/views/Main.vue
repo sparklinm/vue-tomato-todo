@@ -5,7 +5,9 @@
       class="main"
       :style="{backgroundImage:`url(${appearance.mainPageBackground})`}"
     >
-      <router-view />
+      <vue-router-cache-animate :caches="caches">
+        <router-view />
+      </vue-router-cache-animate>
     </main>
     <TabBar />
   </div>
@@ -23,7 +25,27 @@ export default {
     TabBar
   },
   data () {
-    return {}
+    return {
+      caches: [
+        {
+          // 路由name和路由组件的name
+          names: {
+            include: ['Todo'],
+            exclude: undefined
+          },
+          // 在哪些路由上被缓存
+          cachedOn: {
+            include: undefined,
+            exclude: undefined
+          }
+        }
+      ]
+    }
+  },
+  beforeRouteUpdate: (to, from, next) => {
+    // console.log(this)
+    // console.log(from)
+    next()
   },
   computed: {
     ...mapState('settings', {

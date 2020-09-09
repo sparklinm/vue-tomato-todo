@@ -9,6 +9,7 @@ import { mapGetters } from 'vuex'
 import Setting from '@/components/setting/Setting'
 
 export default {
+  name: 'Settings',
   components: {
     Setting
   },

@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from 'vue/dist/vue.runtime.esm'
 import axios from 'axios'
 import App from './App.vue'
 import router from './router'
@@ -17,6 +17,12 @@ import './plugins/calendar/style.less'
 import Calendar from './plugins/calendar'
 import './directive'
 import './registerServiceWorker'
+
+import vueRouterCacheAnimate from './plugins/vue-router-cache-animate'
+
+Vue.use(vueRouterCacheAnimate, {
+  router
+})
 
 // 自动化全局注册common目录下的组件
 const requireComponent = require.context('./components/common', true, /\.vue$/)
@@ -51,6 +57,7 @@ Vue.use(Calendar, {
 
 Vue.mixin({
   beforeRouteLeave (to, from, next) {
+
     if (from.meta.keepAlive && to.meta.keepAlive) {
       this.$root.keepAlive = ['Main']
     } else {

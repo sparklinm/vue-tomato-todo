@@ -1,28 +1,59 @@
 <template>
   <div id="app">
-    <transition
-      :name="transitionName"
-      :css="css"
+    <vue-router-cache-animate
+      :caches="caches"
+      :transitions="transitions"
     >
-      <keep-alive :include="$root.keepAlive.join(',')">
-        <router-view />
-      </keep-alive>
-    </transition>
+      <router-view />
+    </vue-router-cache-animate>
   </div>
 </template>
 
 <script>
 window.addEventListener('load', () => {
-  import ('@/lib/echart')
+  import('@/lib/echart')
 })
 import config from './config'
 import { mapMutations, mapState, mapGetters } from 'vuex'
+import { log } from 'util'
 
 export default {
   data () {
     return {
       transitionName: 'none',
-      css: false
+      css: false,
+      caches: [
+        {
+          // 路由name和路由组件的name
+          names: {
+            include: ['Main'],
+            exclude: undefined
+          },
+          // 在哪些路由上被缓存
+          cachedOn: {
+            include: ['StatisticsOne', 'TimeAxisOne'],
+            exclude: undefined
+          }
+        }
+      ],
+      transitions: [
+        {
+          name: 'slide-left',
+          reverseName: 'slide-right',
+          from: ['Main'],
+          to: [
+            'DoTodo',
+            'StatisticsOne',
+            'TimeAxisOne',
+            'PomodoroSetting',
+            'CustomMotto',
+            'AppearanceSetting',
+            'OtherSettings',
+            'Login',
+            'Me'
+          ]
+        }
+      ]
     }
   },
   computed: {},
@@ -42,7 +73,6 @@ export default {
     }
   },
   created () {
-
     window.addEventListener('resize', () => {
       let rootFont = (document.body.clientWidth / 414) * 50
 
@@ -136,8 +166,6 @@ export default {
     const theme = config.getTheme()
 
     this.storeSetCurrentTheme(theme)
-
-
   },
   methods: {
     ...mapMutations('user', {

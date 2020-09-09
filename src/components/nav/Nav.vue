@@ -296,7 +296,6 @@ window.addEventListener('load', () => {
     screenshot = module.default
   })
 })
-// import screenshot from '@/js/screenshot'
 import util from '@/js/util'
 import todo from '@/js/todo'
 import setting from '@/js/setting'
@@ -668,32 +667,6 @@ export default {
 </script>
 
 <style lang="less">
-.nav-wrap {
-  height: 56px;
-}
-
-.nav {
-  position: fixed;
-  top: 0;
-  color: white;
-  font-size: 16px;
-  width: 100%;
-  z-index: 1234;
-  padding: 0px 15px;
-  height: 56px;
-  box-sizing: border-box;
-  .flex(@align-items: center; @justify-content: space-between;);
-
-  .right {
-    font-size: 18px;
-
-    & > span {
-      margin-left: 20px;
-      padding: 5px;
-    }
-  }
-}
-
 .nav-drop.drop-list_simple {
   li {
     padding: 8px 12px;

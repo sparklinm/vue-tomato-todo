@@ -10,6 +10,7 @@ import { mapGetters } from 'vuex'
 import CumulativeData from '../components/statistics/CumulativeData'
 
 export default {
+  name: 'Statistics',
   components: {
     CumulativeData
   },
