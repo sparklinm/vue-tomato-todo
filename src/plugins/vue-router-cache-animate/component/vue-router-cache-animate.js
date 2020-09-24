@@ -1,30 +1,16 @@
-import { findRouter } from '../util'
-
-const canAnimate = function (fromNames, fromRouter, toNames, toRouter) {
-  return (
-    fromNames.some((name) => {
-      return findRouter(name, fromRouter)
-    }) &&
-    toNames.some((name) => {
-      return findRouter(name, toRouter)
-    })
-  )
-}
-
-const instances = new Set()
-
 export default {
+  name: 'vue-router-cache-animate',
   props: {
     caches: {
-      type: [Array, String],
+      type: Array,
       default: () => [
         {
-          // 路由name和路由组件的name
+          // router name and router component name
           names: {
             include: undefined,
             exclude: undefined
           },
-          // 在哪些路由上被缓存
+          // be cached on which routes
           cachedOn: {
             include: undefined,
             exclude: undefined
@@ -32,14 +18,21 @@ export default {
         }
       ]
     },
-    // 返回时不缓存（history.back()，浏览器后退）
+    // not cache on back
     noCacheOnBack: {
       type: Boolean,
-      default: true
+      default: false
     },
     transitions: {
       type: Array,
-      default: () => []
+      default: () => [
+        {
+          name: '',
+          reverseName: '',
+          from: undefined,
+          to: undefined
+        }
+      ]
     }
   },
   data () {
@@ -49,30 +42,6 @@ export default {
       transitionName: '',
       css: false
     }
-  },
-  watch: {
-    $route (to, from) {
-      this.transitions.some((transition) => {
-        if (canAnimate(transition.from, from, transition.to, to)) {
-          this.transitionName = transition.name
-          this.css = true
-          return true
-        }
-        if (canAnimate(transition.from, to, transition.to, from)) {
-          this.transitionName = transition.reverseName
-          this.css = true
-          return true
-        }
-        this.transitionName = ''
-        this.css = false
-      })
-    }
-  },
-  created () {
-    instances.add(this)
-  },
-  destroyed () {
-    instances.delete(this)
   },
   render (h) {
     const vNode = this.$slots.default && this.$slots.default[0]
@@ -102,5 +71,3 @@ export default {
     )
   }
 }
-
-export { instances }

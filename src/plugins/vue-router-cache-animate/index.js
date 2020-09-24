@@ -1,9 +1,7 @@
-import component, { instances } from './component/vue-router-cache-animate'
-
-import { findRouter } from './util'
+import component from './component/vue-router-cache-animate'
 
 function getRoutes (tree) {
-  function doThis (tree) {
+  function resolve (tree) {
     const obj = {}
 
     for (let i = 0; i < tree.length; i++) {
@@ -11,105 +9,151 @@ function getRoutes (tree) {
         obj[tree[i].name] = 1
       }
       if (tree[i].children && tree[i].children.length) {
-        obj[tree[i].name] = doThis(tree[i].children)
+        obj[tree[i].name] = resolve(tree[i].children)
       }
     }
     return obj
   }
 
-  return doThis(tree)
+  return resolve(tree)
+}
+
+// find vue-router-cache-animate component instance from router
+function findInstance (from) {
+  return from.instances.default.$parent
+}
+
+// find changed routers
+function findChangedRouters (from, to) {
+  let router = {}
+
+  to.matched.some((match, index) => {
+    if (match !== from.matched[index]) {
+      router = {
+        from: from.matched[index],
+        to: match
+      }
+      return true
+    }
+  })
+
+  return router
+}
+
+function isRegExp (reg) {
+  return Object.prototype.toString.call(reg) === '[object RegExp]'
+}
+
+function matches (pattern, name) {
+  if (Array.isArray(pattern)) {
+    return pattern.includes(name)
+  }
+  if (typeof pattern === 'string') {
+    return pattern.split(',').indexOf(name) > -1
+  }
+  if (isRegExp(pattern)) {
+    return pattern.test(name)
+  }
+  /* istanbul ignore next */
+  return false
+}
+
+function canMatch (include, exclude, value) {
+  if (!include && !exclude) {
+    return true
+  }
+
+  return (
+    (include && matches(include, value)) ||
+    (exclude && !matches(exclude, value))
+  )
+}
+
+// router component name
+function findRouterCompoentName (router) {
+  return (
+    router && router.matched[router.matched.length - 1].components.default.name
+  )
+}
+
+function getComponentName (component) {
+  return component && component.$options._componentTag
+}
+
+function animate (ins, from, to) {
+  ins.transitions.some((transition) => {
+    let animation = ''
+
+    // no 'to' and no 'from
+    if (!transition.to && !transition.from) {
+      animation = 'forward'
+    } else if (
+      !transition.to &&
+      (transition.from.include || transition.from.exclude)
+    ) {
+      // no 'to' but has 'from'
+      if (
+        canMatch(transition.from.include, transition.from.exclude, from.name) &&
+        !canMatch(transition.from.include, transition.from.exclude, to.name)
+      ) {
+        animation = 'forward'
+      } else if (
+        !canMatch(
+          transition.from.include,
+          transition.from.exclude,
+          from.name
+        ) &&
+        canMatch(transition.from.include, transition.from.exclude, to.name)
+      ) {
+        animation = 'back'
+      }
+    } else {
+      if (
+        canMatch(transition.from.include, transition.from.exclude, from.name) &&
+        canMatch(transition.to.include, transition.to.exclude, to.name)
+      ) {
+        animation = 'forward'
+      } else if (
+        canMatch(transition.from.include, transition.from.exclude, to.name) &&
+        canMatch(transition.to.include, transition.to.exclude, from.name)
+      ) {
+        animation = 'back'
+      }
+    }
+
+    if (animation === 'forward' && transition.name) {
+      ins.transitionName = transition.name
+      ins.css = true
+    } else if (animation === 'back' && transition.reverseName) {
+      ins.transitionName = transition.reverseName
+      ins.css = true
+    } else {
+      ins.transitionName = ''
+      ins.css = false
+    }
+  })
 }
 
 export default {
   install (vue, { router, options }) {
-    const routes = getRoutes(router.options.routes)
-    let cacheAfter = null
     const NO_CACHE_FLAG = '_none_'
     let STATUS = 'forward'
     const SESSION_KEY = '_history_pageKeys_'
+    const routes = getRoutes(router.options.routes)
+    let cacheAfterEnter = null
     let visitHistory = false
     const pageKeys = sessionStorage.getItem(SESSION_KEY)
       ? JSON.parse(sessionStorage.getItem(SESSION_KEY))
       : []
     let pageIndex = -1
 
-    const findInstance = function (from) {
-      return from.instances.default.$parent
-
-      // const parentIns = from.instances.default
-
-      // for (const ins of instances) {
-      //   if (ins.$parent === parentIns) {
-      //     return ins
-      //   }
-      // }
-    }
-
-    function findChangedRouters (from, to) {
-      let router = {}
-
-      to.matched.some((match, index) => {
-        if (!match.instances.default) {
-          router = {
-            from: from.matched[index],
-            to: match
-          }
-          return true
-        }
-      })
-
-      if (!router.from) {
-        to.matched.some((match, index) => {
-          if (match !== from.matched[index]) {
-            router = {
-              from: from.matched[index],
-              to: match
-            }
-            return true
-          }
-        })
-      }
-
-      return router
-    }
-
-    function isRegExp (reg) {
-      return Object.prototype.toString.call(reg) === '[object RegExp]'
-    }
-
-    function matches (pattern, name) {
-      if (Array.isArray(pattern)) {
-        return pattern.includes(name)
-      }
-      if (typeof pattern === 'string') {
-        return pattern.split(',').indexOf(name) > -1
-      }
-      if (isRegExp(pattern)) {
-        return pattern.test(name)
-      }
-      /* istanbul ignore next */
-      return false
-    }
-
-    function canMatch (include, exclude, value) {
-      if (!include && !exclude) {
-        return true
-      }
-
-      return (
-        (include && matches(include, value)) ||
-        (exclude && !matches(exclude, value))
-      )
-    }
-
-    const resolveCaches = function (caches, from, to) {
-      console.log(from)
+    // resolve caches prop
+    function resolveCaches (caches, from, to) {
       let include = []
       let exclude = []
 
-      caches.forEach((cache) => {
-        // toRouter.matched 包含 cachedOn 中任意一个
-        // 或者 fromRouter.matched 包含 cachedOn 中任意一个 且 toRouter.name 等于 被缓存路由组件名字
+      caches.some((cache) => {
+        // to.name matches 'cache.cachedOn' list
         let canCache = canMatch(
           cache.cachedOn.include,
           cache.cachedOn.exclude,
@@ -117,11 +161,16 @@ export default {
         )
 
         if (canCache) {
+          if (!cache.names.include && !cache.names.exclude) {
+            include = ['all']
+            return true
+          }
           cache.names.include && (include = include.concat(cache.names.include))
           cache.names.exclude && (exclude = exclude.concat(cache.names.exclude))
-          return
+          return false
         }
 
+        // from.name matches 'cache.cachedOn' list and to.name matches 'cache.names' list
         canCache =
           canMatch(cache.cachedOn.include, cache.cachedOn.exclude, from.name) &&
           canMatch(cache.names.include, cache.names.exclude, to.name)
@@ -131,80 +180,44 @@ export default {
         }
       })
 
+      // find all names at the same level as the current router
       let router = from
       const keys = []
-
+      let routesNames = routes
 
       while (router) {
         keys.push(router.name)
         router = router.parent
       }
-      console.log(keys)
-      console.log(routes)
-      let routesNames = []
-
-      if (keys.length === 1) {
-        routesNames = routes[keys[0]]
-      } else {
-        for (let i = keys.length - 1; i > 0; i--) {
-          routesNames = routes[keys[i]]
-        }
+      for (let i = keys.length - 1; i > 0; i--) {
+        routesNames = routes[keys[i]]
       }
 
-      routesNames = Object.keys(routesNames)
-      console.log(routesNames)
+      if (include && include[0] === 'all') {
+        return Object.keys(routesNames)
+      }
 
-      if (include.length && exclude.length) {
+      if (exclude.length) {
         exclude = new Set(exclude)
         include.forEach((item) => {
           exclude.has(item) && exclude.delete(item)
         })
-
-        return {
-          exclude: [...exclude]
+        for (const key in routesNames) {
+          if (exclude.has(key)) {
+            delete routesNames[key]
+          }
         }
+        return Object.keys(routesNames)
       }
 
-      if (!include.length && !exclude.length) {
-        return {
-          include: [NO_CACHE_FLAG],
-          exclude: undefined
-        }
+      if (!include.length) {
+        return [NO_CACHE_FLAG]
       }
 
-      return {
-        exclude: exclude.length ? [...new Set(exclude)] : undefined,
-        include: include.length ? [...new Set(include)] : undefined
-      }
+      return include
     }
-
-    // 路由对应组件的name
-    const findRouterCompoentName = function (router) {
-      return (
-        router &&
-        router.matched[router.matched.length - 1].components.default.name
-      )
-    }
-
-    router.afterEach(() => {
-      if (!visitHistory) {
-        const key = history.state && history.state.key
-
-        pageKeys.length = pageIndex + 1
-        pageKeys.push(key)
-        pageIndex = pageKeys.length - 1
-      }
-
-      if (cacheAfter) {
-        cacheAfter.ins.include = cacheAfter.include
-        cacheAfter.ins.exclude = cacheAfter.exclude
-        cacheAfter = null
-      }
-      console.log(STATUS)
-    })
 
     window.addEventListener('popstate', (e) => {
-      // 无法判断是前进还是后退
       const key = e.state && e.state.key
       const index = pageKeys.lastIndexOf(key)
 
@@ -230,22 +243,8 @@ export default {
     })
 
     router.beforeEach(function (to, from, next) {
-      const now = performance.now()
-
       const changedRouters = findChangedRouters(from, to)
 
-      console.log(changedRouters)
-      console.log(from)
-      console.log(to)
-
-      if (!changedRouters.from) {
-        next()
-        return
-      }
-
-      const ins = findInstance(changedRouters.from)
-
-      // 后退前进时，一定会得到index
       if (!visitHistory) {
         if (pageIndex === -1) {
           pageIndex = 0
@@ -255,58 +254,73 @@ export default {
         }
       }
 
-      visitHistory = false
-
-      if (!ins) {
+      if (!changedRouters.from) {
         next()
         return
       }
+
+      const ins = findInstance(changedRouters.from)
+
+      if (!ins || getComponentName(ins) !== 'vue-router-cache-animate') {
+        next()
+        return
+      }
+
+      animate(ins, changedRouters.from, changedRouters.to)
 
       if (ins.noCacheOnBack && STATUS === 'back') {
         const name = findRouterCompoentName(from)
 
         if (name) {
-          console.log(name)
-          ins.include = undefined
-          ins.exclude = ins.exclude || []
-          ins.exclude.push(name)
-        }
-        console.log(performance.now() - now)
-        next()
-        setTimeout(() => {
-          ins.exclude = []
-          STATUS = 'forward'
-        })
+          const include = ins.include.concat()
+          const index = include.indexOf(name)
 
+          if (index > -1) {
+            include.splice(index, 1)
+            cacheAfterEnter = {
+              ins,
+              include
+            }
+          }
+        }
+        visitHistory = false
+        next()
         return
       }
 
-      const { include, exclude } = resolveCaches(
+      const include = resolveCaches(
         ins.caches,
         changedRouters.from,
         changedRouters.to
       )
 
-      // 如果已经被缓存，要销毁必须在 next() 之后
-      // 如果没有被缓存，要缓存必须在 next() 之前
-      if (
-        (include && include.includes(changedRouters.from.name)) ||
-        (exclude && !exclude.includes(changedRouters.from.name))
-      ) {
-        ins.exclude = exclude
+      // if the current router will be cached, component must be cached and then destroyed
+      // otherwise, component must be destroyed and then remove from keep-alive caches
+      if (include.length && include.includes(changedRouters.from.name)) {
         ins.include = include
-        console.log(performance.now() - now)
         next()
-        return
+      } else {
+        cacheAfterEnter = {
+          ins,
+          include
+        }
+        next()
+      }
+    })
+
+    router.afterEach(() => {
+      if (!visitHistory) {
+        const key = history.state && history.state.key
+
+        pageKeys.length = pageIndex + 1
+        pageKeys.push(key)
+        pageIndex = pageKeys.length - 1
       }
 
-      cacheAfter = {
-        ins,
-        include,
-        exclude
+      if (cacheAfterEnter) {
+        cacheAfterEnter.ins.include = cacheAfterEnter.include
+        cacheAfterEnter = null
       }
-      console.log(performance.now() - now)
-      next()
     })
 
     vue.component('vue-router-cache-animate', component)

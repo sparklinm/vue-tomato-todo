@@ -10611,6 +10611,11 @@ vue-loader@^15.7.0:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-router-cache-animate@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.npmjs.org/vue-router-cache-animate/-/vue-router-cache-animate-0.0.4.tgz#2189ce39e974ed19a2b0406b6cd9fad550fa2b3e"
+  integrity sha512-90w4lqik6k/XEfQykEupeUk0DJSIwroiyQLvLoFGSh7s88P9c0NbODzUs5stYiO+xbWWOUS24lpxAxuu0xakvQ==
+
 vue-router@^3.0.3:
   version "3.3.4"
   resolved "https://registry.npm.taobao.org/vue-router/download/vue-router-3.3.4.tgz?cache=0&sync_timestamp=1595343990231&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-router%2Fdownload%2Fvue-router-3.3.4.tgz#4e38abc34a11c41b6c3d8244449a2e363ba6250b"

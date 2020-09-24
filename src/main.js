@@ -18,7 +18,8 @@ import Calendar from './plugins/calendar'
 import './directive'
 import './registerServiceWorker'
 
-import vueRouterCacheAnimate from './plugins/vue-router-cache-animate'
+import vueRouterCacheAnimate from 'vue-router-cache-animate'
+import 'vue-router-cache-animate/dist/css/animate.css'
 
 Vue.use(vueRouterCacheAnimate, {
   router

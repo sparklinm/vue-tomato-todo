@@ -5,7 +5,9 @@
       class="main"
       :style="{backgroundImage:`url(${appearance.mainPageBackground})`}"
     >
-      <vue-router-cache-animate :caches="caches">
+      <vue-router-cache-animate
+        :caches="caches"
+      >
         <router-view />
       </vue-router-cache-animate>
     </main>
@@ -30,13 +32,13 @@ export default {
         {
           // 路由name和路由组件的name
           names: {
-            include: ['Todo'],
-            exclude: undefined
+            include: ['Todo']
+            // exclude: ['Statistics']
           },
           // 在哪些路由上被缓存
           cachedOn: {
-            include: undefined,
-            exclude: undefined
+            // include: ['Statistics', 'TimeAxis'],
+            exclude: ['Statistics', 'TimeAxis']
           }
         }
       ]

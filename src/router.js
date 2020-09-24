@@ -71,7 +71,7 @@ const router = new Router({
         {
           path: '/me',
           component: Setting,
-          name: 'Setting',
+          name: 'Settings',
           meta: {
             parent: true
           }

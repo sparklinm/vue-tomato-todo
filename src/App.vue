@@ -40,18 +40,9 @@ export default {
         {
           name: 'slide-left',
           reverseName: 'slide-right',
-          from: ['Main'],
-          to: [
-            'DoTodo',
-            'StatisticsOne',
-            'TimeAxisOne',
-            'PomodoroSetting',
-            'CustomMotto',
-            'AppearanceSetting',
-            'OtherSettings',
-            'Login',
-            'Me'
-          ]
+          from: {
+            include: ['Main']
+          }
         }
       ]
     }
@@ -285,46 +276,6 @@ body {
 #app .echarts {
   width: 100%;
   height: 100%;
-}
-
-.slide-right-enter {
-  transform: translate(-100%, 0);
-}
-
-.slide-right-enter-active,
-.slide-right-leave-active {
-  transition: transform 0.3s ease;
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  box-sizing: border-box;
-}
-
-.slide-right-leave-to {
-  transform: translate(100%, 0);
-}
-
-.slide-left-enter {
-  transform: translate(100%, 0);
-}
-
-.slide-left-enter-active,
-.slide-left-leave-active {
-  transition: transform 0.3s ease;
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  box-sizing: border-box;
-}
-
-.slide-left-leave-to {
-  transform: translate(-100%, 0);
 }
 
 .zoom-in-enter {
